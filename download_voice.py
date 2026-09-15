@@ -14,6 +14,7 @@ import argparse
 from src.tts.voice_downloader import (
     download_piper_voice,
     fetch_voices_catalog,
+    download_voices_for_languages,
 )
 
 logger: logging.Logger = logging.getLogger(__name__)
@@ -38,6 +39,17 @@ def build_argument_parser() -> argparse.ArgumentParser:
         type=str,
         default="en_US-lessac-low",
         help="Voice identifier to download (e.g. 'en_US-lessac-low', 'en_US-lessac-medium').",
+    )
+    parser.add_argument(
+        "--all",
+        action="store_true",
+        help="Batch download all voices matching specified languages.",
+    )
+    parser.add_argument(
+        "--languages",
+        nargs="+",
+        default=["en", "fr", "es", "de"],
+        help="Languages to batch download when using --all (default: en fr es de).",
     )
     parser.add_argument(
         "--output-dir",
@@ -68,7 +80,7 @@ def handle_list_voices(search_filter: str | None) -> None:
         search_filter (str | None): Optional substring to filter voice keys.
     """
 
-    # Fetch voice catalog from HuggingFace
+    # Fetch voice catalog from HuggingFace or local cache
     print("Fetching available Piper voices catalog...")
     catalog = fetch_voices_catalog()
     all_keys: list[str] = sorted(catalog.keys())
@@ -123,8 +135,16 @@ def main() -> None:
         handle_list_voices(args.filter)
         return
 
-    # Handle download command
-    output_dir: Path = Path(args.output_dir)
+    # Handle batch download all command
+    if args.all:
+        output_dir: Path = Path(args.output_dir)
+        print(f"Batch downloading all voices for languages: {args.languages}...")
+        downloaded = download_voices_for_languages(args.languages, output_dir)
+        print(f"Finished downloading {len(downloaded)} voice model(s).")
+        return
+
+    # Handle single voice download command
+    output_dir = Path(args.output_dir)
     execute_download(args.voice, output_dir)
 
 

@@ -17,6 +17,7 @@ from piper.config import SynthesisConfig
 
 from src.common.types import AudioArray
 from src.config.models import PersonalityConfig
+from src.tts.voice_downloader import download_piper_voice
 from src.common.audio_utils import (
     resample_audio,
     generate_synthetic_fallback_tone,
@@ -59,16 +60,22 @@ class PiperSynthesizer(BaseSynthesizer):
     Piper-TTS synthesis engine utilizing local ONNX neural voice models.
     """
 
-    def __init__(self, voices_dir: Path) -> None:
+    def __init__(
+        self,
+        voices_dir: Path,
+        auto_download: bool = True,
+    ) -> None:
         """
         Initialize Piper synthesis engine with a directory of voice models.
 
         Args:
             voices_dir (Path): Directory containing .onnx and .onnx.json files.
+            auto_download (bool): Automatically download missing models from HuggingFace.
         """
 
         # Store voices directory and initialize voice cache
         self.voices_dir: Path = voices_dir
+        self.auto_download: bool = auto_download
         self.voice_cache: dict[str, PiperVoice] = {}
 
     def resolve_model_path(self, voice_model: str) -> Path:
@@ -82,7 +89,7 @@ class PiperSynthesizer(BaseSynthesizer):
             Path: Resolved absolute path to the ONNX file.
 
         Raises:
-            FileNotFoundError: If model file cannot be found.
+            FileNotFoundError: If model file cannot be found or downloaded.
         """
 
         # Check direct path first
@@ -100,6 +107,41 @@ class PiperSynthesizer(BaseSynthesizer):
             candidate_with_ext: Path = self.voices_dir / f"{voice_model}.onnx"
             if candidate_with_ext.is_file():
                 return candidate_with_ext
+
+        # Attempt automatic download from HuggingFace
+        if self.auto_download:
+            voice_key: str = (
+                voice_model[:-5] if voice_model.endswith(".onnx") else voice_model
+            )
+            voice_key = Path(voice_key).name
+            logger.info(
+                "Voice '%s' not found locally in '%s'. Attempting automatic download...",
+                voice_key,
+                self.voices_dir,
+            )
+            try:
+                downloaded_onnx, _ = download_piper_voice(voice_key, self.voices_dir)
+                if downloaded_onnx.is_file():
+                    logger.info("Successfully downloaded '%s' automatically", voice_key)
+                    return downloaded_onnx
+            except (KeyError, ValueError, OSError, RuntimeError) as exc:
+                logger.warning(
+                    "Automatic download for '%s' failed (%s). Checking fallbacks...",
+                    voice_key,
+                    exc,
+                )
+
+        # Fallback to any existing ONNX model in voices_dir
+        if self.voices_dir.is_dir():
+            available_models: list[Path] = list(self.voices_dir.glob("*.onnx"))
+            if available_models:
+                logger.warning(
+                    "Model '%s' not found in '%s'. Falling back to local '%s'",
+                    voice_model,
+                    self.voices_dir,
+                    available_models[0].name,
+                )
+                return available_models[0]
 
         raise FileNotFoundError(
             f"Voice model '{voice_model}' was not found in '{self.voices_dir}'. "

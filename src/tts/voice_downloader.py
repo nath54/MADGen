@@ -11,12 +11,14 @@ from pathlib import Path
 
 import json
 import logging
+import urllib.error
 import urllib.request
 
 logger: logging.Logger = logging.getLogger(__name__)
 
 VOICES_INDEX_URL: str = "https://huggingface.co/rhasspy/piper-voices/raw/main/voices.json"
 VOICES_BASE_URL: str = "https://huggingface.co/rhasspy/piper-voices/resolve/main/"
+LOCAL_VOICES_PATH: Path = Path("data/piper_voices/voices.json")
 
 
 def fetch_voices_catalog() -> dict[str, typing.Any]:
@@ -30,13 +32,22 @@ def fetch_voices_catalog() -> dict[str, typing.Any]:
         RuntimeError: If downloading or parsing fails.
     """
 
+    # Check local cached copy first
+    if LOCAL_VOICES_PATH.is_file():
+        try:
+            with LOCAL_VOICES_PATH.open("r", encoding="utf-8") as file_stream:
+                catalog_dict: dict[str, typing.Any] = json.load(file_stream)
+                return catalog_dict
+        except (json.JSONDecodeError, OSError) as exc:
+            logger.warning("Could not read local voices.json: %s", exc)
+
     # Fetch catalog payload via HTTP
     try:
         with urllib.request.urlopen(VOICES_INDEX_URL, timeout=15) as response:
             catalog_bytes: bytes = response.read()
-            catalog_dict: dict[str, typing.Any] = json.loads(catalog_bytes.decode("utf-8"))
-            return catalog_dict
-    except Exception as exc:
+            remote_dict: dict[str, typing.Any] = json.loads(catalog_bytes.decode("utf-8"))
+            return remote_dict
+    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError, OSError) as exc:
         raise RuntimeError(f"Failed to fetch Piper voices catalog: {exc}") from exc
 
 
@@ -130,3 +141,42 @@ def download_piper_voice(
     download_file_if_missing(VOICES_BASE_URL + json_rel_path, dest_json)
 
     return (dest_onnx, dest_json)
+
+
+def download_voices_for_languages(
+    languages: list[str],
+    target_dir: Path,
+) -> list[str]:
+    """
+    Batch download all available Piper voices matching specified languages.
+
+    Args:
+        languages (list[str]): Language code prefixes (e.g. ['en', 'fr']).
+        target_dir (Path): Destination directory.
+
+    Returns:
+        list[str]: Successfully downloaded voice keys.
+    """
+
+    catalog: dict[str, typing.Any] = fetch_voices_catalog()
+    norm_langs: set[str] = {lang.lower() for lang in languages}
+    matching_keys: list[str] = []
+
+    for key, info in catalog.items():
+        lang_dict: dict[str, typing.Any] = info.get("language", {})
+        code: str = str(lang_dict.get("code", ""))
+        family: str = str(lang_dict.get("family", code.split("_", maxsplit=1)[0]))
+
+        if family.lower() in norm_langs or code.lower() in norm_langs:
+            matching_keys.append(key)
+
+    downloaded: list[str] = []
+
+    for voice_key in matching_keys:
+        try:
+            download_piper_voice(voice_key, target_dir)
+            downloaded.append(voice_key)
+        except (urllib.error.URLError, TimeoutError, OSError, KeyError, ValueError) as err:
+            logger.warning("Failed downloading voice '%s': %s", voice_key, err)
+
+    return downloaded

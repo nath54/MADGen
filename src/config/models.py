@@ -2,10 +2,11 @@
 Data model definitions for acoustic scene configurations.
 
 Defines strongly-typed dataclasses representing rooms, smart assistant microphones,
-personas, speech personalities, and spoken utterances.
+personas, speech personalities, spoken utterances, and procedural dataset generation.
 """
 
 # Import Modules
+import enum
 from dataclasses import field, dataclass
 
 from src.common.types import MicrophoneType
@@ -16,6 +17,29 @@ from src.common.constants import (
     DEFAULT_SAMPLE_RATE,
     DEFAULT_MIC_SPACING,
 )
+
+
+class VocalStyle(str, enum.Enum):
+    """
+    Vocal expression style applied to an utterance segment.
+    """
+
+    NORMAL = "normal"
+    SHOUTING = "shouting"
+    LAUGHTER = "laughter"
+    INTERRUPTION = "interruption"
+
+
+class ConversationalStyle(str, enum.Enum):
+    """
+    Social scenario setting conversational turn-taking and emotional intensity.
+    """
+
+    PARTY = "party"
+    MEETING = "meeting"
+    ARGUMENT = "argument"
+    ASSISTANT = "assistant"
+    MIXED = "mixed"
 
 
 @dataclass
@@ -38,6 +62,8 @@ class UtteranceConfig:
 
     text: str = ""
     start_time_s: float = 0.0
+    language: str = "en"
+    vocal_style: VocalStyle = VocalStyle.NORMAL
 
 
 @dataclass
@@ -50,6 +76,8 @@ class PersonaConfig:
     name: str = "Persona"
     voice_model: str = "en_US-lessac-low.onnx"
     speaker_id: int | None = None
+    language: str = "en"
+    gender: str = "unspecified"
     position: tuple[float, float, float] = (2.0, 2.0, 1.5)
     size: float = 0.0
     personality: PersonalityConfig = field(default_factory=PersonalityConfig)
@@ -90,3 +118,19 @@ class SceneConfig:
     room: RoomConfig = field(default_factory=RoomConfig)
     assistant: MicrophoneConfig = field(default_factory=MicrophoneConfig)
     personas: list[PersonaConfig] = field(default_factory=list)
+
+
+@dataclass
+class DatasetSampleConfig:
+    """
+    Parameters governing procedural generation of a single dataset sample variation.
+    """
+
+    sample_id: str = "sample_0001"
+    duration_s: float = 30.0
+    overlap_rate: float = 0.3
+    shout_rate: float = 0.15
+    laugh_rate: float = 0.2
+    ambient_snr_db: float = 25.0
+    style: ConversationalStyle = ConversationalStyle.MIXED
+    languages: list[str] = field(default_factory=lambda: ["en"])

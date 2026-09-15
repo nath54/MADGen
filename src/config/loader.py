@@ -163,6 +163,10 @@ def parse_persona(raw_persona: dict[str, typing.Any]) -> PersonaConfig:
     raw_spk: typing.Any = raw_persona.get("speaker_id")
     speaker_id: int | None = int(raw_spk) if raw_spk is not None else None
 
+    # Extract language and vocal gender
+    language: str = str(raw_persona.get("language", "en"))
+    gender: str = str(raw_persona.get("gender", "unspecified"))
+
     # Extract spatial placement and size
     pos_list: list[float] = [float(v) for v in raw_persona.get("position", [2.0, 2.0, 1.5])]
     pos: tuple[float, float, float] = (pos_list[0], pos_list[1], pos_list[2])
@@ -186,6 +190,8 @@ def parse_persona(raw_persona: dict[str, typing.Any]) -> PersonaConfig:
         name=name,
         voice_model=voice_model,
         speaker_id=speaker_id,
+        language=language,
+        gender=gender,
         position=pos,
         size=size,
         personality=personality,
