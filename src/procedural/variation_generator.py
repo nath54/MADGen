@@ -31,17 +31,22 @@ LANGUAGE_VOICE_MAP: dict[str, list[str]] = {
 }
 
 
-def sample_room_dimensions() -> tuple[float, float, float]:
+def sample_room_dimensions(num_speakers: int = 4) -> tuple[float, float, float]:
     """
     Generate randomized 3D room dimensions (Lx, Ly, Lz) in meters.
+
+    Args:
+        num_speakers (int): Number of speakers to accommodate in the room.
 
     Returns:
         tuple[float, float, float]: Room width, length, and ceiling height.
     """
 
-    # Width and length between 4.5m and 9.5m, height between 2.5m and 3.4m
-    dim_x: float = round(random.uniform(4.5, 9.5), 2)
-    dim_y: float = round(random.uniform(4.5, 9.5), 2)
+    # Width and length scaled to accommodate speaker count
+    base_min: float = 5.0 if num_speakers <= 4 else 5.0 + (num_speakers - 4) * 0.5
+    base_max: float = 8.5 if num_speakers <= 4 else 8.5 + (num_speakers - 4) * 0.6
+    dim_x: float = round(random.uniform(base_min, base_max), 2)
+    dim_y: float = round(random.uniform(base_min, base_max), 2)
     dim_z: float = round(random.uniform(2.5, 3.4), 2)
     return (dim_x, dim_y, dim_z)
 
@@ -81,6 +86,7 @@ def sample_assistant_corner_position(
 def sample_persona_spatial_position(
     room_dims: tuple[float, float, float],
     assistant_pos: tuple[float, float, float],
+    existing_positions: list[tuple[float, float, float]] | None = None,
 ) -> tuple[float, float, float]:
     """
     Generate randomized 3D position for a speaker ensuring clearance from walls and mic.
@@ -88,34 +94,42 @@ def sample_persona_spatial_position(
     Args:
         room_dims (tuple[float, float, float]): Room dimensions (Lx, Ly, Lz).
         assistant_pos (tuple[float, float, float]): Assistant microphone position.
+        existing_positions (list[tuple[float, float, float]] | None): Other speaker positions.
 
     Returns:
         tuple[float, float, float]: Safe 3D spatial position coordinates.
     """
 
-    # Margin from walls
     margin: float = 0.8
     min_dist_to_mic: float = 1.0
+    min_dist_to_speakers: float = 0.70
 
-    # Iterate until safe distance is satisfied
-    for _ in range(50):
-        pos_x: float = round(random.uniform(margin, room_dims[0] - margin), 2)
-        pos_y: float = round(random.uniform(margin, room_dims[1] - margin), 2)
+    pos_x: float = room_dims[0] / 2.0
+    pos_y: float = room_dims[1] / 2.0
+    pos_z: float = 1.70
 
-        # 60% chance standing (1.65-1.80m), 40% chance seated (1.10-1.30m)
-        is_standing: bool = random.random() < 0.6
-        pos_z: float = round(
-            random.uniform(1.65, 1.80) if is_standing else random.uniform(1.10, 1.30),
+    for iteration in range(60):
+        pos_x = round(random.uniform(margin, room_dims[0] - margin), 2)
+        pos_y = round(random.uniform(margin, room_dims[1] - margin), 2)
+        pos_z = round(
+            random.uniform(1.65, 1.80) if random.random() < 0.6 else random.uniform(1.10, 1.30),
             2,
         )
 
-        # Compute Euclidean distance to assistant device
         dx: float = pos_x - assistant_pos[0]
         dy: float = pos_y - assistant_pos[1]
-        dist: float = (dx**2 + dy**2) ** 0.5
+        if (dx**2 + dy**2) ** 0.5 < min_dist_to_mic:
+            continue
 
-        if dist >= min_dist_to_mic:
-            return (pos_x, pos_y, pos_z)
+        # Check distance to already placed speakers
+        req_dist: float = min_dist_to_speakers if iteration < 40 else min_dist_to_speakers * 0.6
+        if existing_positions and any(
+            ((pos_x - ox) ** 2 + (pos_y - oy) ** 2) ** 0.5 < req_dist
+            for ox, oy, _ in existing_positions
+        ):
+            continue
+
+        return (pos_x, pos_y, pos_z)
 
     return (pos_x, pos_y, pos_z)
 
@@ -128,6 +142,7 @@ def build_random_persona(
     voice_model: str | None = None,
     speaker_id: int | None = None,
     gender: str = "unspecified",
+    existing_positions: list[tuple[float, float, float]] | None = None,
 ) -> PersonaConfig:
     """
     Generate a single randomized persona configuration.
@@ -140,6 +155,7 @@ def build_random_persona(
         voice_model (str | None): Optional specific ONNX voice model filename.
         speaker_id (int | None): Optional multi-speaker ID.
         gender (str): Vocal gender representation ('female' or 'male').
+        existing_positions (list[tuple[float, float, float]] | None): Placed speakers.
 
     Returns:
         PersonaConfig: Randomized persona.
@@ -155,8 +171,12 @@ def build_random_persona(
     else:
         selected_model = voice_model
 
-    # Position in room
-    pos: tuple[float, float, float] = sample_persona_spatial_position(room_dims, assistant_pos)
+    # Position in room with inter-speaker clearance
+    pos: tuple[float, float, float] = sample_persona_spatial_position(
+        room_dims=room_dims,
+        assistant_pos=assistant_pos,
+        existing_positions=existing_positions,
+    )
 
     # 35% chance point source (0.0), 65% chance extended physical size (0.15 - 0.40m)
     size: float = 0.0 if random.random() < 0.35 else round(random.uniform(0.15, 0.40), 2)
@@ -188,15 +208,18 @@ def build_random_persona(
     )
 
 
-def build_random_room() -> RoomConfig:
+def build_random_room(num_speakers: int = 4) -> RoomConfig:
     """
     Synthesize randomized ShoeBox room geometry and reverberation parameters.
+
+    Args:
+        num_speakers (int): Number of speakers to accommodate in room sizing.
 
     Returns:
         RoomConfig: Randomized room configuration.
     """
 
-    room_dims: tuple[float, float, float] = sample_room_dimensions()
+    room_dims: tuple[float, float, float] = sample_room_dimensions(num_speakers)
     absorption: float = round(random.uniform(0.10, 0.38), 2)
     max_order: int = random.choice([2, 3, 4])
 
@@ -250,8 +273,8 @@ def generate_random_scene(
         SceneConfig: Fully initialized randomized scene configuration.
     """
 
-    # Step 1: Synthesize room and assistant microphone placement
-    room: RoomConfig = build_random_room()
+    # Step 1: Synthesize room scaled to speaker count and assistant placement
+    room: RoomConfig = build_random_room(num_speakers)
     assistant: MicrophoneConfig = build_random_assistant(room.dimensions)
 
     # Step 2: Sample strictly distinct voice profiles with balanced gender diversity
@@ -264,6 +287,7 @@ def generate_random_scene(
         ensure_gender_diversity=True,
     )
 
+    existing_positions: list[tuple[float, float, float]] = []
     for idx, (v_prof, spk_id, gender) in enumerate(sampled_profiles, start=1):
         persona: PersonaConfig = build_random_persona(
             persona_index=idx,
@@ -273,7 +297,9 @@ def generate_random_scene(
             voice_model=f"{v_prof.key}.onnx",
             speaker_id=spk_id,
             gender=gender,
+            existing_positions=existing_positions,
         )
+        existing_positions.append(persona.position)
         personas.append(persona)
 
     return SceneConfig(room=room, assistant=assistant, personas=personas)

@@ -7,23 +7,23 @@ dialogue turns into temporally aligned continuous audio streams.
 """
 
 # Import Modules
-import typing
 from dataclasses import dataclass
-
 import logging
+import random
+import typing
 
 import numpy as np
 
-from src.common.types import AudioArray
-from src.config.models import VocalStyle
-from src.personas.persona import Persona
-from src.dataset.annotator import build_utterance_metadata
-from src.tts.synthesizer import BaseSynthesizer
-from src.common.audio_utils import place_audio_on_timeline
 from src.audio.distortions import (
     apply_laughter_modulation,
     apply_soft_clipping_overdrive,
 )
+from src.common.audio_utils import place_audio_on_timeline
+from src.common.types import AudioArray
+from src.config.models import UtteranceConfig, VocalStyle
+from src.dataset.annotator import build_utterance_metadata
+from src.personas.persona import Persona
+from src.tts.synthesizer import BaseSynthesizer
 
 logger: logging.Logger = logging.getLogger(__name__)
 
@@ -95,34 +95,31 @@ def apply_vocal_style_effects(
     return audio_clip
 
 
-def synthesize_single_utterance(
+def _synthesize_and_process_utterance(
     persona: Persona,
-    utt_index: int,
+    utt: UtteranceConfig,
     synthesizer: BaseSynthesizer,
     sample_rate: int,
-) -> tuple[AudioArray, float, dict[str, typing.Any]]:
+) -> tuple[AudioArray, float]:
     """
-    Synthesize and post-process a single utterance for a persona.
+    Synthesize speech audio for an utterance and apply emotional vocal effects.
 
     Args:
-        persona (Persona): Speaker.
-        utt_index (int): Index of utterance in persona config.
-        synthesizer (BaseSynthesizer): TTS engine.
-        sample_rate (int): Sample rate.
+        persona (Persona): Speaker persona emitting the utterance.
+        utt (UtteranceConfig): Utterance configuration.
+        synthesizer (BaseSynthesizer): Speech synthesis engine.
+        sample_rate (int): Target sampling frequency in Hertz.
 
     Returns:
-        tuple[AudioArray, float, dict[str, typing.Any]]: Processed audio, end time, and metadata.
+        tuple[AudioArray, float]: Processed audio clip and exact duration in seconds.
     """
 
-    utt = persona.config.utterances[utt_index]
-
     logger.info(
-        "Synthesizing for '%s' (%s, style=%s): '%s' at %.2fs",
+        "Synthesizing for '%s' (%s, style=%s): '%s'",
         persona.display_name,
         utt.language,
         utt.vocal_style.value,
         utt.text,
-        utt.start_time_s,
     )
 
     # Synthesize dry speech audio
@@ -142,6 +139,36 @@ def synthesize_single_utterance(
     )
 
     duration_s: float = len(processed_clip) / float(sample_rate)
+
+    return (processed_clip, duration_s)
+
+
+def synthesize_single_utterance(
+    persona: Persona,
+    utt_index: int,
+    synthesizer: BaseSynthesizer,
+    sample_rate: int,
+) -> tuple[AudioArray, float, dict[str, typing.Any]]:
+    """
+    Synthesize and post-process a single utterance for a persona.
+
+    Args:
+        persona (Persona): Speaker.
+        utt_index (int): Index of utterance in persona config.
+        synthesizer (BaseSynthesizer): TTS engine.
+        sample_rate (int): Sample rate.
+
+    Returns:
+        tuple[AudioArray, float, dict[str, typing.Any]]: Processed audio, end time, and metadata.
+    """
+
+    utt: UtteranceConfig = persona.config.utterances[utt_index]
+    processed_clip, duration_s = _synthesize_and_process_utterance(
+        persona=persona,
+        utt=utt,
+        synthesizer=synthesizer,
+        sample_rate=sample_rate,
+    )
     end_time_s: float = utt.start_time_s + duration_s
 
     # Build ground truth metadata record
@@ -154,13 +181,91 @@ def synthesize_single_utterance(
     return (processed_clip, end_time_s, metadata)
 
 
+def _calculate_next_turn_start(
+    prev_end_s: float,
+    is_interruption: bool,
+) -> float:
+    """
+    Calculate start timestamp for the next turn in a conversational group.
+
+    Args:
+        prev_end_s (float): End timestamp of preceding utterance in seconds.
+        is_interruption (bool): Whether the upcoming turn interrupts the previous speaker.
+
+    Returns:
+        float: Calculated start timestamp in seconds.
+    """
+
+    # Overlap previous speaker slightly if interrupting
+    if is_interruption:
+        return max(0.0, prev_end_s - random.uniform(0.2, 0.6))
+
+    # Conversational turn-taking pause between normal utterances
+    return prev_end_s + random.uniform(0.15, 0.60)
+
+
+def _sequence_group_utterances(
+    group_items: list[tuple[Persona, UtteranceConfig]],
+    synthesizer: BaseSynthesizer,
+    sample_rate: int,
+) -> tuple[list[tuple[Persona, AudioArray, float]], list[float], list[dict[str, typing.Any]]]:
+    """
+    Synthesize and dynamically position utterances for a single conversation group.
+
+    Args:
+        group_items (list[tuple[Persona, UtteranceConfig]]): Group personas and utterances.
+        synthesizer (BaseSynthesizer): Speech synthesizer engine.
+        sample_rate (int): Output sampling rate in Hertz.
+
+    Returns:
+        tuple[list[tuple[Persona, AudioArray, float]], list[float], list[dict[str, typing.Any]]]:
+            Clips, end timestamps, and ground-truth metadata records.
+    """
+
+    group_items.sort(key=lambda item: (item[1].turn_order, item[1].start_time_s))
+    has_order: bool = any(utt.turn_order > 0 for _, utt in group_items)
+
+    clips: list[tuple[Persona, AudioArray, float]] = []
+    end_times: list[float] = []
+    records: list[dict[str, typing.Any]] = []
+    prev_end_s: float = random.uniform(0.3, 0.8)
+
+    for turn_idx, (persona, utt) in enumerate(group_items):
+        is_cut: bool = utt.vocal_style == VocalStyle.INTERRUPTION
+
+        if turn_idx > 0 and has_order:
+            utt.start_time_s = round(_calculate_next_turn_start(prev_end_s, is_cut), 2)
+        elif turn_idx == 0 and has_order and utt.start_time_s <= 0.0:
+            utt.start_time_s = round(prev_end_s, 2)
+
+        clip, dur_s = _synthesize_and_process_utterance(
+            persona=persona,
+            utt=utt,
+            synthesizer=synthesizer,
+            sample_rate=sample_rate,
+        )
+
+        prev_end_s = utt.start_time_s + dur_s
+        clips.append((persona, clip, utt.start_time_s))
+        end_times.append(prev_end_s)
+        records.append(
+            build_utterance_metadata(
+                utterance=utt,
+                persona=persona.config,
+                duration_s=dur_s,
+            )
+        )
+
+    return (clips, end_times, records)
+
+
 def synthesize_persona_clips(
     personas: list[Persona],
     synthesizer: BaseSynthesizer,
     sample_rate: int,
 ) -> tuple[list[tuple[Persona, AudioArray, float]], list[float], list[dict[str, typing.Any]]]:
     """
-    Synthesize all speech clips across all personas.
+    Synthesize all speech clips across all personas with dynamic synthesis-driven timing.
 
     Args:
         personas (list[Persona]): Personas with utterances to synthesize.
@@ -169,25 +274,28 @@ def synthesize_persona_clips(
 
     Returns:
         tuple[list[tuple[Persona, AudioArray, float]], list[float], list[dict[str, typing.Any]]]:
-            Clips, end timestamps, and ground-truth metadata.
+            Clips, end timestamps, and ground-truth metadata records.
     """
 
-    # Collect rendered audio segments, termination timestamps, and metadata
+    # Group utterances by conversation clique identifier
+    group_map: dict[int, list[tuple[Persona, UtteranceConfig]]] = {}
+    for persona in personas:
+        for utt in persona.config.utterances:
+            group_map.setdefault(utt.group_id, []).append((persona, utt))
+
     speech_clips: list[tuple[Persona, AudioArray, float]] = []
     end_times: list[float] = []
     metadata_records: list[dict[str, typing.Any]] = []
 
-    for persona in personas:
-        for utt_idx in range(len(persona.config.utterances)):
-            clip, end_t, meta = synthesize_single_utterance(
-                persona=persona,
-                utt_index=utt_idx,
-                synthesizer=synthesizer,
-                sample_rate=sample_rate,
-            )
-            speech_clips.append((persona, clip, float(meta["start_time_s"])))
-            end_times.append(end_t)
-            metadata_records.append(meta)
+    for _, group_items in sorted(group_map.items()):
+        grp_clips, grp_ends, grp_records = _sequence_group_utterances(
+            group_items=group_items,
+            synthesizer=synthesizer,
+            sample_rate=sample_rate,
+        )
+        speech_clips.extend(grp_clips)
+        end_times.extend(grp_ends)
+        metadata_records.extend(grp_records)
 
     return (speech_clips, end_times, metadata_records)
 

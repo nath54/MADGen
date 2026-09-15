@@ -119,6 +119,65 @@ class TestPersonas(unittest.TestCase):
         self.assertGreater(tracks[0].total_samples, 0)
         self.assertEqual(tracks[0].total_samples, tracks[1].total_samples)
 
+    def test_persona_manager_dynamic_synthesis_timing(self) -> None:
+        """
+        Verify PersonaManager calculates turn timestamps dynamically from synthesized audio.
+        """
+
+        persona1: Persona = Persona(
+            config=PersonaConfig(
+                id="alice",
+                name="Alice",
+                position=(1.0, 1.0, 1.5),
+                personality=PersonalityConfig(length_scale=1.0),
+                utterances=[
+                    UtteranceConfig(
+                        text="First spoken turn",
+                        start_time_s=0.5,
+                        group_id=0,
+                        turn_order=0,
+                    ),
+                ],
+            )
+        )
+        persona2: Persona = Persona(
+            config=PersonaConfig(
+                id="bob",
+                name="Bob",
+                position=(3.0, 3.0, 1.5),
+                personality=PersonalityConfig(length_scale=1.0),
+                utterances=[
+                    UtteranceConfig(
+                        text="Second turn responding",
+                        start_time_s=0.0,
+                        group_id=0,
+                        turn_order=1,
+                    ),
+                ],
+            )
+        )
+
+        manager: PersonaManager = PersonaManager(personas=[persona1, persona2])
+        synthesizer: MockSynthesizer = MockSynthesizer()
+
+        tracks: list[PersonaTrack] = manager.synthesize_all_tracks(
+            synthesizer=synthesizer,
+            sample_rate=16000,
+            padding_s=1.0,
+        )
+
+        self.assertEqual(len(tracks), 2)
+        meta = manager.get_utterance_metadata()
+        self.assertEqual(len(meta), 2)
+
+        # Turn 0 started at 0.5s
+        self.assertEqual(meta[0]["start_time_s"], 0.5)
+
+        # Turn 1 start time was dynamically calculated based on turn 0 synthesis duration
+        turn0_dur: float = float(meta[0]["duration_s"])
+        self.assertGreater(turn0_dur, 0.0)
+        self.assertGreaterEqual(float(meta[1]["start_time_s"]), 0.5 + turn0_dur)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -6,17 +6,18 @@ personas, speech personalities, spoken utterances, and procedural dataset genera
 """
 
 # Import Modules
-import enum
 from dataclasses import field, dataclass
+import enum
+from pathlib import Path
 
-from src.common.types import MicrophoneType
 from src.common.constants import (
-    DEFAULT_MAX_ORDER,
     DEFAULT_ABSORPTION,
+    DEFAULT_MAX_ORDER,
     DEFAULT_MIC_RADIUS,
-    DEFAULT_SAMPLE_RATE,
     DEFAULT_MIC_SPACING,
+    DEFAULT_SAMPLE_RATE,
 )
+from src.common.types import MicrophoneType
 
 
 class VocalStyle(str, enum.Enum):
@@ -64,6 +65,8 @@ class UtteranceConfig:
     start_time_s: float = 0.0
     language: str = "en"
     vocal_style: VocalStyle = VocalStyle.NORMAL
+    group_id: int = 0
+    turn_order: int = 0
 
 
 @dataclass
@@ -127,10 +130,39 @@ class DatasetSampleConfig:
     """
 
     sample_id: str = "sample_0001"
-    duration_s: float = 30.0
+    duration_s: float | None = None
+    min_sentences: int = 100
     overlap_rate: float = 0.3
     shout_rate: float = 0.15
     laugh_rate: float = 0.2
     ambient_snr_db: float = 25.0
     style: ConversationalStyle = ConversationalStyle.MIXED
     languages: list[str] = field(default_factory=lambda: ["en"])
+    use_llm: bool = False
+    llm_url: str = "http://127.0.0.1:8080/v1"
+    ambiance_preset: str = "random"
+    num_constraint_words: int = 3
+    llm_temperature: float = 0.7
+
+
+@dataclass
+class BatchGenerationConfig:
+    """
+    Configuration parameters governing procedural dataset batch generation.
+    """
+
+    num_samples: int = 10
+    duration_range: tuple[float, float] | None = None
+    min_sentences: int = 100
+    speakers_range: tuple[int, int] = (4, 10)
+    languages: list[str] = field(default_factory=lambda: ["en"])
+    style: ConversationalStyle = ConversationalStyle.MIXED
+    voices_dir: Path = field(default_factory=lambda: Path("data/piper_voices"))
+    output_dir: Path = field(default_factory=lambda: Path("data/datasets/default"))
+    use_mock_tts: bool = False
+    export_isolated_stems: bool = True
+    use_llm: bool = False
+    llm_url: str = "http://127.0.0.1:8080/v1"
+    ambiance_preset: str = "random"
+    num_constraint_words: int = 3
+    llm_temperature: float = 0.7

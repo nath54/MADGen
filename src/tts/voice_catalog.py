@@ -274,12 +274,43 @@ def filter_voices_by_language(
     return filtered if filtered else list(catalog)
 
 
+def _pick_speaker_id_for_profile(
+    profile: VoiceProfile,
+    used_identities: set[tuple[str, int | None]],
+) -> int | None:
+    """
+    Select an unused speaker ID for multi-speaker profiles.
+
+    Args:
+        profile (VoiceProfile): Selected voice profile.
+        used_identities (set[tuple[str, int | None]]): Already assigned identities.
+
+    Returns:
+        int | None: Selected speaker ID or None for single-speaker models.
+    """
+
+    if profile.num_speakers <= 1:
+        return None
+
+    # Find unused speaker IDs for this multi-speaker model
+    available_ids: list[int] = [
+        sid
+        for sid in range(profile.num_speakers)
+        if (profile.key, sid) not in used_identities
+    ]
+    if available_ids:
+        return random.choice(available_ids)
+
+    return random.randint(0, profile.num_speakers - 1)
+
+
 def select_candidate_profile(
     target_gender: str,
     females: list[VoiceProfile],
     males: list[VoiceProfile],
     all_pool: list[VoiceProfile],
-    used_keys: set[str],
+    used_model_keys: set[str],
+    used_identities: set[tuple[str, int | None]],
     ensure_gender_diversity: bool,
 ) -> VoiceProfile:
     """
@@ -290,7 +321,8 @@ def select_candidate_profile(
         females (list[VoiceProfile]): Female profiles.
         males (list[VoiceProfile]): Male profiles.
         all_pool (list[VoiceProfile]): Complete profile pool.
-        used_keys (set[str]): Already selected voice keys.
+        used_model_keys (set[str]): Already selected voice model keys.
+        used_identities (set[tuple[str, int | None]]): Used (key, speaker_id) pairs.
         ensure_gender_diversity (bool): Whether to enforce gender diversity.
 
     Returns:
@@ -301,18 +333,82 @@ def select_candidate_profile(
 
     if ensure_gender_diversity:
         primary_list: list[VoiceProfile] = females if target_gender == "female" else males
-        candidates = [v for v in primary_list if v.key not in used_keys]
+        candidates: list[VoiceProfile] = [v for v in primary_list if v.key not in used_model_keys]
         if candidates:
             chosen_profile = random.choice(candidates)
+        else:
+            # Check multi-speaker models in primary list that have unused speaker IDs
+            multi_candidates = [
+                v
+                for v in primary_list
+                if v.num_speakers > 1
+                and any((v.key, sid) not in used_identities for sid in range(v.num_speakers))
+            ]
+            if multi_candidates:
+                chosen_profile = random.choice(multi_candidates)
 
     if chosen_profile is None:
-        remaining = [v for v in all_pool if v.key not in used_keys]
+        remaining: list[VoiceProfile] = [v for v in all_pool if v.key not in used_model_keys]
         if remaining:
             chosen_profile = random.choice(remaining)
         else:
-            chosen_profile = random.choice(all_pool)
+            multi_pool = [
+                v
+                for v in all_pool
+                if v.num_speakers > 1
+                and any((v.key, sid) not in used_identities for sid in range(v.num_speakers))
+            ]
+            if multi_pool:
+                chosen_profile = random.choice(multi_pool)
+            else:
+                chosen_profile = random.choice(all_pool)
 
     return chosen_profile
+
+
+def _sample_single_profile(
+    target_gender: str,
+    females: list[VoiceProfile],
+    males: list[VoiceProfile],
+    pool: list[VoiceProfile],
+    used_model_keys: set[str],
+    used_identities: set[tuple[str, int | None]],
+    ensure_gender_diversity: bool,
+) -> tuple[VoiceProfile, int | None, str]:
+    """
+    Sample a single voice profile and update used tracking sets.
+
+    Args:
+        target_gender (str): Target gender to alternate.
+        females (list[VoiceProfile]): Female candidates pool.
+        males (list[VoiceProfile]): Male candidates pool.
+        pool (list[VoiceProfile]): Full candidates pool.
+        used_model_keys (set[str]): Set of used model keys.
+        used_identities (set[tuple[str, int | None]]): Set of used identities.
+        ensure_gender_diversity (bool): Whether to enforce gender diversity.
+
+    Returns:
+        tuple[VoiceProfile, int | None, str]: Profile, speaker ID, and gender.
+    """
+
+    chosen_profile: VoiceProfile = select_candidate_profile(
+        target_gender=target_gender,
+        females=females,
+        males=males,
+        all_pool=pool,
+        used_model_keys=used_model_keys,
+        used_identities=used_identities,
+        ensure_gender_diversity=ensure_gender_diversity,
+    )
+
+    spk_id: int | None = _pick_speaker_id_for_profile(chosen_profile, used_identities)
+    used_model_keys.add(chosen_profile.key)
+    used_identities.add((chosen_profile.key, spk_id))
+
+    actual_gender: str = (
+        chosen_profile.gender if chosen_profile.gender != "unspecified" else target_gender
+    )
+    return (chosen_profile, spk_id, actual_gender)
 
 
 def sample_distinct_voice_profiles(
@@ -344,27 +440,20 @@ def sample_distinct_voice_profiles(
     males: list[VoiceProfile] = [v for v in pool if v.gender == "male"]
 
     selected: list[tuple[VoiceProfile, int | None, str]] = []
-    used_keys: set[str] = set()
+    used_model_keys: set[str] = set()
+    used_identities: set[tuple[str, int | None]] = set()
 
     for i in range(count):
         target_gender: str = "female" if i % 2 == 0 else "male"
-        chosen_profile: VoiceProfile = select_candidate_profile(
+        item = _sample_single_profile(
             target_gender=target_gender,
             females=females,
             males=males,
-            all_pool=pool,
-            used_keys=used_keys,
+            pool=pool,
+            used_model_keys=used_model_keys,
+            used_identities=used_identities,
             ensure_gender_diversity=ensure_gender_diversity,
         )
-        used_keys.add(chosen_profile.key)
-
-        spk_id: int | None = None
-        if chosen_profile.num_speakers > 1:
-            spk_id = random.randint(0, chosen_profile.num_speakers - 1)
-
-        actual_gender: str = (
-            chosen_profile.gender if chosen_profile.gender != "unspecified" else target_gender
-        )
-        selected.append((chosen_profile, spk_id, actual_gender))
+        selected.append(item)
 
     return selected

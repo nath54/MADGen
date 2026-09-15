@@ -142,6 +142,7 @@ def export_dataset_manifest(
     scene_config: SceneConfig,
     utterances_meta: list[dict[str, typing.Any]],
     audio_duration_s: float,
+    extra_metadata: dict[str, typing.Any] | None = None,
 ) -> None:
     """
     Write full dataset metadata manifest and standard annotations to disk.
@@ -152,6 +153,7 @@ def export_dataset_manifest(
         scene_config (SceneConfig): Simulated scene parameters.
         utterances_meta (list[dict[str, typing.Any]]): Utterances list.
         audio_duration_s (float): Total audio length in seconds.
+        extra_metadata (dict[str, typing.Any] | None): Optional additional manifest fields.
     """
 
     # Ensure output directory exists
@@ -195,6 +197,10 @@ def export_dataset_manifest(
         ],
         "utterances": utterances_meta,
     }
+
+    # Merge additional metadata if provided
+    if extra_metadata:
+        manifest.update(extra_metadata)
 
     # Save manifest JSON
     manifest_path: Path = sample_dir / "annotations.json"
