@@ -1,0 +1,61 @@
+{
+  "room": {
+    "dimensions": [6.0, 5.0, 2.8],
+    "absorption": 0.2,
+    "max_order": 3,
+    "sample_rate": 16000
+  },
+  "assistant": {
+    "position": [0.4, 0.4, 0.85],
+    "mic_type": "stereo",
+    "mic_spacing": 0.08,
+    "mic_radius": 0.035,
+    "num_microphones": 2
+  },
+  "personas": [
+    {
+      "id": "alice",
+      "name": "Alice",
+      "voice_model": "en_US-lessac-low.onnx",
+      "speaker_id": null,
+      "position": [2.5, 3.5, 1.65],
+      "size": 0.25,
+      "personality": {
+        "length_scale": 0.95,
+        "noise_scale": 0.667,
+        "noise_w_scale": 0.8,
+        "volume": 1.0
+      },
+      "utterances": [
+        {
+          "text": "Echo, what is the weather like outside today?",
+          "start_time_s": 0.5
+        },
+        {
+          "text": "Thank you, that sounds wonderful.",
+          "start_time_s": 4.0
+        }
+      ]
+    },
+    {
+      "id": "bob",
+      "name": "Bob",
+      "voice_model": "en_US-lessac-low.onnx",
+      "speaker_id": null,
+      "position": [4.5, 2.0, 1.15],
+      "size": 0.3,
+      "personality": {
+        "length_scale": 1.15,
+        "noise_scale": 0.5,
+        "noise_w_scale": 0.9,
+        "volume": 0.85
+      },
+      "utterances": [
+        {
+          "text": "Can you also remind me to water the plants at six?",
+          "start_time_s": 6.5
+        }
+      ]
+    }
+  ]
+}

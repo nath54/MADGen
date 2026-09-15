@@ -1,0 +1,7 @@
+*.pyc
+*.wav
+data
+.venv
+.mypy_cache
+.pylintrc
+mypy.ini
