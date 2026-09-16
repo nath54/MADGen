@@ -1,6 +1,6 @@
-# Smart Assistant Room Acoustics & Procedural Multi-Speaker Dataset Generator
+# MADGen: Multi-Speaker Acoustic Dataset Generator
 
-A high-fidelity spatial audio simulation and procedural dataset generation framework for training and evaluating **Speech-to-Text (ASR)**, **Speaker Diarization**, and **Speech Separation / Source Isolation** models (e.g. SepFormer, Conv-TasNet, Whisper, PyAnnote).
+**MADGen** (**M**ulti-speaker **A**coustic **D**ataset **Gen**erator) is a high-fidelity spatial audio simulation and procedural dataset generation framework for training and evaluating **Speech-to-Text (ASR)**, **Speaker Diarization**, and **Speech Separation / Source Isolation** models (e.g. SepFormer, Conv-TasNet, Whisper, PyAnnote).
 
 Simulates smart assistant listening devices (e.g. Amazon Echo, Apple HomePod, Google Nest) placed in room corners capturing complex multi-person conversational scenes with neural [Piper-TTS](https://github.com/rhasspy/piper) voices, dynamic **LLM-generated dialogues** (`llama.cpp`), **100,000-word dictionary constraints**, **12 rich ambiance presets**, real-life vocal distortions, multilingual dialogues (English, French, Spanish, German), and procedural sample variations.
 
