@@ -1,0 +1,21 @@
+[MAIN]
+py-version = 3.12
+jobs = 0
+
+[MESSAGES CONTROL]
+disable =
+    too-few-public-methods,
+    too-many-instance-attributes,
+    too-many-arguments,
+    too-many-positional-arguments,
+    duplicate-code
+
+[FORMAT]
+max-line-length = 100
+
+[BASIC]
+good-names = i,j,k,fs,x,y,z,dx,dy,dz,f,t,N,Point3D,Vector3D
+
+[DESIGN]
+max-args = 8
+max-attributes = 10
