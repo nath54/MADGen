@@ -18,12 +18,18 @@ Includes a comprehensive **acoustic and spectrogram analysis engine** (`analyze_
    - [`download_dictionary.py` (Constraint Dictionary Management)](#4-download_dictionarypy---constraint-dictionary-management)
    - [`main.py` (Single-Scene Simulation)](#5-mainpy---single-scene-simulation)
 4. [Dataset Output Structure](#dataset-output-structure)
-5. [12 Conversational Ambiance Presets](#12-conversational-ambiance-presets)
-6. [Multilingual Support & Voice Catalog](#multilingual-support--voice-catalog)
-7. [Acoustic Recovery & Destruction Analysis](#acoustic-recovery--destruction-analysis)
-8. [Common Recipes & Cookbook](#common-recipes--cookbook)
-9. [Project Architecture](#project-architecture)
-10. [Verification & Code Quality](#verification--code-quality)
+5. [Generated Dataset Samples (sample_001 – sample_010)](#generated-dataset-samples-sample_001--sample_010)
+6. [Multi-Speaker Speech Processing Paradigms & Benchmark Suite](#multi-speaker-speech-processing-paradigms--benchmark-suite)
+   - [The 4 Speech Processing Paradigms](#the-4-speech-processing-paradigms)
+   - [Benchmark Results Across All 10 Samples](#benchmark-results-across-all-10-samples)
+   - [Master Paradigm Comparison (sample_002)](#master-paradigm-comparison-sample_002)
+   - [Running Benchmarks via CLI](#running-benchmarks-via-cli)
+7. [12 Conversational Ambiance Presets](#12-conversational-ambiance-presets)
+8. [Multilingual Support & Voice Catalog](#multilingual-support--voice-catalog)
+9. [Acoustic Recovery & Destruction Analysis](#acoustic-recovery--destruction-analysis)
+10. [Common Recipes & Cookbook](#common-recipes--cookbook)
+11. [Project Architecture](#project-architecture)
+12. [Verification & Code Quality](#verification--code-quality)
 
 ---
 
@@ -245,6 +251,144 @@ data/output/
 │       └── ...
 └── sample_002/
     └── ...
+```
+
+---
+
+## Generated Dataset Samples (sample_001 – sample_010)
+
+The repository includes **10 pre-rendered, high-fidelity conversational scenes** generated using MADGen, featuring diverse room acoustics, multilingual dialogues, balanced gender distributions, and virtual smart assistant microphone arrays:
+
+| Sample ID | Duration | Channels & Geometry | Speakers | Language | Scenario / Ambiance | Included Ground-Truth Files |
+| :--- | :---: | :---: | :---: | :---: | :---: | :--- |
+| [`sample_001`](data/output/sample_001/) | 147.4s | 1-ch (Mono) | 5 | English | Gaming Session | `mixed_scene.wav`, `transcripts.jsonl`, `diarization.rttm`, `isolated_speakers/`, `annotations.json` |
+| [`sample_002`](data/output/sample_002/) | 81.6s | 4-ch (Circular Array) | 2 | French | Late Night Philosophy | `mixed_scene.wav`, `transcripts.jsonl`, `diarization.rttm`, `isolated_speakers/`, `annotations.json` |
+| [`sample_003`](data/output/sample_003/) | 448.7s | 4-ch (Circular Array) | 4 | French | Academic Defense | `mixed_scene.wav`, `transcripts.jsonl`, `diarization.rttm`, `isolated_speakers/`, `annotations.json` |
+| [`sample_004`](data/output/sample_004/) | 201.4s | 4-ch (Circular Array) | 3 | French | Kitchen Cooking | `mixed_scene.wav`, `transcripts.jsonl`, `diarization.rttm`, `isolated_speakers/`, `annotations.json` |
+| [`sample_005`](data/output/sample_005/) | 404.6s | 4-ch (Circular Array) | 6 | French | Heated Argument | `mixed_scene.wav`, `transcripts.jsonl`, `diarization.rttm`, `isolated_speakers/`, `annotations.json` |
+| [`sample_006`](data/output/sample_006/) | 233.5s | 4-ch (Circular Array) | 6 | French | Party Celebration | `mixed_scene.wav`, `transcripts.jsonl`, `diarization.rttm`, `isolated_speakers/`, `annotations.json` |
+| [`sample_007`](data/output/sample_007/) | 174.7s | 2-ch (Stereo Array) | 6 | French | Late Night Philosophy | `mixed_scene.wav`, `transcripts.jsonl`, `diarization.rttm`, `isolated_speakers/`, `annotations.json` |
+| [`sample_008`](data/output/sample_008/) | 187.3s | 2-ch (Stereo Array) | 3 | English | Smart Assistant Household | `mixed_scene.wav`, `transcripts.jsonl`, `diarization.rttm`, `isolated_speakers/`, `annotations.json` |
+| [`sample_009`](data/output/sample_009/) | 145.3s | 1-ch (Mono) | 3 | English | Family Dinner | `mixed_scene.wav`, `transcripts.jsonl`, `diarization.rttm`, `isolated_speakers/`, `annotations.json` |
+| [`sample_010`](data/output/sample_010/) | 82.7s | 4-ch (Circular Array) | 2 | English | Casual Chit-Chat | `mixed_scene.wav`, `transcripts.jsonl`, `diarization.rttm`, `isolated_speakers/`, `annotations.json` |
+
+---
+
+## Multi-Speaker Speech Processing Paradigms & Benchmark Suite
+
+MADGen incorporates a modular evaluation suite across the **four dominant paradigms** in contemporary multi-speaker speech processing (`paradigms/`):
+
+### The 4 Speech Processing Paradigms
+
+```
+                      ┌────────────────────────────────────────────────────────┐
+                      │                   Input Mixed Audio                    │
+                      └──────────────────────────┬─────────────────────────────┘
+                                                 │
+         ┌───────────────────┬───────────────────┼───────────────────┐
+         ▼                   ▼                   ▼                   ▼
+┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐
+│   Paradigm 1    │ │   Paradigm 2    │ │   Paradigm 3    │ │   Paradigm 4    │
+│  Diarize-Then-  │ │  Separate-Then- │ │     Spatial     │ │    Real-Time    │
+│   Transcribe    │ │   Transcribe    │ │  Multi-Channel  │ │    Streaming    │
+└────────┬────────┘ └────────┬────────┘ └────────┬────────┘ └────────┬────────┘
+         ▼                   ▼                   ▼                   ▼
+┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐
+│   Silero VAD    │ │Time-Freq Masking│ │ Spatial Array   │ │ 200ms Ingestion │
+│        +        │ │ (Oracle IRM /   │ │  Covariance +   │ │        +        │
+│    Spectral     │ │   SepFormer)    │ │ MVDR Beamformer │ │  Streaming VAD  │
+│   Clustering    │ │                 │ │                 │ │        +        │
+│        +        │ │        +        │ │        +        │ │ Online Tracker  │
+│ Segment Whisper │ │ Stream Whispers │ │  Beam Whispers  │ │        +        │
+│       ASR       │ │      ASR        │ │       ASR       │ │  Streaming ASR  │
+└─────────────────┘ └─────────────────┘ └─────────────────┘ └─────────────────┘
+```
+
+1. **Paradigm 1: Diarize-Then-Transcribe (Temporal Segmentation)** (`paradigms/1_diarize_then_transcribe/`):
+   - **Concept**: First locates speech intervals with neural VAD ([Silero VAD v5](https://github.com/snakers4/silero-vad)), extracts spectral representations to cluster speakers via agglomerative hierarchical clustering, then feeds isolated speaker segments into Faster-Whisper.
+   - **Strengths & Limitations**: Highly effective for turn-taking dialogues with minimal speaker collision; cannot separate simultaneous overlapping voices within the same time frame.
+
+2. **Paradigm 2: Separate-Then-Transcribe (Acoustic Source Separation)** (`paradigms/2_separate_then_transcribe/`):
+   - **Concept**: Decomposes the acoustic mixture into isolated single-speaker audio streams using time-frequency masking ([Oracle Ideal Ratio Masking](file:///home/nathan/github/audio%20tests/paradigms/2_separate_then_transcribe/models/oracle_irm_whisper) baseline and [SpeechBrain SepFormer](file:///home/nathan/github/audio%20tests/paradigms/2_separate_then_transcribe/models/sepformer_whisper)), then transcribes each separated stream independently.
+   - **Strengths & Limitations**: Overcomes heavy speaker overlap (heated arguments, simultaneous talkers) where single-stream temporal segmenters fail.
+
+3. **Paradigm 3: Spatial Multi-Channel Array Processing** (`paradigms/3_spatial_multichannel/`):
+   - **Concept**: Leverages phase delays across circular microphone arrays (e.g. 4-channel circular arrays with 5cm radius) to compute spatial covariance matrices and steer **Minimum Variance Distortionless Response (MVDR) beamformers** toward target speakers while nulling ambient room noise. Requires **0MB neural weights download** (pure DSP array mathematics).
+   - **Strengths & Limitations**: Preserves spatial room geometry and isolates acoustic energy directionally around 360 degrees.
+
+4. **Paradigm 4: Real-Time Streaming Smart Assistant** (`paradigms/4_realtime_streaming/`):
+   - **Concept**: Emulates an always-on edge device / smart speaker ingesting sequential real-time buffers (100ms–200ms chunks). Executes sub-frame ONNX VAD, maintains online speaker tracking states, and dispatches turns to Whisper upon hangover silence detection.
+   - **Strengths & Limitations**: Minimal latency with an ultra-fast **Real-Time Factor ($\text{RTF} < 0.25\text{x}$)** on standard CPU, executing 4x faster than real-time.
+
+---
+
+### Benchmark Results Across All 10 Samples
+
+Empirical benchmark evaluation comparing **Paradigm 1 (Diarize-Then-Transcribe)** and **Paradigm 4 (Real-Time Streaming Assistant)** across all 10 dataset scenes using `tiny` Whisper:
+
+| Sample ID | Duration | Channels | Spks | Lang | Paradigm 1 DER | Paradigm 1 WER | Paradigm 1 RTF | Paradigm 4 (Streaming) DER | Paradigm 4 (Streaming) WER | Paradigm 4 (Streaming) RTF |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| [`sample_001`](data/output/sample_001/) | 147.4s | 1-ch | 5 | `en` | 71.1% | 65.2% | 0.147x | **69.4%** | **62.8%** | **0.081x** *(12x real-time!)* |
+| [`sample_002`](data/output/sample_002/) | 81.6s | 4-ch | 2 | `fr` | **27.6%** | 44.2% | 0.161x | 28.3% | **40.9%** | **0.092x** *(10x real-time!)* |
+| [`sample_003`](data/output/sample_003/) | 448.7s | 4-ch | 4 | `fr` | 74.0% | 65.7% | 0.209x | **72.4%** | **63.2%** | **0.146x** *(6.8x real-time!)* |
+| [`sample_004`](data/output/sample_004/) | 201.4s | 4-ch | 3 | `fr` | **48.7%** | **40.2%** | 0.131x | 64.6% | 43.6% | **0.120x** *(8.3x real-time!)* |
+| [`sample_005`](data/output/sample_005/) | 404.6s | 4-ch | 6 | `fr` | 76.5% | **80.5%** | 0.216x | **69.6%** | 82.0% | **0.147x** *(6.8x real-time!)* |
+| [`sample_006`](data/output/sample_006/) | 233.5s | 4-ch | 6 | `fr` | **61.8%** | **43.0%** | 0.147x | 78.7% | 43.8% | **0.094x** *(10x real-time!)* |
+| [`sample_007`](data/output/sample_007/) | 174.7s | 2-ch | 6 | `fr` | **64.3%** | **62.9%** | 0.235x | 80.3% | 70.8% | **0.184x** *(5.4x real-time!)* |
+| [`sample_008`](data/output/sample_008/) | 187.3s | 2-ch | 3 | `en` | **54.1%** | 37.5% | 0.169x | 59.2% | **35.3%** | **0.100x** *(10x real-time!)* |
+| [`sample_009`](data/output/sample_009/) | 145.3s | 1-ch | 3 | `en` | **48.8%** | 26.8% | 0.158x | 56.0% | **25.4%** | **0.106x** *(9.4x real-time!)* |
+| [`sample_010`](data/output/sample_010/) | 82.7s | 4-ch | 2 | `en` | 40.3% | **7.2%** | **0.096x** | **33.4%** | 14.9% | 0.126x *(8x real-time!)* |
+
+> [!TIP]
+> **Source Separation Upper Bound**: On `sample_002`, **Paradigm 2 (Oracle-IRM Separation)** achieved a Diarization Error Rate of **$\text{DER} = 8.9\%$**, demonstrating the power of time-frequency source separation in cleanly untangling overlapping conversational speech.
+
+---
+
+### Master Paradigm Comparison (`sample_002`)
+
+Unified end-to-end benchmark comparison across all 4 pipelines on `sample_002` (81.6s, 4-channel circular microphone array audio):
+
+```
+================================================================================================================
+ MADGen PARADIGMS BENCHMARK REPORT: sample_002 (Duration: 81.6s, Channels: 4)
+================================================================================================================
+Paradigm / Model                 |  DER (%) |  WER (%) |  VAD (ms) | Proc/Sep (ms) |  ASR (ms) |  Total (s) |     RTF
+----------------------------------------------------------------------------------------------------------------
+Silero-VAD + Clustering + Faster |    27.6% |    44.2% |     438.4 |          43.5 |   38633.3 |     39.12s |  0.479x
+Oracle-IRM Separation + Faster-W |     8.9% |    45.2% |     952.1 |         638.3 |   31998.0 |     33.59s |  0.412x
+Spatial MVDR Beamformer + Faster |   279.5% |   353.8% |    1932.5 |        6234.5 |  140824.0 |    148.99s |  1.826x
+Real-Time Streaming Assistant (C |    28.3% |    41.3% |     537.8 |           0.3 |   18925.9 |     19.48s |  0.239x
+================================================================================================================
+```
+
+---
+
+### Running Benchmarks via CLI
+
+#### 1. Master Benchmark CLI (`benchmark_paradigms.py`)
+Run all or selected paradigms across any generated sample:
+```bash
+# Run all 4 paradigms on sample_002
+./.venv/bin/python benchmark_paradigms.py --sample-id sample_002 --paradigms 1 2 3 4
+
+# Run real-time streaming smart assistant benchmark on sample_010 with 200ms buffers
+./.venv/bin/python benchmark_paradigms.py --sample-id sample_010 --paradigms 4 --streaming --chunk-ms 200
+```
+
+#### 2. Individual Paradigm Runners
+Execute individual pipelines directly:
+```bash
+# Paradigm 1: Diarize-Then-Transcribe
+./.venv/bin/python paradigms/1_diarize_then_transcribe/run.py --sample-dir data/output/sample_002
+
+# Paradigm 2: Separate-Then-Transcribe (Oracle IRM)
+./.venv/bin/python paradigms/2_separate_then_transcribe/run.py --sample-dir data/output/sample_002 --model oracle_irm
+
+# Paradigm 3: Spatial Multi-Channel MVDR Beamformer
+./.venv/bin/python paradigms/3_spatial_multichannel/run.py --sample-dir data/output/sample_002 --beams 4
+
+# Paradigm 4: Real-Time Streaming Smart Assistant
+./.venv/bin/python paradigms/4_realtime_streaming/run.py --sample-dir data/output/sample_002 --chunk-ms 200
 ```
 
 ---

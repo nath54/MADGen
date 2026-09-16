@@ -1,0 +1,693 @@
+{
+  "session_id": "sample_004",
+  "duration_s": 201.39,
+  "sample_rate": 16000,
+  "num_speakers": 3,
+  "room": {
+    "dimensions": [
+      7.85,
+      8.35,
+      2.54
+    ],
+    "absorption": 0.99,
+    "max_order": 0
+  },
+  "assistant": {
+    "position": [
+      0.39,
+      7.819999999999999,
+      1.02
+    ],
+    "mic_type": "circular"
+  },
+  "speakers": [
+    {
+      "id": "speaker_1",
+      "name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "position": [
+        2.01,
+        6.18,
+        1.19
+      ],
+      "size": 0.24,
+      "voice_model": "fr_FR-siwis-medium.onnx",
+      "speaker_id": null
+    },
+    {
+      "id": "speaker_2",
+      "name": "Speaker 2",
+      "gender": "male",
+      "language": "fr",
+      "position": [
+        6.87,
+        2.29,
+        1.67
+      ],
+      "size": 0.0,
+      "voice_model": "fr_FR-gilles-low.onnx",
+      "speaker_id": null
+    },
+    {
+      "id": "speaker_3",
+      "name": "Speaker 3",
+      "gender": "female",
+      "language": "fr",
+      "position": [
+        4.87,
+        4.77,
+        1.17
+      ],
+      "size": 0.37,
+      "voice_model": "fr_FR-siwis-low.onnx",
+      "speaker_id": null
+    }
+  ],
+  "utterances": [
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 0.88,
+      "end_time_s": 7.23,
+      "duration_s": 6.35,
+      "text": "Votre thèse sur la dynamique des flux de données dans les systèmes distribués est intrigante, mais j'ai un doute sur votre méthodologie.",
+      "speaker_position": [
+        2.01,
+        6.18,
+        1.19
+      ],
+      "speaker_size": 0.24
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 7.54,
+      "end_time_s": 12.12,
+      "duration_s": 4.58,
+      "text": "Merci, Madame. Pourriez-vous préciser votre objection ?",
+      "speaker_position": [
+        6.87,
+        2.29,
+        1.67
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 12.29,
+      "end_time_s": 19.03,
+      "duration_s": 6.74,
+      "text": "J'ai remarqué que vous avez utilisé des modèles prédictifs basés sur des séries temporelles, mais avez-vous tenu compte des anomalies ?",
+      "speaker_position": [
+        4.87,
+        4.77,
+        1.17
+      ],
+      "speaker_size": 0.37
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 19.46,
+      "end_time_s": 25.27,
+      "duration_s": 5.8,
+      "text": "Exactement. Vos résultats semblent trop lisses, comme si vous aviez filtré les « fastballs » de vos données brutes.",
+      "speaker_position": [
+        2.01,
+        6.18,
+        1.19
+      ],
+      "speaker_size": 0.24
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 25.73,
+      "end_time_s": 31.44,
+      "duration_s": 5.71,
+      "text": "C'est vrai. Nous avons exclu les valeurs aberrantes pour mieux visualiser la tendance centrale.",
+      "speaker_position": [
+        6.87,
+        2.29,
+        1.67
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 32.03,
+      "end_time_s": 37.55,
+      "duration_s": 5.52,
+      "text": "Mais cela compromet-il la robustesse de votre modèle ? Un audit approfondi révélerait-il ces écarts ?",
+      "speaker_position": [
+        4.87,
+        4.77,
+        1.17
+      ],
+      "speaker_size": 0.37
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 38.09,
+      "end_time_s": 43.06,
+      "duration_s": 4.97,
+      "text": "Je pense que oui. Vos graphiques montrent une convergence parfaite, ce qui est rare dans la pratique.",
+      "speaker_position": [
+        2.01,
+        6.18,
+        1.19
+      ],
+      "speaker_size": 0.24
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 43.5,
+      "end_time_s": 48.91,
+      "duration_s": 5.41,
+      "text": "Nous avons utilisé un algorithme de régularisation pour lisser les pics.",
+      "speaker_position": [
+        6.87,
+        2.29,
+        1.67
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 49.19,
+      "end_time_s": 53.43,
+      "duration_s": 4.24,
+      "text": "Et si un de ces pics était le signal le plus important ? Avez-vous vérifié cela ?",
+      "speaker_position": [
+        4.87,
+        4.77,
+        1.17
+      ],
+      "speaker_size": 0.37
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 53.7,
+      "end_time_s": 58.31,
+      "duration_s": 4.61,
+      "text": "C'est une excellente question. Je suppose que vous avez réalisé un audit de sensibilité ?",
+      "speaker_position": [
+        2.01,
+        6.18,
+        1.19
+      ],
+      "speaker_size": 0.24
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 58.67,
+      "end_time_s": 63.89,
+      "duration_s": 5.22,
+      "text": "Oui, mais les résultats sont présentés en annexe, peut-être trop succinctement.",
+      "speaker_position": [
+        6.87,
+        2.29,
+        1.67
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 64.04,
+      "end_time_s": 69.18,
+      "duration_s": 5.14,
+      "text": "L'annexe B manque de détails. Sans cela, comment peut-on valider votre conclusion principale ?",
+      "speaker_position": [
+        4.87,
+        4.77,
+        1.17
+      ],
+      "speaker_size": 0.37
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 69.76,
+      "end_time_s": 73.85,
+      "duration_s": 4.09,
+      "text": "Je dirais que votre argumentation tient la route, mais les preuves sont fragiles.",
+      "speaker_position": [
+        2.01,
+        6.18,
+        1.19
+      ],
+      "speaker_size": 0.24
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 74.08,
+      "end_time_s": 81.7,
+      "duration_s": 7.62,
+      "text": "J'accepte ce critique. Nous pourrions ajouter une section dédiée à ces anomalies dans la version finale.",
+      "speaker_position": [
+        6.87,
+        2.29,
+        1.67
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 81.85,
+      "end_time_s": 84.47,
+      "duration_s": 2.62,
+      "text": "Cela renforcerait considérablement votre thèse.",
+      "speaker_position": [
+        4.87,
+        4.77,
+        1.17
+      ],
+      "speaker_size": 0.37
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 84.89,
+      "end_time_s": 89.77,
+      "duration_s": 4.88,
+      "text": "D'accord. Je vous laisse la possibilité de réviser cette partie avant la soutenance finale.",
+      "speaker_position": [
+        2.01,
+        6.18,
+        1.19
+      ],
+      "speaker_size": 0.24
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 90.13,
+      "end_time_s": 93.38,
+      "duration_s": 3.25,
+      "text": "Merci beaucoup. Je m'en charge immédiatement.",
+      "speaker_position": [
+        6.87,
+        2.29,
+        1.67
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "interruption",
+      "start_time_s": 92.81,
+      "end_time_s": 99.87,
+      "duration_s": 7.06,
+      "text": "Avant de clôturer, examinons les données du projet pilote. Le taux de conversion des fastballs a-t-il été corrigé pour les facteurs environnementaux ?",
+      "speaker_position": [
+        2.01,
+        6.18,
+        1.19
+      ],
+      "speaker_size": 0.24
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 100.31,
+      "end_time_s": 106.2,
+      "duration_s": 5.89,
+      "text": "Oui, nous avons appliqué un modèle de régression linéaire multiple pour isoler l'impact de la vitesse du vent.",
+      "speaker_position": [
+        4.87,
+        4.77,
+        1.17
+      ],
+      "speaker_size": 0.37
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 106.43,
+      "end_time_s": 114.8,
+      "duration_s": 8.37,
+      "text": "Les résultats indiquent une corrélation faible mais significative, p inférieur à 0,05.",
+      "speaker_position": [
+        6.87,
+        2.29,
+        1.67
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 115.11,
+      "end_time_s": 119.85,
+      "duration_s": 4.74,
+      "text": "Intéressant. Avez-vous vérifié la robustesse de ces résultats à travers un audit des données brutes ?",
+      "speaker_position": [
+        2.01,
+        6.18,
+        1.19
+      ],
+      "speaker_size": 0.24
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 120.04,
+      "end_time_s": 126.18,
+      "duration_s": 6.14,
+      "text": "Absolument. L'audit a révélé trois anomalies mineures dans les logs de capture, que nous avons interpolées.",
+      "speaker_position": [
+        4.87,
+        4.77,
+        1.17
+      ],
+      "speaker_size": 0.37
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 126.7,
+      "end_time_s": 133.07,
+      "duration_s": 6.37,
+      "text": "La diaphote entre les deux capteurs a également été calibrée pour éviter les biais de luminosité.",
+      "speaker_position": [
+        6.87,
+        2.29,
+        1.67
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 133.4,
+      "end_time_s": 138.87,
+      "duration_s": 5.47,
+      "text": "Une diaphote bien choisie. Cela suggère une rigueur méthodologique dans le traitement des signaux lumineux.",
+      "speaker_position": [
+        2.01,
+        6.18,
+        1.19
+      ],
+      "speaker_size": 0.24
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 139.35,
+      "end_time_s": 144.6,
+      "duration_s": 5.25,
+      "text": "Nous avons comparé deux types de lentilles, et la diaphote standard a offert un meilleur contraste global.",
+      "speaker_position": [
+        4.87,
+        4.77,
+        1.17
+      ],
+      "speaker_size": 0.37
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 145.12,
+      "end_time_s": 150.75,
+      "duration_s": 5.63,
+      "text": "C'est pourquoi nous avons exclu les mesures prises lors des pics de luminosité ambiante.",
+      "speaker_position": [
+        6.87,
+        2.29,
+        1.67
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 151.22,
+      "end_time_s": 156.97,
+      "duration_s": 5.75,
+      "text": "Bien. Et concernant les fastballs à haute rotation, votre modèle prédictif tient-il compte de la Magnus force ?",
+      "speaker_position": [
+        2.01,
+        6.18,
+        1.19
+      ],
+      "speaker_size": 0.24
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 157.22,
+      "end_time_s": 162.63,
+      "duration_s": 5.41,
+      "text": "Oui, le terme de force de Magnus est intégré dans l'équation de trajectoire du modèle de simulation.",
+      "speaker_position": [
+        4.87,
+        4.77,
+        1.17
+      ],
+      "speaker_size": 0.37
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 162.8,
+      "end_time_s": 168.58,
+      "duration_s": 5.78,
+      "text": "Les écarts entre la simulation et la réalité terrain restent sous les deux pourcents.",
+      "speaker_position": [
+        6.87,
+        2.29,
+        1.67
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 168.75,
+      "end_time_s": 172.36,
+      "duration_s": 3.61,
+      "text": "C'est impressionnant. Je n'ai plus de critiques majeures sur la méthodologie.",
+      "speaker_position": [
+        2.01,
+        6.18,
+        1.19
+      ],
+      "speaker_size": 0.24
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 172.73,
+      "end_time_s": 176.23,
+      "duration_s": 3.5,
+      "text": "Merci. Nous avons passé des semaines à affiner ces paramètres.",
+      "speaker_position": [
+        4.87,
+        4.77,
+        1.17
+      ],
+      "speaker_size": 0.37
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 176.63,
+      "end_time_s": 183.16,
+      "duration_s": 6.53,
+      "text": "Le prochain audit final aura lieu mardi prochain, si vous le permettez.",
+      "speaker_position": [
+        6.87,
+        2.29,
+        1.67
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 183.38,
+      "end_time_s": 187.66,
+      "duration_s": 4.28,
+      "text": "Vendredi conviendra mieux pour mon agenda. Préparez un rapport synthétique.",
+      "speaker_position": [
+        2.01,
+        6.18,
+        1.19
+      ],
+      "speaker_size": 0.24
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 188.08,
+      "end_time_s": 191.1,
+      "duration_s": 3.02,
+      "text": "Entendu. Je vous envoie le dossier complet d'ici ce soir.",
+      "speaker_position": [
+        4.87,
+        4.77,
+        1.17
+      ],
+      "speaker_size": 0.37
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 191.58,
+      "end_time_s": 194.65,
+      "duration_s": 3.07,
+      "text": "Bonne continuation dans vos corrections.",
+      "speaker_position": [
+        6.87,
+        2.29,
+        1.67
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 195.1,
+      "end_time_s": 199.86,
+      "duration_s": 4.76,
+      "text": "Merci à tous. La soutenance est validée sous réserve de ces dernières vérifications.",
+      "speaker_position": [
+        2.01,
+        6.18,
+        1.19
+      ],
+      "speaker_size": 0.24
+    }
+  ],
+  "ambiance": {
+    "name": "academic_defense",
+    "display_name": "Academic Defense",
+    "description": "Rigorous intellectual critique and thesis defense with formal vocabulary."
+  },
+  "thematic_constraints": [
+    "fastballs",
+    "audit",
+    "diaphote"
+  ],
+  "total_sentences": 36,
+  "disable_effects": true
+}

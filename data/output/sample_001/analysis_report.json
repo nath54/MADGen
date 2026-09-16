@@ -1,0 +1,90 @@
+{
+  "sample_id": "sample_006",
+  "sample_rate": 16000,
+  "duration_s": 147.44,
+  "channels": 1,
+  "overall_mix_features": {
+    "spectral_centroid_hz": 967.07,
+    "spectral_rolloff_hz": 1756.33,
+    "spectral_flatness": 0.1914,
+    "crest_factor_db": 20.97,
+    "rms_energy_db": -21.69,
+    "dynamic_range_db": 57.86
+  },
+  "stems_sum_snr_db": 60.0,
+  "speaker_metrics": [
+    {
+      "speaker_id": "speaker_1",
+      "active_duration_s": 26.64,
+      "speech_frames_count": 1665,
+      "unprocessed_si_sdr_db": 5.97,
+      "oracle_recovered_si_sdr_db": 20.94,
+      "sdr_improvement_db": 14.97,
+      "recoverable_energy_fraction": 0.9722,
+      "destroyed_energy_fraction": 0.0278,
+      "overlap_speech_fraction": 0.2162,
+      "solo_speech_fraction": 0.7838,
+      "spectral_correlation": 0.8998,
+      "active_sir_db": 5.94
+    },
+    {
+      "speaker_id": "speaker_2",
+      "active_duration_s": 42.34,
+      "speech_frames_count": 2646,
+      "unprocessed_si_sdr_db": 3.3,
+      "oracle_recovered_si_sdr_db": 14.65,
+      "sdr_improvement_db": 11.34,
+      "recoverable_energy_fraction": 0.9052,
+      "destroyed_energy_fraction": 0.0948,
+      "overlap_speech_fraction": 0.4698,
+      "solo_speech_fraction": 0.5302,
+      "spectral_correlation": 0.8533,
+      "active_sir_db": 3.31
+    },
+    {
+      "speaker_id": "speaker_3",
+      "active_duration_s": 27.97,
+      "speech_frames_count": 1748,
+      "unprocessed_si_sdr_db": 3.04,
+      "oracle_recovered_si_sdr_db": 16.39,
+      "sdr_improvement_db": 13.35,
+      "recoverable_energy_fraction": 0.9168,
+      "destroyed_energy_fraction": 0.0832,
+      "overlap_speech_fraction": 0.468,
+      "solo_speech_fraction": 0.532,
+      "spectral_correlation": 0.8394,
+      "active_sir_db": 2.97
+    },
+    {
+      "speaker_id": "speaker_4",
+      "active_duration_s": 23.71,
+      "speech_frames_count": 1482,
+      "unprocessed_si_sdr_db": 3.57,
+      "oracle_recovered_si_sdr_db": 14.21,
+      "sdr_improvement_db": 10.64,
+      "recoverable_energy_fraction": 0.8978,
+      "destroyed_energy_fraction": 0.1022,
+      "overlap_speech_fraction": 0.448,
+      "solo_speech_fraction": 0.552,
+      "spectral_correlation": 0.8631,
+      "active_sir_db": 3.52
+    },
+    {
+      "speaker_id": "speaker_5",
+      "active_duration_s": 27.18,
+      "speech_frames_count": 1699,
+      "unprocessed_si_sdr_db": 1.57,
+      "oracle_recovered_si_sdr_db": 15.27,
+      "sdr_improvement_db": 13.7,
+      "recoverable_energy_fraction": 0.9188,
+      "destroyed_energy_fraction": 0.0812,
+      "overlap_speech_fraction": 0.4155,
+      "solo_speech_fraction": 0.5845,
+      "spectral_correlation": 0.792,
+      "active_sir_db": 1.58
+    }
+  ],
+  "mean_recoverable_fraction": 0.9222,
+  "mean_destroyed_fraction": 0.0778,
+  "total_overlapping_frames_fraction": 0.4035
+}

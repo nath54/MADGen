@@ -1,0 +1,102 @@
+{
+  "total_samples": 8,
+  "samples": [
+    {
+      "sample_id": "sample_001",
+      "duration_s": 147.44,
+      "total_sentences": 45,
+      "num_speakers": 5,
+      "languages": [
+        "en"
+      ],
+      "ambiance": "random",
+      "use_llm": true,
+      "disable_effects": true
+    },
+    {
+      "sample_id": "sample_002",
+      "duration_s": 81.61,
+      "total_sentences": 17,
+      "num_speakers": 2,
+      "languages": [
+        "fr"
+      ],
+      "ambiance": "random",
+      "use_llm": true,
+      "disable_effects": true
+    },
+    {
+      "sample_id": "sample_003",
+      "duration_s": 448.66,
+      "total_sentences": 69,
+      "num_speakers": 4,
+      "languages": [
+        "fr"
+      ],
+      "ambiance": "random",
+      "use_llm": true,
+      "disable_effects": true
+    },
+    {
+      "sample_id": "sample_004",
+      "duration_s": 201.39,
+      "total_sentences": 36,
+      "num_speakers": 3,
+      "languages": [
+        "fr"
+      ],
+      "ambiance": "random",
+      "use_llm": true,
+      "disable_effects": true
+    },
+    {
+      "sample_id": "sample_005",
+      "duration_s": 404.56,
+      "total_sentences": 89,
+      "num_speakers": 6,
+      "languages": [
+        "fr"
+      ],
+      "ambiance": "random",
+      "use_llm": true,
+      "disable_effects": true
+    },
+    {
+      "sample_id": "sample_006",
+      "duration_s": 233.51,
+      "total_sentences": 37,
+      "num_speakers": 6,
+      "languages": [
+        "fr"
+      ],
+      "ambiance": "random",
+      "use_llm": true,
+      "disable_effects": true
+    },
+    {
+      "sample_id": "sample_007",
+      "duration_s": 174.67,
+      "total_sentences": 38,
+      "num_speakers": 6,
+      "languages": [
+        "fr"
+      ],
+      "ambiance": "random",
+      "use_llm": true,
+      "disable_effects": true
+    },
+    {
+      "sample_id": "sample_010",
+      "duration_s": 82.65,
+      "total_sentences": 20,
+      "num_speakers": 2,
+      "languages": [
+        "fr",
+        "en"
+      ],
+      "ambiance": "random",
+      "use_llm": false,
+      "disable_effects": false
+    }
+  ]
+}

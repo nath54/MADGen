@@ -1,0 +1,710 @@
+{
+  "session_id": "sample_009",
+  "duration_s": 145.27,
+  "sample_rate": 16000,
+  "num_speakers": 3,
+  "room": {
+    "dimensions": [
+      6.78,
+      5.29,
+      2.78
+    ],
+    "absorption": 0.99,
+    "max_order": 0
+  },
+  "assistant": {
+    "position": [
+      6.26,
+      0.33,
+      0.85
+    ],
+    "mic_type": "mono"
+  },
+  "speakers": [
+    {
+      "id": "speaker_1",
+      "name": "Speaker 1",
+      "gender": "female",
+      "language": "en",
+      "position": [
+        5.61,
+        2.38,
+        1.75
+      ],
+      "size": 0.0,
+      "voice_model": "en_US-ljspeech-medium.onnx",
+      "speaker_id": null
+    },
+    {
+      "id": "speaker_2",
+      "name": "Speaker 2",
+      "gender": "male",
+      "language": "en",
+      "position": [
+        2.27,
+        4.07,
+        1.65
+      ],
+      "size": 0.0,
+      "voice_model": "en_GB-northern_english_male-medium.onnx",
+      "speaker_id": null
+    },
+    {
+      "id": "speaker_3",
+      "name": "Speaker 3",
+      "gender": "female",
+      "language": "en",
+      "position": [
+        1.42,
+        3.49,
+        1.15
+      ],
+      "size": 0.34,
+      "voice_model": "en_GB-cori-high.onnx",
+      "speaker_id": null
+    }
+  ],
+  "utterances": [
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "en",
+      "vocal_style": "normal",
+      "start_time_s": 0.82,
+      "end_time_s": 4.47,
+      "duration_s": 3.65,
+      "text": "The silence out here is heavy. Like it has weight.",
+      "speaker_position": [
+        5.61,
+        2.38,
+        1.75
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "en",
+      "vocal_style": "normal",
+      "start_time_s": 4.79,
+      "end_time_s": 7.3,
+      "duration_s": 2.51,
+      "text": "It’s the absence of noise that makes the mind loud.",
+      "speaker_position": [
+        2.27,
+        4.07,
+        1.65
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "en",
+      "vocal_style": "normal",
+      "start_time_s": 7.58,
+      "end_time_s": 12.7,
+      "duration_s": 5.12,
+      "text": "I remember reading that time isn’t linear, just a stack of memories.",
+      "speaker_position": [
+        1.42,
+        3.49,
+        1.15
+      ],
+      "speaker_size": 0.34
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "en",
+      "vocal_style": "normal",
+      "start_time_s": 13.27,
+      "end_time_s": 16.15,
+      "duration_s": 2.88,
+      "text": "But what if we’re just echoes in a cave?",
+      "speaker_position": [
+        5.61,
+        2.38,
+        1.75
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "en",
+      "vocal_style": "normal",
+      "start_time_s": 16.6,
+      "end_time_s": 20.38,
+      "duration_s": 3.78,
+      "text": "An echo needs a source. Where does the sound begin?",
+      "speaker_position": [
+        2.27,
+        4.07,
+        1.65
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "en",
+      "vocal_style": "normal",
+      "start_time_s": 20.54,
+      "end_time_s": 24.06,
+      "duration_s": 3.52,
+      "text": "Maybe the source is the listener. We create the meaning.",
+      "speaker_position": [
+        1.42,
+        3.49,
+        1.15
+      ],
+      "speaker_size": 0.34
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "en",
+      "vocal_style": "normal",
+      "start_time_s": 24.5,
+      "end_time_s": 28.03,
+      "duration_s": 3.53,
+      "text": "That’s comforting, or terrifying. I can’t decide.",
+      "speaker_position": [
+        5.61,
+        2.38,
+        1.75
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "en",
+      "vocal_style": "normal",
+      "start_time_s": 28.28,
+      "end_time_s": 32.01,
+      "duration_s": 3.73,
+      "text": "Look at the stars. They are dead light. We see the past.",
+      "speaker_position": [
+        2.27,
+        4.07,
+        1.65
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "en",
+      "vocal_style": "normal",
+      "start_time_s": 32.58,
+      "end_time_s": 36.1,
+      "duration_s": 3.52,
+      "text": "Dysacousia makes the world feel muffled, like underwater.",
+      "speaker_position": [
+        1.42,
+        3.49,
+        1.15
+      ],
+      "speaker_size": 0.34
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "en",
+      "vocal_style": "normal",
+      "start_time_s": 36.49,
+      "end_time_s": 39.88,
+      "duration_s": 3.39,
+      "text": "Is it like listening to a symphony through a wall?",
+      "speaker_position": [
+        5.61,
+        2.38,
+        1.75
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "en",
+      "vocal_style": "normal",
+      "start_time_s": 40.33,
+      "end_time_s": 43.41,
+      "duration_s": 3.08,
+      "text": "Exactly. You feel the vibration but miss the melody.",
+      "speaker_position": [
+        2.27,
+        4.07,
+        1.65
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "en",
+      "vocal_style": "normal",
+      "start_time_s": 43.97,
+      "end_time_s": 47.33,
+      "duration_s": 3.36,
+      "text": "It makes me wonder if we miss the melody of existence.",
+      "speaker_position": [
+        1.42,
+        3.49,
+        1.15
+      ],
+      "speaker_size": 0.34
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "en",
+      "vocal_style": "normal",
+      "start_time_s": 47.69,
+      "end_time_s": 51.17,
+      "duration_s": 3.48,
+      "text": "I used to sketch on my drawboard until dawn.",
+      "speaker_position": [
+        5.61,
+        2.38,
+        1.75
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "en",
+      "vocal_style": "normal",
+      "start_time_s": 51.48,
+      "end_time_s": 53.38,
+      "duration_s": 1.9,
+      "text": "Did you capture the feeling of the night?",
+      "speaker_position": [
+        2.27,
+        4.07,
+        1.65
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "en",
+      "vocal_style": "interruption",
+      "start_time_s": 52.8,
+      "end_time_s": 55.96,
+      "duration_s": 3.16,
+      "text": "Or did you just trace the shadows?",
+      "speaker_position": [
+        1.42,
+        3.49,
+        1.15
+      ],
+      "speaker_size": 0.34
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "en",
+      "vocal_style": "normal",
+      "start_time_s": 56.47,
+      "end_time_s": 58.85,
+      "duration_s": 2.38,
+      "text": "I tried to draw the shape of silence.",
+      "speaker_position": [
+        5.61,
+        2.38,
+        1.75
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "en",
+      "vocal_style": "normal",
+      "start_time_s": 59.16,
+      "end_time_s": 61.75,
+      "duration_s": 2.59,
+      "text": "A bilobed shape, perhaps? Like a wing?",
+      "speaker_position": [
+        2.27,
+        4.07,
+        1.65
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "en",
+      "vocal_style": "normal",
+      "start_time_s": 62.17,
+      "end_time_s": 64.65,
+      "duration_s": 2.48,
+      "text": "Or a lung, breathing in the dark.",
+      "speaker_position": [
+        1.42,
+        3.49,
+        1.15
+      ],
+      "speaker_size": 0.34
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "en",
+      "vocal_style": "normal",
+      "start_time_s": 65.12,
+      "end_time_s": 67.67,
+      "duration_s": 2.55,
+      "text": "Maybe we are just breathing in the dark.",
+      "speaker_position": [
+        5.61,
+        2.38,
+        1.75
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "en",
+      "vocal_style": "normal",
+      "start_time_s": 67.85,
+      "end_time_s": 69.96,
+      "duration_s": 2.11,
+      "text": "And hoping someone hears us.",
+      "speaker_position": [
+        2.27,
+        4.07,
+        1.65
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "en",
+      "vocal_style": "normal",
+      "start_time_s": 70.36,
+      "end_time_s": 73.13,
+      "duration_s": 2.77,
+      "text": "Let’s hope the echo is strong enough.",
+      "speaker_position": [
+        1.42,
+        3.49,
+        1.15
+      ],
+      "speaker_size": 0.34
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "en",
+      "vocal_style": "normal",
+      "start_time_s": 73.71,
+      "end_time_s": 80.13,
+      "duration_s": 6.42,
+      "text": "I was thinking about how memory works. It’s not a recording, it’s more like a reconstruction.",
+      "speaker_position": [
+        5.61,
+        2.38,
+        1.75
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "en",
+      "vocal_style": "normal",
+      "start_time_s": 80.57,
+      "end_time_s": 84.26,
+      "duration_s": 3.69,
+      "text": "Every time you recall something, you’re actually rewriting it.",
+      "speaker_position": [
+        2.27,
+        4.07,
+        1.65
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "en",
+      "vocal_style": "normal",
+      "start_time_s": 84.53,
+      "end_time_s": 89.74,
+      "duration_s": 5.21,
+      "text": "Like an artist on a worn-out drawboard, erasing and redrawing the same scene.",
+      "speaker_position": [
+        1.42,
+        3.49,
+        1.15
+      ],
+      "speaker_size": 0.34
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "en",
+      "vocal_style": "normal",
+      "start_time_s": 90.07,
+      "end_time_s": 95.88,
+      "duration_s": 5.8,
+      "text": "Exactly. And over time, the original image is barely visible beneath the layers.",
+      "speaker_position": [
+        5.61,
+        2.38,
+        1.75
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "en",
+      "vocal_style": "normal",
+      "start_time_s": 96.17,
+      "end_time_s": 98.93,
+      "duration_s": 2.76,
+      "text": "But what if the original was always flawed?",
+      "speaker_position": [
+        2.27,
+        4.07,
+        1.65
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "en",
+      "vocal_style": "normal",
+      "start_time_s": 99.36,
+      "end_time_s": 103.95,
+      "duration_s": 4.59,
+      "text": "Then the reconstruction is just as valid. Maybe even more honest.",
+      "speaker_position": [
+        1.42,
+        3.49,
+        1.15
+      ],
+      "speaker_size": 0.34
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "en",
+      "vocal_style": "normal",
+      "start_time_s": 104.12,
+      "end_time_s": 108.39,
+      "duration_s": 4.27,
+      "text": "I’ve been having trouble remembering the melody of a song from my childhood.",
+      "speaker_position": [
+        5.61,
+        2.38,
+        1.75
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "en",
+      "vocal_style": "normal",
+      "start_time_s": 108.9,
+      "end_time_s": 113.28,
+      "duration_s": 4.38,
+      "text": "Dysacousia. That’s what they call it when the brain can’t process the pitch correctly.",
+      "speaker_position": [
+        2.27,
+        4.07,
+        1.65
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "en",
+      "vocal_style": "normal",
+      "start_time_s": 113.82,
+      "end_time_s": 119.36,
+      "duration_s": 5.54,
+      "text": "It’s strange, isn’t it? The sound is there, but the meaning gets lost in translation.",
+      "speaker_position": [
+        1.42,
+        3.49,
+        1.15
+      ],
+      "speaker_size": 0.34
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "en",
+      "vocal_style": "normal",
+      "start_time_s": 119.73,
+      "end_time_s": 123.4,
+      "duration_s": 3.67,
+      "text": "Or maybe the meaning was never really there to begin with.",
+      "speaker_position": [
+        5.61,
+        2.38,
+        1.75
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "en",
+      "vocal_style": "normal",
+      "start_time_s": 123.91,
+      "end_time_s": 126.73,
+      "duration_s": 2.82,
+      "text": "Just noise we convinced ourselves was music.",
+      "speaker_position": [
+        2.27,
+        4.07,
+        1.65
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "en",
+      "vocal_style": "normal",
+      "start_time_s": 126.89,
+      "end_time_s": 132.94,
+      "duration_s": 6.05,
+      "text": "Like the way the wind sounds through the trees. Is it a whisper or just friction?",
+      "speaker_position": [
+        1.42,
+        3.49,
+        1.15
+      ],
+      "speaker_size": 0.34
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "en",
+      "vocal_style": "normal",
+      "start_time_s": 133.41,
+      "end_time_s": 136.08,
+      "duration_s": 2.67,
+      "text": "It doesn’t matter. The feeling remains.",
+      "speaker_position": [
+        5.61,
+        2.38,
+        1.75
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "en",
+      "vocal_style": "normal",
+      "start_time_s": 136.65,
+      "end_time_s": 139.1,
+      "duration_s": 2.45,
+      "text": "The feeling is the only thing that’s real.",
+      "speaker_position": [
+        2.27,
+        4.07,
+        1.65
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "en",
+      "vocal_style": "normal",
+      "start_time_s": 139.63,
+      "end_time_s": 141.63,
+      "duration_s": 2.0,
+      "text": "Then let’s listen to the noise.",
+      "speaker_position": [
+        1.42,
+        3.49,
+        1.15
+      ],
+      "speaker_size": 0.34
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "en",
+      "vocal_style": "normal",
+      "start_time_s": 142.05,
+      "end_time_s": 143.75,
+      "duration_s": 1.7,
+      "text": "And let it be enough.",
+      "speaker_position": [
+        5.61,
+        2.38,
+        1.75
+      ],
+      "speaker_size": 0.0
+    }
+  ],
+  "ambiance": {
+    "name": "late_night_philosophy",
+    "display_name": "Late-Night Philosophy",
+    "description": "Quiet late-night existential conversation with thought experiments and pauses."
+  },
+  "thematic_constraints": [
+    "bilobed",
+    "drawboard",
+    "dysacousia"
+  ],
+  "total_sentences": 37,
+  "disable_effects": true
+}

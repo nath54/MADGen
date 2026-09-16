@@ -1,0 +1,232 @@
+[
+  {
+    "sample_id": "sample_001",
+    "duration_s": 147.4,
+    "channels": 1,
+    "speakers": 5,
+    "language": "en",
+    "paradigms": {
+      "Silero-VAD + Clustering + Faster-Whisper": {
+        "der_pct": 71.1,
+        "wer_pct": 65.2,
+        "rtf": 0.147,
+        "latency_s": 21.69,
+        "turns_detected": 29
+      },
+      "Real-Time Streaming Assistant (Chunked VAD + Online ASR)": {
+        "der_pct": 69.4,
+        "wer_pct": 62.8,
+        "rtf": 0.081,
+        "latency_s": 11.98,
+        "turns_detected": 18
+      }
+    }
+  },
+  {
+    "sample_id": "sample_002",
+    "duration_s": 81.6,
+    "channels": 4,
+    "speakers": 2,
+    "language": "fr",
+    "paradigms": {
+      "Silero-VAD + Clustering + Faster-Whisper": {
+        "der_pct": 27.6,
+        "wer_pct": 44.2,
+        "rtf": 0.161,
+        "latency_s": 13.14,
+        "turns_detected": 26
+      },
+      "Real-Time Streaming Assistant (Chunked VAD + Online ASR)": {
+        "der_pct": 28.3,
+        "wer_pct": 40.9,
+        "rtf": 0.092,
+        "latency_s": 7.49,
+        "turns_detected": 13
+      }
+    }
+  },
+  {
+    "sample_id": "sample_003",
+    "duration_s": 448.7,
+    "channels": 4,
+    "speakers": 4,
+    "language": "fr",
+    "paradigms": {
+      "Silero-VAD + Clustering + Faster-Whisper": {
+        "der_pct": 74.0,
+        "wer_pct": 65.7,
+        "rtf": 0.209,
+        "latency_s": 93.91,
+        "turns_detected": 107
+      },
+      "Real-Time Streaming Assistant (Chunked VAD + Online ASR)": {
+        "der_pct": 72.4,
+        "wer_pct": 63.2,
+        "rtf": 0.146,
+        "latency_s": 65.59,
+        "turns_detected": 75
+      }
+    }
+  },
+  {
+    "sample_id": "sample_004",
+    "duration_s": 201.4,
+    "channels": 4,
+    "speakers": 3,
+    "language": "fr",
+    "paradigms": {
+      "Silero-VAD + Clustering + Faster-Whisper": {
+        "der_pct": 48.7,
+        "wer_pct": 40.2,
+        "rtf": 0.131,
+        "latency_s": 26.4,
+        "turns_detected": 43
+      },
+      "Real-Time Streaming Assistant (Chunked VAD + Online ASR)": {
+        "der_pct": 64.6,
+        "wer_pct": 43.6,
+        "rtf": 0.12,
+        "latency_s": 24.25,
+        "turns_detected": 31
+      }
+    }
+  },
+  {
+    "sample_id": "sample_005",
+    "duration_s": 404.6,
+    "channels": 4,
+    "speakers": 6,
+    "language": "fr",
+    "paradigms": {
+      "Silero-VAD + Clustering + Faster-Whisper": {
+        "der_pct": 76.5,
+        "wer_pct": 80.5,
+        "rtf": 0.216,
+        "latency_s": 87.36,
+        "turns_detected": 76
+      },
+      "Real-Time Streaming Assistant (Chunked VAD + Online ASR)": {
+        "der_pct": 69.6,
+        "wer_pct": 82.0,
+        "rtf": 0.147,
+        "latency_s": 59.49,
+        "turns_detected": 59
+      }
+    }
+  },
+  {
+    "sample_id": "sample_006",
+    "duration_s": 233.5,
+    "channels": 4,
+    "speakers": 6,
+    "language": "fr",
+    "paradigms": {
+      "Silero-VAD + Clustering + Faster-Whisper": {
+        "der_pct": 61.8,
+        "wer_pct": 43.0,
+        "rtf": 0.147,
+        "latency_s": 34.24,
+        "turns_detected": 54
+      },
+      "Real-Time Streaming Assistant (Chunked VAD + Online ASR)": {
+        "der_pct": 78.7,
+        "wer_pct": 43.8,
+        "rtf": 0.094,
+        "latency_s": 21.98,
+        "turns_detected": 35
+      }
+    }
+  },
+  {
+    "sample_id": "sample_007",
+    "duration_s": 174.7,
+    "channels": 2,
+    "speakers": 6,
+    "language": "fr",
+    "paradigms": {
+      "Silero-VAD + Clustering + Faster-Whisper": {
+        "der_pct": 64.3,
+        "wer_pct": 62.9,
+        "rtf": 0.235,
+        "latency_s": 41.11,
+        "turns_detected": 54
+      },
+      "Real-Time Streaming Assistant (Chunked VAD + Online ASR)": {
+        "der_pct": 80.3,
+        "wer_pct": 70.8,
+        "rtf": 0.184,
+        "latency_s": 32.08,
+        "turns_detected": 36
+      }
+    }
+  },
+  {
+    "sample_id": "sample_008",
+    "duration_s": 187.3,
+    "channels": 2,
+    "speakers": 3,
+    "language": "en",
+    "paradigms": {
+      "Silero-VAD + Clustering + Faster-Whisper": {
+        "der_pct": 54.1,
+        "wer_pct": 37.5,
+        "rtf": 0.169,
+        "latency_s": 31.62,
+        "turns_detected": 60
+      },
+      "Real-Time Streaming Assistant (Chunked VAD + Online ASR)": {
+        "der_pct": 59.2,
+        "wer_pct": 35.3,
+        "rtf": 0.1,
+        "latency_s": 18.66,
+        "turns_detected": 34
+      }
+    }
+  },
+  {
+    "sample_id": "sample_009",
+    "duration_s": 145.3,
+    "channels": 1,
+    "speakers": 3,
+    "language": "en",
+    "paradigms": {
+      "Silero-VAD + Clustering + Faster-Whisper": {
+        "der_pct": 48.8,
+        "wer_pct": 26.8,
+        "rtf": 0.158,
+        "latency_s": 22.97,
+        "turns_detected": 45
+      },
+      "Real-Time Streaming Assistant (Chunked VAD + Online ASR)": {
+        "der_pct": 56.0,
+        "wer_pct": 25.4,
+        "rtf": 0.106,
+        "latency_s": 15.37,
+        "turns_detected": 28
+      }
+    }
+  },
+  {
+    "sample_id": "sample_010",
+    "duration_s": 82.7,
+    "channels": 4,
+    "speakers": 2,
+    "language": "en",
+    "paradigms": {
+      "Silero-VAD + Clustering + Faster-Whisper": {
+        "der_pct": 40.3,
+        "wer_pct": 7.2,
+        "rtf": 0.096,
+        "latency_s": 7.9,
+        "turns_detected": 14
+      },
+      "Real-Time Streaming Assistant (Chunked VAD + Online ASR)": {
+        "der_pct": 33.4,
+        "wer_pct": 14.9,
+        "rtf": 0.126,
+        "latency_s": 10.41,
+        "turns_detected": 8
+      }
+    }
+  }
+]

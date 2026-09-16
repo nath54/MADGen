@@ -1,8 +1,6 @@
 *.pyc
-*.wav
-data
-.venv
-.mypy_cache
-.pylintrc
-mypy.ini
-models_cache
+__pycache__/
+.venv/
+.mypy_cache/
+models_cache/
+data/piper_voices/

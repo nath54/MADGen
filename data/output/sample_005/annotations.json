@@ -1,0 +1,1636 @@
+{
+  "session_id": "sample_005",
+  "duration_s": 404.56,
+  "sample_rate": 16000,
+  "num_speakers": 6,
+  "room": {
+    "dimensions": [
+      7.85,
+      6.52,
+      2.71
+    ],
+    "absorption": 0.99,
+    "max_order": 0
+  },
+  "assistant": {
+    "position": [
+      7.51,
+      0.3,
+      0.84
+    ],
+    "mic_type": "circular"
+  },
+  "speakers": [
+    {
+      "id": "speaker_1",
+      "name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "position": [
+        2.47,
+        1.05,
+        1.73
+      ],
+      "size": 0.33,
+      "voice_model": "fr_FR-siwis-medium.onnx",
+      "speaker_id": null
+    },
+    {
+      "id": "speaker_2",
+      "name": "Speaker 2",
+      "gender": "male",
+      "language": "fr",
+      "position": [
+        3.44,
+        3.76,
+        1.8
+      ],
+      "size": 0.2,
+      "voice_model": "fr_FR-gilles-low.onnx",
+      "speaker_id": null
+    },
+    {
+      "id": "speaker_3",
+      "name": "Speaker 3",
+      "gender": "female",
+      "language": "fr",
+      "position": [
+        4.36,
+        3.4,
+        1.75
+      ],
+      "size": 0.0,
+      "voice_model": "fr_FR-siwis-low.onnx",
+      "speaker_id": null
+    },
+    {
+      "id": "speaker_4",
+      "name": "Speaker 4",
+      "gender": "male",
+      "language": "fr",
+      "position": [
+        2.5,
+        2.38,
+        1.77
+      ],
+      "size": 0.0,
+      "voice_model": "fr_FR-tom-medium.onnx",
+      "speaker_id": null
+    },
+    {
+      "id": "speaker_5",
+      "name": "Speaker 5",
+      "gender": "female",
+      "language": "fr",
+      "position": [
+        6.62,
+        1.99,
+        1.77
+      ],
+      "size": 0.27,
+      "voice_model": "fr_FR-mls-medium.onnx",
+      "speaker_id": 58
+    },
+    {
+      "id": "speaker_6",
+      "name": "Speaker 6",
+      "gender": "male",
+      "language": "fr",
+      "position": [
+        5.16,
+        4.92,
+        1.71
+      ],
+      "size": 0.4,
+      "voice_model": "fr_FR-mls_1840-low.onnx",
+      "speaker_id": null
+    }
+  ],
+  "utterances": [
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 0.82,
+      "end_time_s": 3.28,
+      "duration_s": 2.46,
+      "text": "Alvia, est-ce que tu as vu les factures ?",
+      "speaker_position": [
+        2.47,
+        1.05,
+        1.73
+      ],
+      "speaker_size": 0.33
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 3.79,
+      "end_time_s": 5.49,
+      "duration_s": 1.7,
+      "text": "Oui, je les ai triées sur le bureau.",
+      "speaker_position": [
+        3.44,
+        3.76,
+        1.8
+      ],
+      "speaker_size": 0.2
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 5.84,
+      "end_time_s": 8.16,
+      "duration_s": 2.32,
+      "text": "J'ai entendu un bruit étrange dans le salon.",
+      "speaker_position": [
+        4.36,
+        3.4,
+        1.75
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_4",
+      "speaker_name": "Speaker 4",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 8.47,
+      "end_time_s": 10.8,
+      "duration_s": 2.33,
+      "text": "C'est probablement juste le frigo.",
+      "speaker_position": [
+        2.5,
+        2.38,
+        1.77
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_5",
+      "speaker_name": "Speaker 5",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 11.39,
+      "end_time_s": 19.49,
+      "duration_s": 8.1,
+      "text": "Non, je suis sûre que c'était une porte.",
+      "speaker_position": [
+        6.62,
+        1.99,
+        1.77
+      ],
+      "speaker_size": 0.27
+    },
+    {
+      "speaker_id": "speaker_6",
+      "speaker_name": "Speaker 6",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 19.65,
+      "end_time_s": 24.18,
+      "duration_s": 4.53,
+      "text": "Alexa, éteins les lumières du salon.",
+      "speaker_position": [
+        5.16,
+        4.92,
+        1.71
+      ],
+      "speaker_size": 0.4
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 24.47,
+      "end_time_s": 27.54,
+      "duration_s": 3.07,
+      "text": "Merci, je cherchais de quoi écrire.",
+      "speaker_position": [
+        2.47,
+        1.05,
+        1.73
+      ],
+      "speaker_size": 0.33
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 28.03,
+      "end_time_s": 30.53,
+      "duration_s": 2.5,
+      "text": "Les factures sont sous le classeur bleu.",
+      "speaker_position": [
+        3.44,
+        3.76,
+        1.8
+      ],
+      "speaker_size": 0.2
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 31.08,
+      "end_time_s": 33.77,
+      "duration_s": 2.69,
+      "text": "Alvia, pourrais-tu vérifier la caméra ?",
+      "speaker_position": [
+        4.36,
+        3.4,
+        1.75
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_4",
+      "speaker_name": "Speaker 4",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 34.31,
+      "end_time_s": 37.32,
+      "duration_s": 3.01,
+      "text": "Il n'y a personne dehors, je viens de regarder.",
+      "speaker_position": [
+        2.5,
+        2.38,
+        1.77
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_5",
+      "speaker_name": "Speaker 5",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 37.72,
+      "end_time_s": 45.84,
+      "duration_s": 8.12,
+      "text": "Deirdre, tu as vu mon écharpe ?",
+      "speaker_position": [
+        6.62,
+        1.99,
+        1.77
+      ],
+      "speaker_size": 0.27
+    },
+    {
+      "speaker_id": "speaker_6",
+      "speaker_name": "Speaker 6",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 46.28,
+      "end_time_s": 56.81,
+      "duration_s": 10.53,
+      "text": "Elle est sur le canapé, près du coussin.",
+      "speaker_position": [
+        5.16,
+        4.92,
+        1.71
+      ],
+      "speaker_size": 0.4
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "interruption",
+      "start_time_s": 56.5,
+      "end_time_s": 59.38,
+      "duration_s": 2.88,
+      "text": "Deirdre, tu connais bien la maison alors.",
+      "speaker_position": [
+        2.47,
+        1.05,
+        1.73
+      ],
+      "speaker_size": 0.33
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 59.89,
+      "end_time_s": 61.62,
+      "duration_s": 1.73,
+      "text": "Elle passe plus de temps ici que nous.",
+      "speaker_position": [
+        3.44,
+        3.76,
+        1.8
+      ],
+      "speaker_size": 0.2
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 61.82,
+      "end_time_s": 64.67,
+      "duration_s": 2.85,
+      "text": "Alvia, allume la musique douce, s'il te plaît.",
+      "speaker_position": [
+        4.36,
+        3.4,
+        1.75
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_4",
+      "speaker_name": "Speaker 4",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 65.08,
+      "end_time_s": 67.63,
+      "duration_s": 2.55,
+      "text": "Ça commence à être un peu tard pour moi.",
+      "speaker_position": [
+        2.5,
+        2.38,
+        1.77
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 67.91,
+      "end_time_s": 72.74,
+      "duration_s": 4.83,
+      "text": "Dis, tu as vu où j'ai mis mes clés ? Je ne les trouve nulle part.",
+      "speaker_position": [
+        2.47,
+        1.05,
+        1.73
+      ],
+      "speaker_size": 0.33
+    },
+    {
+      "speaker_id": "speaker_5",
+      "speaker_name": "Speaker 5",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 72.95,
+      "end_time_s": 84.58,
+      "duration_s": 11.63,
+      "text": "On rentre tous bientôt, ne t'inquiète pas.",
+      "speaker_position": [
+        6.62,
+        1.99,
+        1.77
+      ],
+      "speaker_size": 0.27
+    },
+    {
+      "speaker_id": "speaker_6",
+      "speaker_name": "Speaker 6",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 85.16,
+      "end_time_s": 92.79,
+      "duration_s": 7.63,
+      "text": "Elles sont probablement sur la table basse, comme d'habitude.",
+      "speaker_position": [
+        5.16,
+        4.92,
+        1.71
+      ],
+      "speaker_size": 0.4
+    },
+    {
+      "speaker_id": "speaker_6",
+      "speaker_name": "Speaker 6",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 93.33,
+      "end_time_s": 104.21,
+      "duration_s": 10.88,
+      "text": "Echo, verrouille la porte d'entrée.",
+      "speaker_position": [
+        5.16,
+        4.92,
+        1.71
+      ],
+      "speaker_size": 0.4
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 104.54,
+      "end_time_s": 109.38,
+      "duration_s": 4.84,
+      "text": "J'ai regardé, elles ne sont pas là. Alexa, où sont mes clés ?",
+      "speaker_position": [
+        2.47,
+        1.05,
+        1.73
+      ],
+      "speaker_size": 0.33
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 109.91,
+      "end_time_s": 112.8,
+      "duration_s": 2.89,
+      "text": "Bonne nuit à tous, merci pour l'aide.",
+      "speaker_position": [
+        2.47,
+        1.05,
+        1.73
+      ],
+      "speaker_size": 0.33
+    },
+    {
+      "speaker_id": "speaker_6",
+      "speaker_name": "Speaker 6",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 113.35,
+      "end_time_s": 125.09,
+      "duration_s": 11.74,
+      "text": "Ah, tu as mis la balise sur ton porte-clés.",
+      "speaker_position": [
+        5.16,
+        4.92,
+        1.71
+      ],
+      "speaker_size": 0.4
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 125.42,
+      "end_time_s": 129.26,
+      "duration_s": 3.84,
+      "text": "Oui, mais l'application dit qu'elles sont dans la cuisine.",
+      "speaker_position": [
+        2.47,
+        1.05,
+        1.73
+      ],
+      "speaker_size": 0.33
+    },
+    {
+      "speaker_id": "speaker_6",
+      "speaker_name": "Speaker 6",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 129.51,
+      "end_time_s": 155.97,
+      "duration_s": 26.46,
+      "text": "C'est bizarre. Attends, je vais vérifier. Echo, allume la lumière de la cuisine.",
+      "speaker_position": [
+        5.16,
+        4.92,
+        1.71
+      ],
+      "speaker_size": 0.4
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 156.3,
+      "end_time_s": 160.39,
+      "duration_s": 4.09,
+      "text": "Merci. Je commence à m'inquiéter, je vais être en retard.",
+      "speaker_position": [
+        2.47,
+        1.05,
+        1.73
+      ],
+      "speaker_size": 0.33
+    },
+    {
+      "speaker_id": "speaker_6",
+      "speaker_name": "Speaker 6",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 160.83,
+      "end_time_s": 170.09,
+      "duration_s": 9.26,
+      "text": "Ne t'inquiète pas, ça va le faire. Regarde juste sous le tapis.",
+      "speaker_position": [
+        5.16,
+        4.92,
+        1.71
+      ],
+      "speaker_size": 0.4
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 170.57,
+      "end_time_s": 172.57,
+      "duration_s": 2.0,
+      "text": "Attends... oh ! Elles sont là !",
+      "speaker_position": [
+        2.47,
+        1.05,
+        1.73
+      ],
+      "speaker_size": 0.33
+    },
+    {
+      "speaker_id": "speaker_6",
+      "speaker_name": "Speaker 6",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 173.16,
+      "end_time_s": 192.1,
+      "duration_s": 18.94,
+      "text": "Les fakers m'ont encore eu ! Ce tapis cache bien le jeu.",
+      "speaker_position": [
+        5.16,
+        4.92,
+        1.71
+      ],
+      "speaker_size": 0.4
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 192.46,
+      "end_time_s": 197.41,
+      "duration_s": 4.95,
+      "text": "Haha, oui. Tu sais, j'ai lu un article sur les fausses clés aujourd'hui.",
+      "speaker_position": [
+        2.47,
+        1.05,
+        1.73
+      ],
+      "speaker_size": 0.33
+    },
+    {
+      "speaker_id": "speaker_6",
+      "speaker_name": "Speaker 6",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 197.93,
+      "end_time_s": 204.81,
+      "duration_s": 6.88,
+      "text": "Ah bon ? C'est quoi le truc ?",
+      "speaker_position": [
+        5.16,
+        4.92,
+        1.71
+      ],
+      "speaker_size": 0.4
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 205.22,
+      "end_time_s": 212.22,
+      "duration_s": 7.0,
+      "text": "Des clés qui ont l'air normales mais qui ne fonctionnent pas. On appelle ça des \"alvia\" dans certains cercles.",
+      "speaker_position": [
+        2.47,
+        1.05,
+        1.73
+      ],
+      "speaker_size": 0.33
+    },
+    {
+      "speaker_id": "speaker_6",
+      "speaker_name": "Speaker 6",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 212.81,
+      "end_time_s": 226.28,
+      "duration_s": 13.47,
+      "text": "Alvia ? Je n'ai jamais entendu ce terme.",
+      "speaker_position": [
+        5.16,
+        4.92,
+        1.71
+      ],
+      "speaker_size": 0.4
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 226.7,
+      "end_time_s": 232.81,
+      "duration_s": 6.11,
+      "text": "C'est une marque récente de clés de sécurité. Deirdre en a acheté un set la semaine dernière.",
+      "speaker_position": [
+        2.47,
+        1.05,
+        1.73
+      ],
+      "speaker_size": 0.33
+    },
+    {
+      "speaker_id": "speaker_6",
+      "speaker_name": "Speaker 6",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 233.21,
+      "end_time_s": 244.17,
+      "duration_s": 10.96,
+      "text": "Deirdre ? Elle est là en ce moment ?",
+      "speaker_position": [
+        5.16,
+        4.92,
+        1.71
+      ],
+      "speaker_size": 0.4
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 244.34,
+      "end_time_s": 248.39,
+      "duration_s": 4.05,
+      "text": "Oui, elle est dans le salon. Elle nous attend pour le dîner.",
+      "speaker_position": [
+        2.47,
+        1.05,
+        1.73
+      ],
+      "speaker_size": 0.33
+    },
+    {
+      "speaker_id": "speaker_6",
+      "speaker_name": "Speaker 6",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "interruption",
+      "start_time_s": 248.11,
+      "end_time_s": 267.21,
+      "duration_s": 19.1,
+      "text": "D'accord, je vais y aller. Alexa, éteins les lumières du salon.",
+      "speaker_position": [
+        5.16,
+        4.92,
+        1.71
+      ],
+      "speaker_size": 0.4
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 267.42,
+      "end_time_s": 270.51,
+      "duration_s": 3.09,
+      "text": "Bonne idée. Elle va être contente de te voir.",
+      "speaker_position": [
+        2.47,
+        1.05,
+        1.73
+      ],
+      "speaker_size": 0.33
+    },
+    {
+      "speaker_id": "speaker_6",
+      "speaker_name": "Speaker 6",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "interruption",
+      "start_time_s": 269.94,
+      "end_time_s": 282.18,
+      "duration_s": 12.24,
+      "text": "J'espère qu'elle a préparé ce fameux plat aux fakers.",
+      "speaker_position": [
+        5.16,
+        4.92,
+        1.71
+      ],
+      "speaker_size": 0.4
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 282.55,
+      "end_time_s": 286.04,
+      "duration_s": 3.49,
+      "text": "Oui, c'est son spécialité. On y va ?",
+      "speaker_position": [
+        2.47,
+        1.05,
+        1.73
+      ],
+      "speaker_size": 0.33
+    },
+    {
+      "speaker_id": "speaker_6",
+      "speaker_name": "Speaker 6",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 286.64,
+      "end_time_s": 299.47,
+      "duration_s": 12.83,
+      "text": "Allons-y. Echo, lance la playlist de dîner.",
+      "speaker_position": [
+        5.16,
+        4.92,
+        1.71
+      ],
+      "speaker_size": 0.4
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "interruption",
+      "start_time_s": 299.24,
+      "end_time_s": 301.68,
+      "duration_s": 2.44,
+      "text": "Parfait. On arrive Deirdre !",
+      "speaker_position": [
+        2.47,
+        1.05,
+        1.73
+      ],
+      "speaker_size": 0.33
+    },
+    {
+      "speaker_id": "speaker_6",
+      "speaker_name": "Speaker 6",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 301.93,
+      "end_time_s": 311.1,
+      "duration_s": 9.17,
+      "text": "Ça y est, on est là. Bonjour Deirdre !",
+      "speaker_position": [
+        5.16,
+        4.92,
+        1.71
+      ],
+      "speaker_size": 0.4
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 311.57,
+      "end_time_s": 316.75,
+      "duration_s": 5.18,
+      "text": "Salut Deirdre, désolée du retard, on cherchait les alvia pour le dessert.",
+      "speaker_position": [
+        2.47,
+        1.05,
+        1.73
+      ],
+      "speaker_size": 0.33
+    },
+    {
+      "speaker_id": "speaker_6",
+      "speaker_name": "Speaker 6",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 316.99,
+      "end_time_s": 344.29,
+      "duration_s": 27.3,
+      "text": "Pas de souci, tu sais que les fakers sont toujours là quand on en a besoin. Alexa, allume les lumières douces.",
+      "speaker_position": [
+        5.16,
+        4.92,
+        1.71
+      ],
+      "speaker_size": 0.4
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 344.78,
+      "end_time_s": 351.79,
+      "duration_s": 7.01,
+      "text": "Les lumières du salon s'allument toutes seules, c'est incroyable. Echo, allume les lumières de la cuisine.",
+      "speaker_position": [
+        2.47,
+        1.05,
+        1.73
+      ],
+      "speaker_size": 0.33
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 352.29,
+      "end_time_s": 356.71,
+      "duration_s": 4.42,
+      "text": "Oui, et regarde, l'assistant vient de nous dire que deirdre a commandé le gâteau.",
+      "speaker_position": [
+        3.44,
+        3.76,
+        1.8
+      ],
+      "speaker_size": 0.2
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "interruption",
+      "start_time_s": 356.21,
+      "end_time_s": 359.38,
+      "duration_s": 3.17,
+      "text": "Attends, deirdre ? Elle n'est pas censée être en retard ?",
+      "speaker_position": [
+        4.36,
+        3.4,
+        1.75
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_4",
+      "speaker_name": "Speaker 4",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 359.67,
+      "end_time_s": 364.11,
+      "duration_s": 4.44,
+      "text": "Non, elle a utilisé le code alvia pour passer commande plus vite.",
+      "speaker_position": [
+        2.5,
+        2.38,
+        1.77
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_5",
+      "speaker_name": "Speaker 5",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "laughter",
+      "start_time_s": 364.52,
+      "end_time_s": 371.64,
+      "duration_s": 7.12,
+      "text": "C'est drôle, moi j'ai l'impression que ce sont des fakers qui gèrent tout depuis la maison.",
+      "speaker_position": [
+        6.62,
+        1.99,
+        1.77
+      ],
+      "speaker_size": 0.27
+    },
+    {
+      "speaker_id": "speaker_6",
+      "speaker_name": "Speaker 6",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "interruption",
+      "start_time_s": 371.39,
+      "end_time_s": 403.04,
+      "duration_s": 31.65,
+      "text": "Peut-être, mais au moins le dîner sera prêt à l'heure. Echo, quel est le temps qu'il fait dehors ?",
+      "speaker_position": [
+        5.16,
+        4.92,
+        1.71
+      ],
+      "speaker_size": 0.4
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 61.94,
+      "end_time_s": 66.76,
+      "duration_s": 4.82,
+      "text": "Est-ce que tu as vu la liste de courses ? Je crois que j'ai oublié de noter les œufs.",
+      "speaker_position": [
+        3.44,
+        3.76,
+        1.8
+      ],
+      "speaker_size": 0.2
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 67.21,
+      "end_time_s": 72.84,
+      "duration_s": 5.63,
+      "text": "Oui, je l'ai écrite sur le frigo. Et tu as aussi oublié de vérifier la météo pour ce soir.",
+      "speaker_position": [
+        4.36,
+        3.4,
+        1.75
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 73.33,
+      "end_time_s": 77.28,
+      "duration_s": 3.95,
+      "text": "Ah oui, c'est vrai. Echo, qu'est-ce qu'il fait dehors ce soir ?",
+      "speaker_position": [
+        3.44,
+        3.76,
+        1.8
+      ],
+      "speaker_size": 0.2
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 77.47,
+      "end_time_s": 83.77,
+      "duration_s": 6.3,
+      "text": "Il pleuvra, donc on sortira pas le chien. Par contre, as-tu remarqué que la lampe du salon clignote un peu ?",
+      "speaker_position": [
+        4.36,
+        3.4,
+        1.75
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 84.3,
+      "end_time_s": 88.51,
+      "duration_s": 4.21,
+      "text": "Oui, c'est bizarre. Alexa, quelle est la température intérieure ?",
+      "speaker_position": [
+        3.44,
+        3.76,
+        1.8
+      ],
+      "speaker_size": 0.2
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 89.06,
+      "end_time_s": 93.99,
+      "duration_s": 4.93,
+      "text": "Elle est stable à 22 degrés. C'est peut-être juste un problème de connexion, comme pour Deirdre.",
+      "speaker_position": [
+        4.36,
+        3.4,
+        1.75
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "interruption",
+      "start_time_s": 93.63,
+      "end_time_s": 101.07,
+      "duration_s": 7.44,
+      "text": "Deirdre ? Tu parles de la nouvelle collègue de ton frère ?",
+      "speaker_position": [
+        3.44,
+        3.76,
+        1.8
+      ],
+      "speaker_size": 0.2
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 101.56,
+      "end_time_s": 107.51,
+      "duration_s": 5.95,
+      "text": "Non, l'assistant vocal de la voisine, celui qui s'appelle Deirdre. Il a eu le même bug hier.",
+      "speaker_position": [
+        4.36,
+        3.4,
+        1.75
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 107.7,
+      "end_time_s": 111.6,
+      "duration_s": 3.9,
+      "text": "Ah, c'est intéressant. Echo, ferme les stores du salon.",
+      "speaker_position": [
+        3.44,
+        3.76,
+        1.8
+      ],
+      "speaker_size": 0.2
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 111.97,
+      "end_time_s": 117.52,
+      "duration_s": 5.55,
+      "text": "Attends, on a besoin de lumière pour lire les recettes. Alexa, allume la lampe de bureau.",
+      "speaker_position": [
+        4.36,
+        3.4,
+        1.75
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 118.08,
+      "end_time_s": 123.46,
+      "duration_s": 5.38,
+      "text": "Ok, d'accord. Donc, Deirdre est plus fiable que notre Echo apparemment.",
+      "speaker_position": [
+        3.44,
+        3.76,
+        1.8
+      ],
+      "speaker_size": 0.2
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 123.83,
+      "end_time_s": 129.43,
+      "duration_s": 5.6,
+      "text": "Il répond mieux aux ordres en anglais, je suppose. Et puis, il a un nom plus original.",
+      "speaker_position": [
+        4.36,
+        3.4,
+        1.75
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 129.98,
+      "end_time_s": 133.85,
+      "duration_s": 3.87,
+      "text": "Deirdre... c'est un beau nom. Je vais peut-être changer le mien un jour.",
+      "speaker_position": [
+        3.44,
+        3.76,
+        1.8
+      ],
+      "speaker_size": 0.2
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 134.25,
+      "end_time_s": 137.61,
+      "duration_s": 3.36,
+      "text": "Fais attention, Echo pourrait refuser si le nom est trop long.",
+      "speaker_position": [
+        4.36,
+        3.4,
+        1.75
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 137.85,
+      "end_time_s": 140.01,
+      "duration_s": 2.16,
+      "text": "Alexa, renomme-moi en Deirdre.",
+      "speaker_position": [
+        3.44,
+        3.76,
+        1.8
+      ],
+      "speaker_size": 0.2
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 140.38,
+      "end_time_s": 144.97,
+      "duration_s": 4.59,
+      "text": "Elle a accepté ! Bon, maintenant, va mettre leTimer pour les pâtes.",
+      "speaker_position": [
+        4.36,
+        3.4,
+        1.75
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 145.54,
+      "end_time_s": 150.2,
+      "duration_s": 4.66,
+      "text": "Timer pour 10 minutes. C'est fait. On est sauvés.",
+      "speaker_position": [
+        3.44,
+        3.76,
+        1.8
+      ],
+      "speaker_size": 0.2
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 150.66,
+      "end_time_s": 155.49,
+      "duration_s": 4.83,
+      "text": "Presque. Il ne reste plus qu'à trouver Deirdre une solution pour ses lumières.",
+      "speaker_position": [
+        4.36,
+        3.4,
+        1.75
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_4",
+      "speaker_name": "Speaker 4",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 67.91,
+      "end_time_s": 72.76,
+      "duration_s": 4.85,
+      "text": "Tu as vu l'heure? On va être en retard pour le rendez-vous chez le dentiste.",
+      "speaker_position": [
+        2.5,
+        2.38,
+        1.77
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_5",
+      "speaker_name": "Speaker 5",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 84.89,
+      "end_time_s": 110.49,
+      "duration_s": 25.6,
+      "text": "Calme-toi, il est seulement 14h45. On a encore le temps de finir le café.",
+      "speaker_position": [
+        6.62,
+        1.99,
+        1.77
+      ],
+      "speaker_size": 0.27
+    },
+    {
+      "speaker_id": "speaker_4",
+      "speaker_name": "Speaker 4",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 110.99,
+      "end_time_s": 115.04,
+      "duration_s": 4.05,
+      "text": "Oui, mais il faut qu'on prépare les affaires de Léa en même temps.",
+      "speaker_position": [
+        2.5,
+        2.38,
+        1.77
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_5",
+      "speaker_name": "Speaker 5",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "interruption",
+      "start_time_s": 114.44,
+      "end_time_s": 129.08,
+      "duration_s": 14.64,
+      "text": "J'y pense! Echo, lance un minuteur de dix minutes pour les clés.",
+      "speaker_position": [
+        6.62,
+        1.99,
+        1.77
+      ],
+      "speaker_size": 0.27
+    },
+    {
+      "speaker_id": "speaker_4",
+      "speaker_name": "Speaker 4",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 129.42,
+      "end_time_s": 133.92,
+      "duration_s": 4.5,
+      "text": "C'est bien, comme ça on ne traîne pas. Tu prends le parapluie?",
+      "speaker_position": [
+        2.5,
+        2.38,
+        1.77
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_5",
+      "speaker_name": "Speaker 5",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 134.14,
+      "end_time_s": 139.42,
+      "duration_s": 5.28,
+      "text": "Oui, il y a des nuages, mais je ne suis pas sûre qu'il pleuve.",
+      "speaker_position": [
+        6.62,
+        1.99,
+        1.77
+      ],
+      "speaker_size": 0.27
+    },
+    {
+      "speaker_id": "speaker_4",
+      "speaker_name": "Speaker 4",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 139.85,
+      "end_time_s": 143.2,
+      "duration_s": 3.35,
+      "text": "Alexa, quel temps fait-il à Paris ce soir?",
+      "speaker_position": [
+        2.5,
+        2.38,
+        1.77
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_5",
+      "speaker_name": "Speaker 5",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 143.67,
+      "end_time_s": 150.3,
+      "duration_s": 6.63,
+      "text": "Elle dit qu'il y a 40% de risques d'averse vers 18h.",
+      "speaker_position": [
+        6.62,
+        1.99,
+        1.77
+      ],
+      "speaker_size": 0.27
+    },
+    {
+      "speaker_id": "speaker_4",
+      "speaker_name": "Speaker 4",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "interruption",
+      "start_time_s": 149.71,
+      "end_time_s": 153.95,
+      "duration_s": 4.24,
+      "text": "Je vais prendre le parapluie au cas où, au bureau aussi.",
+      "speaker_position": [
+        2.5,
+        2.38,
+        1.77
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_5",
+      "speaker_name": "Speaker 5",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 154.11,
+      "end_time_s": 169.91,
+      "duration_s": 15.8,
+      "text": "Bonne idée. Tu as mis les billets de la caisse?",
+      "speaker_position": [
+        6.62,
+        1.99,
+        1.77
+      ],
+      "speaker_size": 0.27
+    },
+    {
+      "speaker_id": "speaker_4",
+      "speaker_name": "Speaker 4",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 170.4,
+      "end_time_s": 173.75,
+      "duration_s": 3.35,
+      "text": "Oui, ils sont dans la poche gauche de ma veste.",
+      "speaker_position": [
+        2.5,
+        2.38,
+        1.77
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_5",
+      "speaker_name": "Speaker 5",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 174.1,
+      "end_time_s": 190.99,
+      "duration_s": 16.89,
+      "text": "Parfait. Et Léa, elle est prête?",
+      "speaker_position": [
+        6.62,
+        1.99,
+        1.77
+      ],
+      "speaker_size": 0.27
+    },
+    {
+      "speaker_id": "speaker_4",
+      "speaker_name": "Speaker 4",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 191.46,
+      "end_time_s": 195.16,
+      "duration_s": 3.7,
+      "text": "Elle est dans sa chambre, en train de chercher ses chaussettes.",
+      "speaker_position": [
+        2.5,
+        2.38,
+        1.77
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_5",
+      "speaker_name": "Speaker 5",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "interruption",
+      "start_time_s": 194.83,
+      "end_time_s": 203.43,
+      "duration_s": 8.6,
+      "text": "Léa! On y va dans cinq minutes, ne cherche pas partout!",
+      "speaker_position": [
+        6.62,
+        1.99,
+        1.77
+      ],
+      "speaker_size": 0.27
+    },
+    {
+      "speaker_id": "speaker_4",
+      "speaker_name": "Speaker 4",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 203.86,
+      "end_time_s": 207.82,
+      "duration_s": 3.96,
+      "text": "Tu veux qu'Alexa mette de la musique pour l'aider à se dépêcher?",
+      "speaker_position": [
+        2.5,
+        2.38,
+        1.77
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_5",
+      "speaker_name": "Speaker 5",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 208.3,
+      "end_time_s": 220.59,
+      "duration_s": 12.29,
+      "text": "Non, pas maintenant, on y va déjà.",
+      "speaker_position": [
+        6.62,
+        1.99,
+        1.77
+      ],
+      "speaker_size": 0.27
+    },
+    {
+      "speaker_id": "speaker_4",
+      "speaker_name": "Speaker 4",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 220.84,
+      "end_time_s": 225.73,
+      "duration_s": 4.89,
+      "text": "Ok. Je vais la chercher. Tu mets la lumière du couloir?",
+      "speaker_position": [
+        2.5,
+        2.38,
+        1.77
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_5",
+      "speaker_name": "Speaker 5",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "interruption",
+      "start_time_s": 225.27,
+      "end_time_s": 237.6,
+      "duration_s": 12.33,
+      "text": "Oui, Alexa, allume la lumière du couloir.",
+      "speaker_position": [
+        6.62,
+        1.99,
+        1.77
+      ],
+      "speaker_size": 0.27
+    },
+    {
+      "speaker_id": "speaker_4",
+      "speaker_name": "Speaker 4",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 238.03,
+      "end_time_s": 240.76,
+      "duration_s": 2.73,
+      "text": "Merci. On part quand tu as tes chaussures?",
+      "speaker_position": [
+        2.5,
+        2.38,
+        1.77
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_5",
+      "speaker_name": "Speaker 5",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 240.91,
+      "end_time_s": 254.28,
+      "duration_s": 13.37,
+      "text": "Je mets mes escarpins, c'est plus rapide. On y est.",
+      "speaker_position": [
+        6.62,
+        1.99,
+        1.77
+      ],
+      "speaker_size": 0.27
+    }
+  ],
+  "ambiance": {
+    "name": "smart_assistant_household",
+    "display_name": "Smart Assistant Household",
+    "description": "Family conversation interspersed with Alexa/Echo commands for timers and smart lights."
+  },
+  "thematic_constraints": [
+    "fakers",
+    "alvia",
+    "deirdre"
+  ],
+  "total_sentences": 89,
+  "disable_effects": true
+}

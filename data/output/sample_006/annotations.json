@@ -1,0 +1,752 @@
+{
+  "session_id": "sample_006",
+  "duration_s": 233.51,
+  "sample_rate": 16000,
+  "num_speakers": 6,
+  "room": {
+    "dimensions": [
+      9.03,
+      9.11,
+      2.71
+    ],
+    "absorption": 0.99,
+    "max_order": 0
+  },
+  "assistant": {
+    "position": [
+      0.32,
+      8.74,
+      0.81
+    ],
+    "mic_type": "circular"
+  },
+  "speakers": [
+    {
+      "id": "speaker_1",
+      "name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "position": [
+        4.42,
+        3.64,
+        1.78
+      ],
+      "size": 0.17,
+      "voice_model": "fr_FR-siwis-low.onnx",
+      "speaker_id": null
+    },
+    {
+      "id": "speaker_2",
+      "name": "Speaker 2",
+      "gender": "male",
+      "language": "fr",
+      "position": [
+        2.96,
+        8.29,
+        1.23
+      ],
+      "size": 0.0,
+      "voice_model": "fr_FR-gilles-low.onnx",
+      "speaker_id": null
+    },
+    {
+      "id": "speaker_3",
+      "name": "Speaker 3",
+      "gender": "female",
+      "language": "fr",
+      "position": [
+        5.68,
+        6.94,
+        1.78
+      ],
+      "size": 0.33,
+      "voice_model": "fr_FR-siwis-medium.onnx",
+      "speaker_id": null
+    },
+    {
+      "id": "speaker_4",
+      "name": "Speaker 4",
+      "gender": "male",
+      "language": "fr",
+      "position": [
+        6.4,
+        4.14,
+        1.25
+      ],
+      "size": 0.0,
+      "voice_model": "fr_FR-mls_1840-low.onnx",
+      "speaker_id": null
+    },
+    {
+      "id": "speaker_5",
+      "name": "Speaker 5",
+      "gender": "female",
+      "language": "fr",
+      "position": [
+        7.14,
+        5.21,
+        1.71
+      ],
+      "size": 0.0,
+      "voice_model": "fr_FR-upmc-medium.onnx",
+      "speaker_id": 0
+    },
+    {
+      "id": "speaker_6",
+      "name": "Speaker 6",
+      "gender": "male",
+      "language": "fr",
+      "position": [
+        2.79,
+        1.3,
+        1.12
+      ],
+      "size": 0.4,
+      "voice_model": "fr_FR-tom-medium.onnx",
+      "speaker_id": null
+    }
+  ],
+  "utterances": [
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 1.14,
+      "end_time_s": 6.52,
+      "duration_s": 5.38,
+      "text": "Bonjour à tous, merci d'être venus. Nous devons valider le planning du sprint 4 avant midi.",
+      "speaker_position": [
+        4.42,
+        3.64,
+        1.78
+      ],
+      "speaker_size": 0.17
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 6.84,
+      "end_time_s": 15.86,
+      "duration_s": 9.02,
+      "text": "Salut. J'ai regardé les tickets. L'architecture du nouveau module semble un peu complexe pour le délai imparti.",
+      "speaker_position": [
+        2.96,
+        8.29,
+        1.23
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 16.37,
+      "end_time_s": 23.37,
+      "duration_s": 7.0,
+      "text": "C'est vrai, mais c'est nécessaire pour réduire la dette technique. Si on ne le fait pas maintenant, ça va nous faire mal plus tard.",
+      "speaker_position": [
+        5.68,
+        6.94,
+        1.78
+      ],
+      "speaker_size": 0.33
+    },
+    {
+      "speaker_id": "speaker_4",
+      "speaker_name": "Speaker 4",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 23.83,
+      "end_time_s": 39.93,
+      "duration_s": 16.1,
+      "text": "Je suis d'accord avec Sarah. Par contre, le budget alloué pour les licences tierces a un peu diminué cette semaine.",
+      "speaker_position": [
+        6.4,
+        4.14,
+        1.25
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_5",
+      "speaker_name": "Speaker 5",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 40.21,
+      "end_time_s": 44.35,
+      "duration_s": 4.14,
+      "text": "Ah bon ? Combien exactement ? Cela va-t-il impacter nos serveurs de test ?",
+      "speaker_position": [
+        7.14,
+        5.21,
+        1.71
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_6",
+      "speaker_name": "Speaker 6",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 44.71,
+      "end_time_s": 51.8,
+      "duration_s": 7.09,
+      "text": "Environ 15%. Mais c'est encore diminiashable si on optimise l'utilisation des ressources cloud.",
+      "speaker_position": [
+        2.79,
+        1.3,
+        1.12
+      ],
+      "speaker_size": 0.4
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 52.05,
+      "end_time_s": 56.08,
+      "duration_s": 4.03,
+      "text": "Diminiashable... Intéressant. Donc, on peut maintenir la qualité sans surcoût ?",
+      "speaker_position": [
+        4.42,
+        3.64,
+        1.78
+      ],
+      "speaker_size": 0.17
+    },
+    {
+      "speaker_id": "speaker_4",
+      "speaker_name": "Speaker 4",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 56.43,
+      "end_time_s": 64.0,
+      "duration_s": 7.57,
+      "text": "Oui, à condition qu'on arrête de payer pour ces consultations inutiles du cabinet consultary externe.",
+      "speaker_position": [
+        6.4,
+        4.14,
+        1.25
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 64.39,
+      "end_time_s": 69.18,
+      "duration_s": 4.79,
+      "text": "Tu parles de l'équipe de conseil ? Ils ont pourtant validé notre choix technologique.",
+      "speaker_position": [
+        5.68,
+        6.94,
+        1.78
+      ],
+      "speaker_size": 0.33
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 69.66,
+      "end_time_s": 76.2,
+      "duration_s": 6.54,
+      "text": "Leurs recommandations sont bonnes, mais leur rapport final avait une belle badigeon de jargon pour justifier le prix.",
+      "speaker_position": [
+        2.96,
+        8.29,
+        1.23
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_5",
+      "speaker_name": "Speaker 5",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 76.59,
+      "end_time_s": 80.84,
+      "duration_s": 4.25,
+      "text": "Tu as raison. Ils ont rendu le processus compliqué pour paraître indispensables.",
+      "speaker_position": [
+        7.14,
+        5.21,
+        1.71
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_6",
+      "speaker_name": "Speaker 6",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 81.08,
+      "end_time_s": 84.76,
+      "duration_s": 3.68,
+      "text": "Donc, on retire leur intervention du prochain sprint ?",
+      "speaker_position": [
+        2.79,
+        1.3,
+        1.12
+      ],
+      "speaker_size": 0.4
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 84.94,
+      "end_time_s": 89.45,
+      "duration_s": 4.51,
+      "text": "Oui, et on utilise cette économie pour embaucher un développeur supplémentaire en interne.",
+      "speaker_position": [
+        4.42,
+        3.64,
+        1.78
+      ],
+      "speaker_size": 0.17
+    },
+    {
+      "speaker_id": "speaker_4",
+      "speaker_name": "Speaker 4",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 89.82,
+      "end_time_s": 105.79,
+      "duration_s": 15.97,
+      "text": "Ça marche. Je vais ajuster les coûts dans le tableau de bord financier.",
+      "speaker_position": [
+        6.4,
+        4.14,
+        1.25
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 106.39,
+      "end_time_s": 111.14,
+      "duration_s": 4.75,
+      "text": "Parfait. Je m'occupe de réorganiser les tâches techniques pour compenser.",
+      "speaker_position": [
+        2.96,
+        8.29,
+        1.23
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 111.71,
+      "end_time_s": 115.29,
+      "duration_s": 3.58,
+      "text": "Super. On se revoit demain pour le point de statut ?",
+      "speaker_position": [
+        5.68,
+        6.94,
+        1.78
+      ],
+      "speaker_size": 0.33
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 115.63,
+      "end_time_s": 118.21,
+      "duration_s": 2.58,
+      "text": "Oui, à 9h. Merci à tous.",
+      "speaker_position": [
+        4.42,
+        3.64,
+        1.78
+      ],
+      "speaker_size": 0.17
+    },
+    {
+      "speaker_id": "speaker_4",
+      "speaker_name": "Speaker 4",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 118.54,
+      "end_time_s": 128.19,
+      "duration_s": 9.65,
+      "text": "J'ai vérifié les métriques de performance, elles sont dans la marge d'erreur acceptable.",
+      "speaker_position": [
+        6.4,
+        4.14,
+        1.25
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_5",
+      "speaker_name": "Speaker 5",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 128.37,
+      "end_time_s": 133.58,
+      "duration_s": 5.21,
+      "text": "C'est un soulagement, car le client a peur que notre solution ne soit qu'un badigeon sur l'ancien système.",
+      "speaker_position": [
+        7.14,
+        5.21,
+        1.71
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 134.03,
+      "end_time_s": 139.41,
+      "duration_s": 5.38,
+      "text": "Justement, c'est pour ça qu'on a choisi une architecture micro-services, pas juste une couche superficielle.",
+      "speaker_position": [
+        4.42,
+        3.64,
+        1.78
+      ],
+      "speaker_size": 0.17
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 139.95,
+      "end_time_s": 145.47,
+      "duration_s": 5.52,
+      "text": "Mais il faut qu'on s'assure que chaque module reste diminishable en cas de besoin budgétaire.",
+      "speaker_position": [
+        2.96,
+        8.29,
+        1.23
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_6",
+      "speaker_name": "Speaker 6",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 145.99,
+      "end_time_s": 149.86,
+      "duration_s": 3.87,
+      "text": "Tu veux dire qu'on peut retirer des fonctionnalités secondaires sans casser le tout ?",
+      "speaker_position": [
+        2.79,
+        1.3,
+        1.12
+      ],
+      "speaker_size": 0.4
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 150.04,
+      "end_time_s": 155.74,
+      "duration_s": 5.7,
+      "text": "Exactement, c'est le principe de la modularité. Si le budget s'ajuste, on adapte.",
+      "speaker_position": [
+        5.68,
+        6.94,
+        1.78
+      ],
+      "speaker_size": 0.33
+    },
+    {
+      "speaker_id": "speaker_4",
+      "speaker_name": "Speaker 4",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 156.21,
+      "end_time_s": 181.75,
+      "duration_s": 25.54,
+      "text": "J'ai noté ça dans le document de spécification. C'est bien plus flexible qu'une approche monolithique.",
+      "speaker_position": [
+        6.4,
+        4.14,
+        1.25
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_5",
+      "speaker_name": "Speaker 5",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "interruption",
+      "start_time_s": 181.16,
+      "end_time_s": 186.0,
+      "duration_s": 4.84,
+      "text": "Le client appréciera aussi qu'on ne soit pas une simple consultary qui livre et part.",
+      "speaker_position": [
+        7.14,
+        5.21,
+        1.71
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 186.53,
+      "end_time_s": 189.73,
+      "duration_s": 3.2,
+      "text": "On reste là pour le support post-lancement, c'est dans le contrat.",
+      "speaker_position": [
+        4.42,
+        3.64,
+        1.78
+      ],
+      "speaker_size": 0.17
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 189.89,
+      "end_time_s": 193.79,
+      "duration_s": 3.9,
+      "text": "Donc on prévoit une phase de maintenance de trois mois minimum.",
+      "speaker_position": [
+        2.96,
+        8.29,
+        1.23
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_6",
+      "speaker_name": "Speaker 6",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 194.06,
+      "end_time_s": 199.52,
+      "duration_s": 5.46,
+      "text": "C'est raisonnable. J'ai un doute sur la compatibilité avec l'API externe cependant.",
+      "speaker_position": [
+        2.79,
+        1.3,
+        1.12
+      ],
+      "speaker_size": 0.4
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 200.01,
+      "end_time_s": 205.55,
+      "duration_s": 5.54,
+      "text": "On a déjà fait un test de charge, ça passe sans problème à 80% de la charge prévue.",
+      "speaker_position": [
+        5.68,
+        6.94,
+        1.78
+      ],
+      "speaker_size": 0.33
+    },
+    {
+      "speaker_id": "speaker_4",
+      "speaker_name": "Speaker 4",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 206.1,
+      "end_time_s": 213.7,
+      "duration_s": 7.6,
+      "text": "Il faudra peut-être ajuster les timeouts si on atteint 100% de la charge.",
+      "speaker_position": [
+        6.4,
+        4.14,
+        1.25
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_5",
+      "speaker_name": "Speaker 5",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 213.92,
+      "end_time_s": 218.26,
+      "duration_s": 4.34,
+      "text": "On peut intégrer un mécanisme de fallback automatique dans la prochaine itération.",
+      "speaker_position": [
+        7.14,
+        5.21,
+        1.71
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_1",
+      "speaker_name": "Speaker 1",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 218.57,
+      "end_time_s": 222.95,
+      "duration_s": 4.38,
+      "text": "Parfait. Je valide cette approche. On envoie le rapport de sprint demain matin.",
+      "speaker_position": [
+        4.42,
+        3.64,
+        1.78
+      ],
+      "speaker_size": 0.17
+    },
+    {
+      "speaker_id": "speaker_2",
+      "speaker_name": "Speaker 2",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 223.38,
+      "end_time_s": 226.63,
+      "duration_s": 3.25,
+      "text": "Je m'en occupe. Bonne soirée à tous.",
+      "speaker_position": [
+        2.96,
+        8.29,
+        1.23
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_3",
+      "speaker_name": "Speaker 3",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 226.79,
+      "end_time_s": 227.58,
+      "duration_s": 0.79,
+      "text": "À demain !",
+      "speaker_position": [
+        5.68,
+        6.94,
+        1.78
+      ],
+      "speaker_size": 0.33
+    },
+    {
+      "speaker_id": "speaker_4",
+      "speaker_name": "Speaker 4",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 227.81,
+      "end_time_s": 229.7,
+      "duration_s": 1.89,
+      "text": "Salut.",
+      "speaker_position": [
+        6.4,
+        4.14,
+        1.25
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_5",
+      "speaker_name": "Speaker 5",
+      "gender": "female",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 229.85,
+      "end_time_s": 230.28,
+      "duration_s": 0.43,
+      "text": "Bye !",
+      "speaker_position": [
+        7.14,
+        5.21,
+        1.71
+      ],
+      "speaker_size": 0.0
+    },
+    {
+      "speaker_id": "speaker_6",
+      "speaker_name": "Speaker 6",
+      "gender": "male",
+      "language": "fr",
+      "vocal_style": "normal",
+      "start_time_s": 230.58,
+      "end_time_s": 231.98,
+      "duration_s": 1.4,
+      "text": "À tout à l'heure.",
+      "speaker_position": [
+        2.79,
+        1.3,
+        1.12
+      ],
+      "speaker_size": 0.4
+    }
+  ],
+  "ambiance": {
+    "name": "workplace_meeting",
+    "display_name": "Workplace Meeting",
+    "description": "Colleagues discussing sprint deadlines, project deliverables, and technical issues."
+  },
+  "thematic_constraints": [
+    "consultary",
+    "badigeon",
+    "diminishable"
+  ],
+  "total_sentences": 37,
+  "disable_effects": true
+}
