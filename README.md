@@ -238,16 +238,17 @@ Every generated dataset batch produces numbered sample folders inside `data/outp
 ```
 data/output/
 ├── dataset_manifest.json          # Master dataset manifest with summary of all samples
+├── all_samples_benchmark.json     # Full empirical benchmark metrics across all samples & pipelines
 ├── sample_001/
-│   ├── mixed_scene.wav            # Multi-channel composite spatial audio recording
+│   ├── mixed_scene.mp3            # High-fidelity 192kbps composite spatial audio recording (.mp3/.wav)
 │   ├── annotations.json           # Detailed manifest (speaker 3D coordinates, genders, models, words)
 │   ├── diarization.rttm           # Standard NIST RTTM diarization ground truth
 │   ├── transcripts.jsonl          # Time-aligned ASR transcripts with speaker IDs
 │   ├── spectrogram_analysis.png   # (When analyzed) 5-panel acoustic evaluation plot
 │   ├── analysis_report.json       # (When analyzed) JSON metrics for SI-SDR and recoverability
 │   └── isolated_speakers/         # Ground-truth isolated spatial stems for source separation
-│       ├── speaker_1.wav
-│       ├── speaker_2.wav
+│       ├── speaker_1.mp3
+│       ├── speaker_2.mp3
 │       └── ...
 └── sample_002/
     └── ...
@@ -257,20 +258,29 @@ data/output/
 
 ## Generated Dataset Samples (sample_001 – sample_010)
 
-The repository includes **10 pre-rendered, high-fidelity conversational scenes** generated using MADGen, featuring diverse room acoustics, multilingual dialogues, balanced gender distributions, and virtual smart assistant microphone arrays:
+The repository includes **10 pre-rendered, high-fidelity conversational scenes** generated using MADGen, converted to high-quality MP3 (192 kbps) for lightweight storage and instant playback. Each scene models authentic room impulse responses (RIRs), multi-lingual dialogues, balanced gender distributions, and virtual smart assistant microphone arrays.
 
-| Sample ID | Duration | Channels & Geometry | Speakers | Language | Scenario / Ambiance | Included Ground-Truth Files |
-| :--- | :---: | :---: | :---: | :---: | :---: | :--- |
-| [`sample_001`](data/output/sample_001/) | 147.4s | 1-ch (Mono) | 5 | English | Gaming Session | `mixed_scene.wav`, `transcripts.jsonl`, `diarization.rttm`, `isolated_speakers/`, `annotations.json` |
-| [`sample_002`](data/output/sample_002/) | 81.6s | 4-ch (Circular Array) | 2 | French | Late Night Philosophy | `mixed_scene.wav`, `transcripts.jsonl`, `diarization.rttm`, `isolated_speakers/`, `annotations.json` |
-| [`sample_003`](data/output/sample_003/) | 448.7s | 4-ch (Circular Array) | 4 | French | Academic Defense | `mixed_scene.wav`, `transcripts.jsonl`, `diarization.rttm`, `isolated_speakers/`, `annotations.json` |
-| [`sample_004`](data/output/sample_004/) | 201.4s | 4-ch (Circular Array) | 3 | French | Kitchen Cooking | `mixed_scene.wav`, `transcripts.jsonl`, `diarization.rttm`, `isolated_speakers/`, `annotations.json` |
-| [`sample_005`](data/output/sample_005/) | 404.6s | 4-ch (Circular Array) | 6 | French | Heated Argument | `mixed_scene.wav`, `transcripts.jsonl`, `diarization.rttm`, `isolated_speakers/`, `annotations.json` |
-| [`sample_006`](data/output/sample_006/) | 233.5s | 4-ch (Circular Array) | 6 | French | Party Celebration | `mixed_scene.wav`, `transcripts.jsonl`, `diarization.rttm`, `isolated_speakers/`, `annotations.json` |
-| [`sample_007`](data/output/sample_007/) | 174.7s | 2-ch (Stereo Array) | 6 | French | Late Night Philosophy | `mixed_scene.wav`, `transcripts.jsonl`, `diarization.rttm`, `isolated_speakers/`, `annotations.json` |
-| [`sample_008`](data/output/sample_008/) | 187.3s | 2-ch (Stereo Array) | 3 | English | Smart Assistant Household | `mixed_scene.wav`, `transcripts.jsonl`, `diarization.rttm`, `isolated_speakers/`, `annotations.json` |
-| [`sample_009`](data/output/sample_009/) | 145.3s | 1-ch (Mono) | 3 | English | Family Dinner | `mixed_scene.wav`, `transcripts.jsonl`, `diarization.rttm`, `isolated_speakers/`, `annotations.json` |
-| [`sample_010`](data/output/sample_010/) | 82.7s | 4-ch (Circular Array) | 2 | English | Casual Chit-Chat | `mixed_scene.wav`, `transcripts.jsonl`, `diarization.rttm`, `isolated_speakers/`, `annotations.json` |
+> [!TIP]
+> **Interactive Web Audio Player Widget**: You can launch an interactive standalone multi-track music player with animated waveforms, time scrubber, volume slider, and track selection by opening [`index.html`](index.html) or running:
+> ```bash
+> python3 -m http.server 8000
+> # Then open http://localhost:8000 in your browser
+> ```
+
+### Audio Player & Sample Showcase
+
+| Sample ID | Scenario / Ambiance | Duration | Geometry | Spks | Lang | Audio Player Widget | Direct Playback Link |
+| :--- | :--- | :---: | :---: | :---: | :---: | :--- | :--- |
+| [`sample_001`](data/output/sample_001/) | Gaming Session | 147.4s | 1-ch (Mono) | 5 | `en` | <audio controls preload="none"><source src="https://github.com/nath54/audio-tests/raw/main/data/output/sample_001/mixed_scene.mp3" type="audio/mpeg"><a href="https://github.com/nath54/audio-tests/raw/main/data/output/sample_001/mixed_scene.mp3">▶️ Play</a></audio> | [▶️ Play MP3 (147.4s)](https://github.com/nath54/audio-tests/raw/main/data/output/sample_001/mixed_scene.mp3) |
+| [`sample_002`](data/output/sample_002/) | Late Night Philosophy | 81.6s | 4-ch (Circular Array) | 2 | `fr` | <audio controls preload="none"><source src="https://github.com/nath54/audio-tests/raw/main/data/output/sample_002/mixed_scene.mp3" type="audio/mpeg"><a href="https://github.com/nath54/audio-tests/raw/main/data/output/sample_002/mixed_scene.mp3">▶️ Play</a></audio> | [▶️ Play MP3 (81.6s)](https://github.com/nath54/audio-tests/raw/main/data/output/sample_002/mixed_scene.mp3) |
+| [`sample_003`](data/output/sample_003/) | Academic Defense | 448.7s | 4-ch (Circular Array) | 4 | `fr` | <audio controls preload="none"><source src="https://github.com/nath54/audio-tests/raw/main/data/output/sample_003/mixed_scene.mp3" type="audio/mpeg"><a href="https://github.com/nath54/audio-tests/raw/main/data/output/sample_003/mixed_scene.mp3">▶️ Play</a></audio> | [▶️ Play MP3 (448.7s)](https://github.com/nath54/audio-tests/raw/main/data/output/sample_003/mixed_scene.mp3) |
+| [`sample_004`](data/output/sample_004/) | Kitchen Cooking | 201.4s | 4-ch (Circular Array) | 3 | `fr` | <audio controls preload="none"><source src="https://github.com/nath54/audio-tests/raw/main/data/output/sample_004/mixed_scene.mp3" type="audio/mpeg"><a href="https://github.com/nath54/audio-tests/raw/main/data/output/sample_004/mixed_scene.mp3">▶️ Play</a></audio> | [▶️ Play MP3 (201.4s)](https://github.com/nath54/audio-tests/raw/main/data/output/sample_004/mixed_scene.mp3) |
+| [`sample_005`](data/output/sample_005/) | Heated Argument | 404.6s | 4-ch (Circular Array) | 6 | `fr` | <audio controls preload="none"><source src="https://github.com/nath54/audio-tests/raw/main/data/output/sample_005/mixed_scene.mp3" type="audio/mpeg"><a href="https://github.com/nath54/audio-tests/raw/main/data/output/sample_005/mixed_scene.mp3">▶️ Play</a></audio> | [▶️ Play MP3 (404.6s)](https://github.com/nath54/audio-tests/raw/main/data/output/sample_005/mixed_scene.mp3) |
+| [`sample_006`](data/output/sample_006/) | Party Celebration | 233.5s | 4-ch (Circular Array) | 6 | `fr` | <audio controls preload="none"><source src="https://github.com/nath54/audio-tests/raw/main/data/output/sample_006/mixed_scene.mp3" type="audio/mpeg"><a href="https://github.com/nath54/audio-tests/raw/main/data/output/sample_006/mixed_scene.mp3">▶️ Play</a></audio> | [▶️ Play MP3 (233.5s)](https://github.com/nath54/audio-tests/raw/main/data/output/sample_006/mixed_scene.mp3) |
+| [`sample_007`](data/output/sample_007/) | Late Night Philosophy | 174.7s | 2-ch (Stereo Array) | 6 | `fr` | <audio controls preload="none"><source src="https://github.com/nath54/audio-tests/raw/main/data/output/sample_007/mixed_scene.mp3" type="audio/mpeg"><a href="https://github.com/nath54/audio-tests/raw/main/data/output/sample_007/mixed_scene.mp3">▶️ Play</a></audio> | [▶️ Play MP3 (174.7s)](https://github.com/nath54/audio-tests/raw/main/data/output/sample_007/mixed_scene.mp3) |
+| [`sample_008`](data/output/sample_008/) | Smart Assistant Household | 187.3s | 2-ch (Stereo Array) | 3 | `en` | <audio controls preload="none"><source src="https://github.com/nath54/audio-tests/raw/main/data/output/sample_008/mixed_scene.mp3" type="audio/mpeg"><a href="https://github.com/nath54/audio-tests/raw/main/data/output/sample_008/mixed_scene.mp3">▶️ Play</a></audio> | [▶️ Play MP3 (187.3s)](https://github.com/nath54/audio-tests/raw/main/data/output/sample_008/mixed_scene.mp3) |
+| [`sample_009`](data/output/sample_009/) | Family Dinner | 145.3s | 1-ch (Mono) | 3 | `en` | <audio controls preload="none"><source src="https://github.com/nath54/audio-tests/raw/main/data/output/sample_009/mixed_scene.mp3" type="audio/mpeg"><a href="https://github.com/nath54/audio-tests/raw/main/data/output/sample_009/mixed_scene.mp3">▶️ Play</a></audio> | [▶️ Play MP3 (145.3s)](https://github.com/nath54/audio-tests/raw/main/data/output/sample_009/mixed_scene.mp3) |
+| [`sample_010`](data/output/sample_010/) | Casual Chit-Chat | 82.7s | 4-ch (Circular Array) | 2 | `en` | <audio controls preload="none"><source src="https://github.com/nath54/audio-tests/raw/main/data/output/sample_010/mixed_scene.mp3" type="audio/mpeg"><a href="https://github.com/nath54/audio-tests/raw/main/data/output/sample_010/mixed_scene.mp3">▶️ Play</a></audio> | [▶️ Play MP3 (82.7s)](https://github.com/nath54/audio-tests/raw/main/data/output/sample_010/mixed_scene.mp3) |
 
 ---
 

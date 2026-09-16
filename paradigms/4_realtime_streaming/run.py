@@ -70,12 +70,14 @@ def main() -> None:
 
     args = parser.parse_args()
     sample_dir = Path(args.sample_dir)
-    audio_path = sample_dir / "mixed_scene.wav"
+    audio_path = sample_dir / "mixed_scene.mp3"
+    if not audio_path.is_file():
+        audio_path = sample_dir / "mixed_scene.wav"
     if not audio_path.is_file():
         audio_path = sample_dir / "mixed.wav"
 
     if not audio_path.is_file():
-        logger.error("Mixed audio file not found in %s", sample_dir)
+        logger.error("Mixed audio file not found in %s (expected mixed_scene.mp3 or mixed_scene.wav)", sample_dir)
         return
 
     logger.info("Initializing Paradigm 4 Pipeline (Chunk: %d ms, Whisper size: %s)...", args.chunk_ms, args.whisper_size)

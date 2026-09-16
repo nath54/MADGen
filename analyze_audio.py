@@ -123,12 +123,14 @@ def load_sample_audio_and_stems(
         tuple[np.ndarray, dict[str, np.ndarray], int]: (mix_data, stems_dict, sample_rate).
 
     Raises:
-        FileNotFoundError: If mixed_scene.wav is missing.
+        FileNotFoundError: If mixed_scene.mp3 or mixed_scene.wav is missing.
     """
 
-    mix_file: Path = sample_dir / "mixed_scene.wav"
+    mix_file: Path = sample_dir / "mixed_scene.mp3"
     if not mix_file.is_file():
-        raise FileNotFoundError(f"Missing mixed_scene.wav in {sample_dir}")
+        mix_file = sample_dir / "mixed_scene.wav"
+    if not mix_file.is_file():
+        raise FileNotFoundError(f"Missing mixed_scene.mp3 or mixed_scene.wav in {sample_dir}")
 
     mix_data, sample_rate = sf.read(str(mix_file))
 
@@ -136,7 +138,8 @@ def load_sample_audio_and_stems(
     stems_dict: dict[str, np.ndarray] = {}
 
     if stems_dir.is_dir():
-        for stem_file in sorted(stems_dir.glob("*.wav")):
+        stem_files = sorted(list(stems_dir.glob("*.mp3")) or list(stems_dir.glob("*.wav")))
+        for stem_file in stem_files:
             spk_id: str = stem_file.stem
             stem_audio, _ = sf.read(str(stem_file))
             stems_dict[spk_id] = stem_audio
@@ -538,7 +541,7 @@ def _resolve_target_directories(args: argparse.Namespace) -> list[Path]:
             return []
         return [
             entry for entry in sorted(args.output_dir.iterdir())
-            if entry.is_dir() and (entry / "mixed_scene.wav").is_file()
+            if entry.is_dir() and ((entry / "mixed_scene.mp3").is_file() or (entry / "mixed_scene.wav").is_file())
         ]
 
     if args.sample_dir:

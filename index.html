@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MADGen - Multi-Speaker Dataset Audio Player</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #0ea5e9;
+      --accent-glow: rgba(56, 189, 248, 0.25);
+      --highlight: #a855f7;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    body {
+      background: radial-gradient(circle at top, #1e1b4b 0%, var(--bg) 60%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+      max-width: 800px;
+    }
+    header h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #38bdf8, #818cf8, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+    header p {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      line-height: 1.5;
+    }
+    .player-container {
+      width: 100%;
+      max-width: 900px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 768px) {
+      .player-container {
+        grid-template-columns: 340px 1fr;
+      }
+    }
+    /* Playlist sidebar */
+    .playlist {
+      background: #182234;
+      border-right: 1px solid var(--card-border);
+      padding: 1rem;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+    .playlist h2 {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      padding-left: 0.5rem;
+    }
+    .track-item {
+      display: flex;
+      flex-direction: column;
+      padding: 0.75rem 0.85rem;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 0.4rem;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+    }
+    .track-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .track-item.active {
+      background: rgba(56, 189, 248, 0.12);
+      border-color: var(--accent);
+    }
+    .track-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .track-meta {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+      display: flex;
+      gap: 0.5rem;
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .badge-lang { background: #3b82f6; color: white; }
+    .badge-ch { background: #8b5cf6; color: white; }
+
+    /* Active Player Area */
+    .player-main {
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .scene-header {
+      margin-bottom: 1.5rem;
+    }
+    .scene-id {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .scene-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin: 0.25rem 0 0.5rem;
+    }
+    .scene-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    
+    /* Visualizer */
+    .visualizer-box {
+      background: #111827;
+      border-radius: 12px;
+      height: 110px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 0 1rem;
+      margin: 1.5rem 0;
+      border: 1px solid #1f293d;
+      overflow: hidden;
+    }
+    .v-bar {
+      width: 4px;
+      height: 8px;
+      background: linear-gradient(to top, var(--accent), var(--highlight));
+      border-radius: 4px;
+      transition: height 0.1s ease;
+    }
+
+    /* Controls */
+    .time-bar {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .time-text {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+      min-width: 45px;
+    }
+    .seek-slider {
+      flex: 1;
+      accent-color: var(--accent);
+      height: 6px;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .btn-circle {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #2563eb);
+      color: white;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.4rem;
+      box-shadow: 0 6px 20px var(--accent-glow);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .btn-circle:hover {
+      transform: scale(1.06);
+      box-shadow: 0 8px 24px var(--accent-glow);
+    }
+    .btn-secondary {
+      background: #334155;
+      color: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: background 0.2s ease;
+    }
+    .btn-secondary:hover {
+      background: #475569;
+    }
+    .volume-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .volume-slider {
+      width: 90px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+    .links-row {
+      margin-top: 1.5rem;
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .btn-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.8rem;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      background: #273549;
+      color: #cbd5e1;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-link:hover {
+      background: #384961;
+      color: white;
+    }
+    footer {
+      margin-top: 2rem;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      text-align: center;
+    }
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>MADGen Multi-Speaker Audio Player</h1>
+    <p>Interactive player for the 10 procedural multi-speaker conversational acoustic scenes generated with room impulse responses and virtual smart assistant microphone arrays.</p>
+  </header>
+
+  <div class="player-container">
+    <!-- Tracklist -->
+    <div class="playlist" id="playlist">
+      <h2>Generated Samples (10)</h2>
+      <!-- Generated via JS -->
+    </div>
+
+    <!-- Active Player -->
+    <div class="player-main">
+      <div class="scene-header">
+        <div class="scene-id" id="displayId">sample_001</div>
+        <div class="scene-title" id="displayTitle">Gaming Session</div>
+        <div class="scene-desc" id="displayDesc">5 English speakers in a simulated living room with lively turn-taking and cross-talk.</div>
+      </div>
+
+      <!-- Animated Visualizer -->
+      <div class="visualizer-box" id="visualizer">
+        <!-- Bars generated by JS -->
+      </div>
+
+      <!-- Scrubber -->
+      <div class="time-bar">
+        <span class="time-text" id="currentTime">0:00</span>
+        <input type="range" class="seek-slider" id="seekSlider" value="0" min="0" max="100" step="0.1">
+        <span class="time-text" id="durationTime">0:00</span>
+      </div>
+
+      <!-- Controls -->
+      <div class="controls">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <button class="btn-secondary" id="btnPrev" title="Previous Track">⏮</button>
+          <button class="btn-circle" id="btnPlay" title="Play / Pause">▶</button>
+          <button class="btn-secondary" id="btnNext" title="Next Track">⏭</button>
+        </div>
+
+        <div class="volume-group">
+          <span style="font-size: 1.1rem;" id="volIcon">🔊</span>
+          <input type="range" class="volume-slider" id="volSlider" min="0" max="1" step="0.05" value="0.85">
+        </div>
+      </div>
+
+      <!-- Direct links -->
+      <div class="links-row">
+        <a id="linkAudio" class="btn-link" href="#" target="_blank">⬇️ Raw MP3 File</a>
+        <a id="linkRTTM" class="btn-link" href="#" target="_blank">📄 RTTM Diarization</a>
+        <a id="linkTranscripts" class="btn-link" href="#" target="_blank">📝 ASR Transcripts</a>
+        <a id="linkAnnotations" class="btn-link" href="#" target="_blank">🔍 Annotations JSON</a>
+      </div>
+    </div>
+  </div>
+
+  <audio id="audioElement" preload="metadata"></audio>
+
+  <footer>
+    <p>Part of <a href="https://github.com/nath54/audio-tests" target="_blank">MADGen (Multi-Agent Dataset Generator)</a> &bull; High-Fidelity Multi-Speaker Benchmark Suite</p>
+  </footer>
+
+  <script>
+    const SAMPLES = [
+      {
+        id: "sample_001",
+        title: "Gaming Session",
+        duration: 147.4,
+        speakers: 5,
+        lang: "en",
+        channels: "1-ch Mono",
+        desc: "5 English speakers in a simulated living room gaming session with fast-paced conversational dynamics.",
+        path: "data/output/sample_001/"
+      },
+      {
+        id: "sample_002",
+        title: "Late Night Philosophy",
+        duration: 81.6,
+        speakers: 2,
+        lang: "fr",
+        channels: "4-ch Circular",
+        desc: "2 French speakers in a quiet study engaged in reflective philosophical discussion around a circular mic array.",
+        path: "data/output/sample_002/"
+      },
+      {
+        id: "sample_003",
+        title: "Academic Defense",
+        duration: 448.7,
+        speakers: 4,
+        lang: "fr",
+        channels: "4-ch Circular",
+        desc: "4 French speakers in a university seminar hall conducting a thesis examination with formal turn-taking.",
+        path: "data/output/sample_003/"
+      },
+      {
+        id: "sample_004",
+        title: "Kitchen Cooking",
+        duration: 201.4,
+        speakers: 3,
+        lang: "fr",
+        channels: "4-ch Circular",
+        desc: "3 French speakers preparing a meal together with lively interruptions and spatial movement.",
+        path: "data/output/sample_004/"
+      },
+      {
+        id: "sample_005",
+        title: "Heated Argument",
+        duration: 404.6,
+        speakers: 6,
+        lang: "fr",
+        channels: "4-ch Circular",
+        desc: "6 French speakers in a high-overlap dispute with intense cross-talk and overlapping speech bursts.",
+        path: "data/output/sample_005/"
+      },
+      {
+        id: "sample_006",
+        title: "Party Celebration",
+        duration: 233.5,
+        speakers: 6,
+        lang: "fr",
+        channels: "4-ch Circular",
+        desc: "6 French speakers in a noisy reverberant party room with music and concurrent side conversations.",
+        path: "data/output/sample_006/"
+      },
+      {
+        id: "sample_007",
+        title: "Late Night Philosophy (Stereo)",
+        duration: 174.7,
+        speakers: 6,
+        lang: "fr",
+        channels: "2-ch Stereo",
+        desc: "6 French speakers in an intimate late-night salon recorded via a binaural stereo pair.",
+        path: "data/output/sample_007/"
+      },
+      {
+        id: "sample_008",
+        title: "Smart Assistant Household",
+        duration: 187.3,
+        speakers: 3,
+        lang: "en",
+        channels: "2-ch Stereo",
+        desc: "3 English speakers in a smart home environment addressing both the virtual assistant and each other.",
+        path: "data/output/sample_008/"
+      },
+      {
+        id: "sample_009",
+        title: "Family Dinner",
+        duration: 145.3,
+        speakers: 3,
+        lang: "en",
+        channels: "1-ch Mono",
+        desc: "3 English speakers around a dining table sharing stories with casual overlapping remarks.",
+        path: "data/output/sample_009/"
+      },
+      {
+        id: "sample_010",
+        title: "Casual Chit-Chat",
+        duration: 82.7,
+        speakers: 2,
+        lang: "en",
+        channels: "4-ch Circular",
+        desc: "2 English speakers in a modern open-plan office chatting during a coffee break.",
+        path: "data/output/sample_010/"
+      }
+    ];
+
+    let currentIndex = 0;
+    const audio = document.getElementById("audioElement");
+    const playlistEl = document.getElementById("playlist");
+    const btnPlay = document.getElementById("btnPlay");
+    const btnPrev = document.getElementById("btnPrev");
+    const btnNext = document.getElementById("btnNext");
+    const seekSlider = document.getElementById("seekSlider");
+    const volSlider = document.getElementById("volSlider");
+    const currentTimeEl = document.getElementById("currentTime");
+    const durationTimeEl = document.getElementById("durationTime");
+    const displayId = document.getElementById("displayId");
+    const displayTitle = document.getElementById("displayTitle");
+    const displayDesc = document.getElementById("displayDesc");
+    const visualizer = document.getElementById("visualizer");
+
+    // Init visualizer bars
+    const BAR_COUNT = 48;
+    const bars = [];
+    for (let i = 0; i < BAR_COUNT; i++) {
+      const b = document.createElement("div");
+      b.className = "v-bar";
+      visualizer.appendChild(b);
+      bars.push(b);
+    }
+
+    function formatTime(secs) {
+      if (isNaN(secs) || secs < 0) return "0:00";
+      const m = Math.floor(secs / 60);
+      const s = Math.floor(secs % 60);
+      return `${m}:${s < 10 ? '0' : ''}${s}`;
+    }
+
+    function renderPlaylist() {
+      playlistEl.innerHTML = "<h2>Generated Samples (10)</h2>";
+      SAMPLES.forEach((s, idx) => {
+        const item = document.createElement("div");
+        item.className = `track-item ${idx === currentIndex ? 'active' : ''}`;
+        item.innerHTML = `
+          <div class="track-title">
+            <span>${s.id}: ${s.title}</span>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">${formatTime(s.duration)}</span>
+          </div>
+          <div class="track-meta">
+            <span class="badge badge-lang">${s.lang}</span>
+            <span class="badge badge-ch">${s.channels}</span>
+            <span>${s.speakers} spks</span>
+          </div>
+        `;
+        item.addEventListener("click", () => loadTrack(idx, true));
+        playlistEl.appendChild(item);
+      });
+    }
+
+    function loadTrack(idx, autoPlay = false) {
+      currentIndex = idx;
+      const s = SAMPLES[idx];
+      audio.src = `${s.path}mixed_scene.mp3`;
+      displayId.innerText = s.id;
+      displayTitle.innerText = s.title;
+      displayDesc.innerText = `${s.speakers} speakers (${s.lang.toUpperCase()}) &bull; ${s.channels} &bull; ${s.desc}`;
+      durationTimeEl.innerText = formatTime(s.duration);
+
+      document.getElementById("linkAudio").href = `${s.path}mixed_scene.mp3`;
+      document.getElementById("linkRTTM").href = `${s.path}diarization.rttm`;
+      document.getElementById("linkTranscripts").href = `${s.path}transcripts.jsonl`;
+      document.getElementById("linkAnnotations").href = `${s.path}annotations.json`;
+
+      renderPlaylist();
+
+      if (autoPlay) {
+        audio.play().then(() => {
+          btnPlay.innerText = "⏸";
+        }).catch(() => {});
+      } else {
+        btnPlay.innerText = "▶";
+      }
+    }
+
+    btnPlay.addEventListener("click", () => {
+      if (audio.paused) {
+        audio.play();
+        btnPlay.innerText = "⏸";
+      } else {
+        audio.pause();
+        btnPlay.innerText = "▶";
+      }
+    });
+
+    btnPrev.addEventListener("click", () => {
+      const prev = (currentIndex - 1 + SAMPLES.length) % SAMPLES.length;
+      loadTrack(prev, !audio.paused);
+    });
+
+    btnNext.addEventListener("click", () => {
+      const next = (currentIndex + 1) % SAMPLES.length;
+      loadTrack(next, !audio.paused);
+    });
+
+    audio.addEventListener("timeupdate", () => {
+      if (!isNaN(audio.duration) && audio.duration > 0) {
+        seekSlider.value = (audio.currentTime / audio.duration) * 100;
+        currentTimeEl.innerText = formatTime(audio.currentTime);
+      }
+      if (!audio.paused) {
+        animateVisualizer();
+      }
+    });
+
+    seekSlider.addEventListener("input", () => {
+      if (!isNaN(audio.duration)) {
+        audio.currentTime = (seekSlider.value / 100) * audio.duration;
+      }
+    });
+
+    volSlider.addEventListener("input", (e) => {
+      audio.volume = e.target.value;
+      document.getElementById("volIcon").innerText = e.target.value > 0.5 ? "🔊" : (e.target.value > 0 ? "🔉" : "🔇");
+    });
+
+    audio.addEventListener("ended", () => {
+      const next = (currentIndex + 1) % SAMPLES.length;
+      loadTrack(next, true);
+    });
+
+    function animateVisualizer() {
+      bars.forEach((b, i) => {
+        const h = Math.floor(Math.random() * 75) + 10;
+        b.style.height = `${h}px`;
+      });
+    }
+
+    // Initialize
+    loadTrack(0, false);
+    audio.volume = 0.85;
+  </script>
+</body>
+</html>

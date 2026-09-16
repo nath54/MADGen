@@ -139,7 +139,8 @@ class OracleIRMWhisperPipeline(BaseParadigmPipeline):
         clean_stems: list[tuple[str, np.ndarray]] = []
 
         if stems_dir.is_dir():
-            for stem_path in sorted(stems_dir.glob("speaker_*.wav")):
+            stem_paths = sorted(list(stems_dir.glob("speaker_*.mp3")) or list(stems_dir.glob("speaker_*.wav")))
+            for stem_path in stem_paths:
                 stem_wav, _ = sf.read(str(stem_path), dtype="float32")
                 if stem_wav.ndim > 1:
                     stem_wav = stem_wav[0] if stem_wav.shape[0] < stem_wav.shape[1] else stem_wav[:, 0]

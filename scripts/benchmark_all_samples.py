@@ -35,7 +35,9 @@ def main() -> None:
     sample_dirs = sorted(output_dir.glob("sample_*"))
 
     for s_dir in sample_dirs:
-        audio_path = s_dir / "mixed_scene.wav"
+        audio_path = s_dir / "mixed_scene.mp3"
+        if not audio_path.is_file():
+            audio_path = s_dir / "mixed_scene.wav"
         if not audio_path.is_file():
             audio_path = s_dir / "mixed.wav"
         if not audio_path.is_file():
