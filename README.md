@@ -263,7 +263,7 @@ The repository includes **10 pre-rendered, high-fidelity conversational scenes**
 ### Audio Player & Sample Showcase
 
 | Sample ID | Scenario / Ambiance | Duration | Geometry | Spks | Lang | Player |
-| :--- | :--- | :---: | :---: | :---: | :---: | :--- | :--- |
+| :--- | :--- | :---: | :---: | :---: | :---: | :--- |
 | [`sample_001`](data/output/sample_001/) | Gaming Session | 147.4s | 1-ch (Mono) | 5 | `en` | [Play](https://gabalpha.github.io/read-audio/?p=https://github.com/nath54/MADGen/blob/main/data/output/sample_001/mixed_scene.mp3) |
 | [`sample_002`](data/output/sample_002/) | Late Night Philosophy | 81.6s | 4-ch (Circular Array) | 2 | `fr` | [Play](https://gabalpha.github.io/read-audio/?p=https://github.com/nath54/MADGen/blob/main/data/output/sample_002/mixed_scene.mp3) |
 | [`sample_003`](data/output/sample_003/) | Academic Defense | 448.7s | 4-ch (Circular Array) | 4 | `fr` | [Play](https://gabalpha.github.io/read-audio/?p=https://github.com/nath54/MADGen/blob/main/data/output/sample_003/mixed_scene.mp3) |
@@ -273,7 +273,7 @@ The repository includes **10 pre-rendered, high-fidelity conversational scenes**
 | [`sample_007`](data/output/sample_007/) | Late Night Philosophy | 174.7s | 2-ch (Stereo Array) | 6 | `fr` | [Play](https://gabalpha.github.io/read-audio/?p=https://github.com/nath54/MADGen/blob/main/data/output/sample_007/mixed_scene.mp3) |
 | [`sample_008`](data/output/sample_008/) | Smart Assistant Household | 187.3s | 2-ch (Stereo Array) | 3 | `en` | [Play](https://gabalpha.github.io/read-audio/?p=https://github.com/nath54/MADGen/blob/main/data/output/sample_008/mixed_scene.mp3) |
 | [`sample_009`](data/output/sample_009/) | Family Dinner | 145.3s | 1-ch (Mono) | 3 | `en` | [Play](https://gabalpha.github.io/read-audio/?p=https://github.com/nath54/MADGen/blob/main/data/output/sample_009/mixed_scene.mp3) |
-| [`sample_010`](data/output/sample_010/) | Casual Chit-Chat | 82.7s | 4-ch (Circular Array) | 2 | `en` | [Play](https://gabalpha.github.io/read-audio/?p=https://github.com/nath54/MADGen/blob/main/data/output/sample_010/mixed_scene.mp)3|
+| [`sample_010`](data/output/sample_010/) | Casual Chit-Chat | 82.7s | 4-ch (Circular Array) | 2 | `en` | [Play](https://gabalpha.github.io/read-audio/?p=https://github.com/nath54/MADGen/blob/main/data/output/sample_010/mixed_scene.mp3) |
 
 ---
 
