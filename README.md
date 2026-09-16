@@ -15,7 +15,8 @@ Includes a comprehensive **acoustic and spectrogram analysis engine** (`analyze_
    - [`generate_dataset.py` (Dataset Generation)](#1-generate_datasetpy---procedural-batch-dataset-generation)
    - [`analyze_audio.py` (Acoustic & Spectrogram Analysis)](#2-analyze_audiopy---acoustic--spectrogram-analysis)
    - [`download_voice.py` (Voice Model Management)](#3-download_voicepy---piper-voice-management)
-   - [`main.py` (Single-Scene Simulation)](#4-mainpy---single-scene-simulation)
+   - [`download_dictionary.py` (Constraint Dictionary Management)](#4-download_dictionarypy---constraint-dictionary-management)
+   - [`main.py` (Single-Scene Simulation)](#5-mainpy---single-scene-simulation)
 4. [Dataset Output Structure](#dataset-output-structure)
 5. [12 Conversational Ambiance Presets](#12-conversational-ambiance-presets)
 6. [Multilingual Support & Voice Catalog](#multilingual-support--voice-catalog)
@@ -75,7 +76,21 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 3. (Optional) Starting the Local LLM Server
+### 3. Downloading the 100k Constraint Dictionary
+
+MADGen uses a clean 100,000-word vocabulary dictionary to anchor conversations to unexpected, diverse topics. While `generate_dataset.py` automatically downloads it on the first run if missing, you can pre-cache or force re-download it via the CLI:
+
+```bash
+# Pre-cache or verify the 100k dictionary
+./.venv/bin/python download_dictionary.py
+
+# Or force re-downloading from the remote repository
+./.venv/bin/python download_dictionary.py --force
+```
+
+*(Alternatively, you can run `python -m src.procedural.word_dictionary`)*.
+
+### 4. (Optional) Starting the Local LLM Server
 
 To generate dynamic, unpredictable conversations instead of template sentences, start a local OpenAI-compatible server such as `llama-server` (from [llama.cpp](https://github.com/ggerganov/llama.cpp)):
 
@@ -168,7 +183,24 @@ Manages downloading official Piper neural voices from HuggingFace into the local
 
 ---
 
-### 4. `main.py` - Single-Scene Simulation
+### 4. `download_dictionary.py` - Constraint Dictionary Management
+
+Downloads, filters, and validates the clean 100,000-word constraint dictionary.
+
+```bash
+./.venv/bin/python download_dictionary.py [OPTIONS]
+```
+
+#### Complete Arguments Reference:
+
+| Argument | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `--output` | `Path` | `data/dictionaries/words_100k.txt` | Destination path for the downloaded vocabulary file. |
+| `--force` | `flag` | `False` | Force re-downloading from the remote repository even if the local file already exists. |
+
+---
+
+### 5. `main.py` - Single-Scene Simulation
 
 Renders a single acoustic simulation from a static JSON configuration file.
 
@@ -326,6 +358,7 @@ audio tests/
 ├── generate_dataset.py             # CLI: Procedural batch dataset generation
 ├── analyze_audio.py                # CLI: Acoustic spectrogram & voice recovery analysis
 ├── download_voice.py               # CLI: Piper voice downloader & manager
+├── download_dictionary.py          # CLI: 100k constraint dictionary downloader & filter
 ├── main.py                         # CLI: Single-scene spatial acoustic simulation
 ├── config/
 │   └── default_scene.json          # Example single-scene configuration

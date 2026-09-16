@@ -132,3 +132,19 @@ def sample_constraint_keywords(
 
     sampled: list[str] = random.sample(words, k=count)
     return sampled
+
+
+def main() -> None:
+    """
+    CLI execution entry point to download or verify the word dictionary.
+    """
+
+    print(f"Loading word dictionary from {DEFAULT_DICTIONARY_PATH}...")
+    words = load_word_dictionary(force_reload=True)
+    print(f"Dictionary loaded with {len(words):,} words.")
+    sample = sample_constraint_keywords(count=5)
+    print(f"Sample random constraint words: {', '.join(sample)}")
+
+
+if __name__ == "__main__":
+    main()
