@@ -137,6 +137,7 @@ def _prepare_scene_conversations(
         llm_generator=llm_generator,
         ambiance=ambiance,
         constraint_words=constraint_words,
+        allow_parallel=sample_config.allow_parallel,
     )
     return (scene, ambiance, constraint_words)
 
@@ -271,6 +272,8 @@ def _build_sample_config_for_batch(
         batch_config.speakers_range[1],
     )
 
+    allow_parallel: bool = random.random() < batch_config.parallel_prob
+
     sample_config: DatasetSampleConfig = DatasetSampleConfig(
         sample_id=sample_id,
         duration_s=duration_s,
@@ -286,6 +289,7 @@ def _build_sample_config_for_batch(
         ambiance_preset=batch_config.ambiance_preset,
         num_constraint_words=batch_config.num_constraint_words,
         llm_temperature=batch_config.llm_temperature,
+        allow_parallel=allow_parallel,
     )
     return (sample_config, num_speakers)
 

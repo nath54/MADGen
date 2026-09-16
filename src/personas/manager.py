@@ -204,10 +204,36 @@ def _calculate_next_turn_start(
     return prev_end_s + random.uniform(0.15, 0.60)
 
 
+def _resolve_speaker_temporal_collision(
+    proposed_start_s: float,
+    duration_s: float,
+    busy_intervals: list[tuple[float, float]],
+) -> float:
+    """
+    Ensure a speaker never overlaps with their own speech in concurrent discussions.
+
+    Args:
+        proposed_start_s (float): Desired utterance start time in seconds.
+        duration_s (float): Spoken audio duration in seconds.
+        busy_intervals (list[tuple[float, float]]): Existing speech intervals for this speaker.
+
+    Returns:
+        float: Collision-free start timestamp in seconds.
+    """
+
+    start_s: float = proposed_start_s
+    for busy_start, busy_end in busy_intervals:
+        if not (start_s + duration_s <= busy_start or start_s >= busy_end):
+            start_s = max(start_s, busy_end + random.uniform(0.15, 0.45))
+
+    return round(start_s, 2)
+
+
 def _sequence_group_utterances(
     group_items: list[tuple[Persona, UtteranceConfig]],
     synthesizer: BaseSynthesizer,
     sample_rate: int,
+    speaker_busy: dict[str, list[tuple[float, float]]],
 ) -> tuple[list[tuple[Persona, AudioArray, float]], list[float], list[dict[str, typing.Any]]]:
     """
     Synthesize and dynamically position utterances for a single conversation group.
@@ -216,6 +242,7 @@ def _sequence_group_utterances(
         group_items (list[tuple[Persona, UtteranceConfig]]): Group personas and utterances.
         synthesizer (BaseSynthesizer): Speech synthesizer engine.
         sample_rate (int): Output sampling rate in Hertz.
+        speaker_busy (dict[str, list[tuple[float, float]]]): Busy intervals per speaker.
 
     Returns:
         tuple[list[tuple[Persona, AudioArray, float]], list[float], list[dict[str, typing.Any]]]:
@@ -231,10 +258,14 @@ def _sequence_group_utterances(
     prev_end_s: float = random.uniform(0.3, 0.8)
 
     for turn_idx, (persona, utt) in enumerate(group_items):
-        is_cut: bool = utt.vocal_style == VocalStyle.INTERRUPTION
-
         if turn_idx > 0 and has_order:
-            utt.start_time_s = round(_calculate_next_turn_start(prev_end_s, is_cut), 2)
+            utt.start_time_s = round(
+                _calculate_next_turn_start(
+                    prev_end_s,
+                    utt.vocal_style == VocalStyle.INTERRUPTION,
+                ),
+                2,
+            )
         elif turn_idx == 0 and has_order and utt.start_time_s <= 0.0:
             utt.start_time_s = round(prev_end_s, 2)
 
@@ -245,7 +276,16 @@ def _sequence_group_utterances(
             sample_rate=sample_rate,
         )
 
+        # Enforce zero self-overlap across concurrent discussions
+        utt.start_time_s = _resolve_speaker_temporal_collision(
+            proposed_start_s=utt.start_time_s,
+            duration_s=dur_s,
+            busy_intervals=speaker_busy.setdefault(persona.identifier, []),
+        )
+
         prev_end_s = utt.start_time_s + dur_s
+        speaker_busy.setdefault(persona.identifier, []).append((utt.start_time_s, prev_end_s))
+
         clips.append((persona, clip, utt.start_time_s))
         end_times.append(prev_end_s)
         records.append(
@@ -286,12 +326,14 @@ def synthesize_persona_clips(
     speech_clips: list[tuple[Persona, AudioArray, float]] = []
     end_times: list[float] = []
     metadata_records: list[dict[str, typing.Any]] = []
+    speaker_busy: dict[str, list[tuple[float, float]]] = {}
 
     for _, group_items in sorted(group_map.items()):
         grp_clips, grp_ends, grp_records = _sequence_group_utterances(
             group_items=group_items,
             synthesizer=synthesizer,
             sample_rate=sample_rate,
+            speaker_busy=speaker_busy,
         )
         speech_clips.extend(grp_clips)
         end_times.extend(grp_ends)

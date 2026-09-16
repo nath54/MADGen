@@ -189,11 +189,7 @@ def build_random_persona(
         volume=round(random.uniform(0.85, 1.20), 2),
     )
 
-    display_name: str = (
-        f"Speaker {persona_index} ({gender})"
-        if gender != "unspecified"
-        else f"Speaker {persona_index}"
-    )
+    display_name: str = f"Speaker {persona_index}"
 
     return PersonaConfig(
         id=f"speaker_{persona_index}",

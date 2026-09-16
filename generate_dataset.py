@@ -109,6 +109,12 @@ def build_argument_parser() -> argparse.ArgumentParser:
         default=0.7,
         help="Sampling temperature for LLM dialogue generation (default: 0.7).",
     )
+    parser.add_argument(
+        "--parallel-prob",
+        type=float,
+        default=0.5,
+        help="Probability of parallel side conversations appearing in scenes (default: 0.5).",
+    )
 
     # Storage and synthesis settings
     parser.add_argument(
@@ -188,6 +194,7 @@ def main() -> None:
     print(f"  - LLM Dialogues:       {args.use_llm} ({args.llm_url})")
     print(f"  - Constraint Words:    {args.constraint_words} from 100k dictionary")
     print(f"  - Isolated Stems:      {export_isolated}")
+    print(f"  - Parallel Prob:       {args.parallel_prob}")
     print(f"  - Output Folder:       {out_dir}")
     print("=" * 65 + "\n")
 
@@ -208,6 +215,7 @@ def main() -> None:
         ambiance_preset=args.ambiance,
         num_constraint_words=args.constraint_words,
         llm_temperature=args.llm_temperature,
+        parallel_prob=args.parallel_prob,
     )
     samples: list[Path] = generate_dataset_batch(batch_config)
 

@@ -143,6 +143,7 @@ class DatasetSampleConfig:
     ambiance_preset: str = "random"
     num_constraint_words: int = 3
     llm_temperature: float = 0.7
+    allow_parallel: bool = True
 
 
 @dataclass
@@ -166,3 +167,4 @@ class BatchGenerationConfig:
     ambiance_preset: str = "random"
     num_constraint_words: int = 3
     llm_temperature: float = 0.7
+    parallel_prob: float = 0.5

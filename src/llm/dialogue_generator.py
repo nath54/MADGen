@@ -6,10 +6,10 @@ incorporating 100k-word dictionary constraints, ambiance settings, and speaker p
 """
 
 # Import Modules
-import typing
-
 import json
 import logging
+import re
+import typing
 
 import httpx
 
@@ -21,50 +21,184 @@ from src.llm.llm_types import (
     ChatMessage,
     GeneratedTurn,
     ToolCall,
-    ToolDefinition,
 )
 from src.procedural.ambiance_presets import AmbiancePreset
 from src.procedural.dialogue_bank import sample_dialogue_text
 
 logger: logging.Logger = logging.getLogger(__name__)
 
-# Structured tool definition ensuring consistent schema output from the LLM
-DIALOGUE_SUBMISSION_TOOL: ToolDefinition = {
-    "type": "function",
-    "function": {
-        "name": "submit_dialogue",
-        "description": "Submit a generated multi-turn conversation sequence between personas.",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "turns": {
-                    "type": "array",
-                    "description": "List of chronological spoken dialogue turns.",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "speaker_id": {
-                                "type": "string",
-                                "description": "Unique identifier of the persona speaking.",
-                            },
-                            "text": {
-                                "type": "string",
-                                "description": "Spoken text dialogue sentence.",
-                            },
-                            "vocal_style": {
-                                "type": "string",
-                                "enum": ["normal", "shouting", "laughter", "interruption"],
-                                "description": "Vocal emotion style preset.",
-                            },
-                        },
-                        "required": ["speaker_id", "text", "vocal_style"],
-                    },
-                },
-            },
-            "required": ["turns"],
-        },
-    },
-}
+# Compact screenplay script line regex: <speaker> [<style>]: <text>
+SCRIPT_LINE_PATTERN: re.Pattern[str] = re.compile(
+    r"^(?:\d+[\.\)]\s*|\*+\s*|-\s*)?"
+    r"(?:\*{1,2}|_{1,2}|\[)?"
+    r"(?P<speaker>[a-zA-Z0-9_\- ]+?)"
+    r"(?:\s*\((?:male|female|unspecified)\))?"
+    r"(?:\*{1,2}|_{1,2}|\])?"
+    r"(?:\s*\[(?P<style_bracket>[\w\-]+)\]|\s*\((?P<style_paren>[\w\-]+)\))?"
+    r"\s*:\s*"
+    r"(?:\[(?P<style_after>[\w\-]+)\]\s*|\((?P<style_paren_after>[\w\-]+)\)\s*)?"
+    r"(?P<text>.+)$",
+    re.IGNORECASE,
+)
+
+VALID_VOCAL_STYLES: set[str] = {"normal", "shouting", "laughter", "interruption"}
+
+
+def _normalize_vocal_style(style_str: str | None) -> str:
+    """
+    Normalize raw vocal style token to recognized VocalStyle string.
+
+    Args:
+        style_str (str | None): Raw style label from script line.
+
+    Returns:
+        str: Normalized style string.
+    """
+
+    if not style_str:
+        return "normal"
+
+    cleaned: str = style_str.strip().lower()
+    if cleaned in VALID_VOCAL_STYLES:
+        return cleaned
+
+    if "shout" in cleaned or "loud" in cleaned:
+        return "shouting"
+    if "laugh" in cleaned or "giggle" in cleaned:
+        return "laughter"
+    if "interrupt" in cleaned or "cut" in cleaned:
+        return "interruption"
+
+    return "normal"
+
+
+def _resolve_speaker_id(
+    raw_spk: str,
+    group: list[PersonaConfig],
+) -> str:
+    """
+    Resolve raw speaker identifier or name string to a valid persona ID.
+
+    Args:
+        raw_spk (str): Raw speaker token from script line.
+        group (list[PersonaConfig]): Roster of participating personas.
+
+    Returns:
+        str: Resolved persona identifier.
+    """
+
+    token: str = raw_spk.strip().lower()
+
+    # Match persona ID directly
+    for p in group:
+        if p.id.lower() == token:
+            return p.id
+
+    # Match persona display name or first token
+    for p in group:
+        name_lower: str = p.name.lower()
+        if token in name_lower or name_lower in token:
+            return p.id
+        first_token: str = name_lower.split()[0]
+        if token == first_token:
+            return p.id
+
+    # Match numeric suffix (e.g. "0" or "speaker 0" -> "speaker_0")
+    digits: str = "".join(ch for ch in token if ch.isdigit())
+    if digits:
+        for p in group:
+            p_digits: str = "".join(ch for ch in p.id if ch.isdigit())
+            if p_digits == digits:
+                return p.id
+
+    return group[0].id if group else raw_spk
+
+
+def _parse_fallback_line(
+    line: str,
+    group: list[PersonaConfig],
+) -> GeneratedTurn | None:
+    """
+    Attempt lenient extraction of speaker, style, and text from an unformatted line.
+
+    Args:
+        line (str): Raw unparsed line with a colon.
+        group (list[PersonaConfig]): Group personas participating in dialogue.
+
+    Returns:
+        GeneratedTurn | None: Parsed turn or None if unrecoverable.
+    """
+
+    if ":" not in line:
+        return None
+
+    left, right = line.split(":", 1)
+    text_clean: str = right.strip().strip('"').strip("'")
+    spk_clean: str = re.sub(r"[^\w\s\-]", "", left).strip()
+
+    if text_clean and spk_clean:
+        spk_id: str = _resolve_speaker_id(spk_clean, group)
+        return GeneratedTurn(speaker_id=spk_id, text=text_clean, vocal_style="normal")
+
+    return None
+
+
+def parse_script_response(
+    raw_text: str,
+    group: list[PersonaConfig],
+) -> list[GeneratedTurn]:
+    """
+    Parse compact screenplay script lines into structured GeneratedTurn records.
+
+    Args:
+        raw_text (str): Raw text generated by the LLM.
+        group (list[PersonaConfig]): Group personas participating in dialogue.
+
+    Returns:
+        list[GeneratedTurn]: Chronological list of validated turns.
+    """
+
+    if not raw_text or not raw_text.strip():
+        return []
+
+    # Strip reasoning tags from thinking models
+    cleaned_text: str = re.sub(r"<think>.*?</think>", "", raw_text, flags=re.DOTALL)
+    turns: list[GeneratedTurn] = []
+
+    for line in cleaned_text.strip().splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or line.startswith("```"):
+            continue
+
+        match = SCRIPT_LINE_PATTERN.match(line)
+        if match:
+            spk_raw: str = match.group("speaker").strip()
+            style_raw: str | None = (
+                match.group("style_bracket")
+                or match.group("style_paren")
+                or match.group("style_after")
+                or match.group("style_paren_after")
+            )
+            text_raw: str = match.group("text").strip()
+
+            if not text_raw:
+                continue
+
+            speaker_id: str = _resolve_speaker_id(spk_raw, group)
+            vocal_style: str = _normalize_vocal_style(style_raw)
+            turns.append(
+                GeneratedTurn(
+                    speaker_id=speaker_id,
+                    text=text_raw,
+                    vocal_style=vocal_style,
+                )
+            )
+        elif ":" in line:
+            turn: GeneratedTurn | None = _parse_fallback_line(line, group)
+            if turn is not None:
+                turns.append(turn)
+
+    return turns
 
 
 def _extract_raw_arguments(response: ChatCompletionResponse) -> str:
@@ -100,6 +234,38 @@ def _extract_raw_arguments(response: ChatCompletionResponse) -> str:
     return ""
 
 
+def _build_continuation_prompt(
+    group: list[PersonaConfig],
+    step_turns: int,
+    prior_turns: list[GeneratedTurn],
+) -> str:
+    """
+    Construct continuation prompt embedding previous turns context.
+
+    Args:
+        group (list[PersonaConfig]): Participating personas.
+        step_turns (int): Number of turns to continue for.
+        prior_turns (list[GeneratedTurn]): Preceding turns.
+
+    Returns:
+        str: Assembled continuation prompt.
+    """
+
+    recent_lines: list[str] = [
+        f"{t.speaker_id} [{t.vocal_style}]: {t.text}"
+        for t in prior_turns[-3:]
+    ]
+    context_str: str = "\n".join(recent_lines)
+    allowed_ids: str = ", ".join(p.id for p in group)
+
+    return (
+        f"Continue the conversation naturally for {step_turns} more turns.\n"
+        f"Allowed speaker IDs: ({allowed_ids})\n"
+        f"Recent lines:\n{context_str}\n\n"
+        "Use the exact format: <speaker_id> [<vocal_style>]: <dialogue text>"
+    )
+
+
 class LLMDialogueGenerator:
     """
     Synthesizes contextual conversations for groups using llama.cpp and constraint anchors.
@@ -109,7 +275,7 @@ class LLMDialogueGenerator:
         self,
         client: LLMClient | None = None,
         base_url: str = "http://127.0.0.1:8080/v1",
-        timeout_s: float = 60.0,
+        timeout_s: float | None = None,
     ) -> None:
         """
         Initialize the LLM dialogue generator.
@@ -117,7 +283,7 @@ class LLMDialogueGenerator:
         Args:
             client (LLMClient | None): Optional existing LLMClient instance.
             base_url (str): Endpoint URL if creating a new client.
-            timeout_s (float): Timeout limit in seconds.
+            timeout_s (float | None): Timeout limit in seconds (None for unlimited).
         """
 
         self.client: LLMClient = (
@@ -140,7 +306,7 @@ class LLMDialogueGenerator:
         constraint_words: list[str],
     ) -> str:
         """
-        Construct system prompt embedding ambiance roleplay rules and vocabulary constraints.
+        Construct system prompt embedding ambiance guidelines, vocabulary, and script format.
 
         Args:
             ambiance (AmbiancePreset): Conversational ambiance preset.
@@ -153,14 +319,21 @@ class LLMDialogueGenerator:
         constraints_str: str = ", ".join(f"'{w}'" for w in constraint_words)
 
         prompt: str = (
-            "You are an expert dialogue writer for acoustic speech simulation datasets.\n"
+            "You are an expert dialogue writer for realistic audio scenes.\n"
             f"Scene Setting: {ambiance.display_name} - {ambiance.description}\n"
             f"Roleplay Guidelines: {ambiance.prompt_guidelines}\n\n"
-            f"Thematic Constraints: The conversation MUST naturally incorporate and revolve "
-            f"around these concepts or keywords: {constraints_str}.\n"
-            "Create organic, conversational exchanges with realistic turn-taking, occasional "
-            "laughter, interruptions, or shouts where appropriate according to the scene setting.\n"
-            "Always submit your final dialogue by calling the 'submit_dialogue' tool."
+            f"Thematic Constraints: Naturally incorporate and explore: {constraints_str}.\n\n"
+            "Formatting Rules:\n"
+            "- Format each turn on its own line strictly as:\n"
+            "  <speaker_id> [<vocal_style>]: <dialogue text>\n"
+            "- Start each line with the participant's exact ID.\n"
+            "- Allowed vocal styles: [normal], [shouting], [laughter], [interruption].\n"
+            "- Do NOT output numbering, bullets, commentary, or markdown fences.\n"
+            "Output ONLY dialogue lines like in this example:\n\n"
+            "Example Format:\n"
+            "speaker_0 [normal]: Did you find the documents we needed?\n"
+            "speaker_1 [laughter]: They were sitting on your desk the whole time!\n"
+            "speaker_0 [normal]: Classic. Let's get moving then."
         )
 
         return prompt
@@ -168,14 +341,14 @@ class LLMDialogueGenerator:
     def build_user_prompt(
         self,
         group: list[PersonaConfig],
-        target_turns_count: int,
+        target_turns_count: int = 15,
     ) -> str:
         """
-        Construct user prompt detailing participating personas and turn count requirements.
+        Construct user prompt detailing participants and requested turn count.
 
         Args:
-            group (list[PersonaConfig]): Personas in the conversational group.
-            target_turns_count (int): Approximate number of dialogue turns requested.
+            group (list[PersonaConfig]): Personas participating in this discussion.
+            target_turns_count (int): Approximate number of dialogue turns requested (default: 15).
 
         Returns:
             str: Assembled user prompt string.
@@ -186,12 +359,15 @@ class LLMDialogueGenerator:
             for p in group
         ]
         roster_str: str = "\n".join(speakers_info)
+        allowed_ids: str = ", ".join(p.id for p in group)
 
         user_prompt: str = (
-            f"Please generate a multi-turn conversation of approximately {target_turns_count} "
+            f"Write a natural multi-turn conversation of approximately {target_turns_count} "
             f"dialogue turns between the following participants:\n{roster_str}\n\n"
-            "Ensure every speaker participates with lines reflecting their identity. "
-            "Call the submit_dialogue tool with the list of turns."
+            "Rules:\n"
+            f"1. Start each line with the participant's exact ID ({allowed_ids}).\n"
+            "2. Use the format: <speaker_id> [<vocal_style>]: <dialogue text>\n"
+            "3. Ensure all participants talk and interact naturally."
         )
 
         return user_prompt
@@ -202,7 +378,7 @@ class LLMDialogueGenerator:
         group_ids: set[str],
     ) -> list[GeneratedTurn]:
         """
-        Parse structured turns from LLM tool call response.
+        Parse structured turns from LLM tool call response (legacy fallback).
 
         Args:
             response (ChatCompletionResponse): Raw server completion response.
@@ -271,18 +447,16 @@ class LLMDialogueGenerator:
         group: list[PersonaConfig],
         system_prompt: str,
         target_chunk_count: int,
-        group_ids: set[str],
         prior_turns: list[GeneratedTurn],
         temperature: float,
     ) -> list[GeneratedTurn]:
         """
-        Synthesize an individual chunk of conversational turns from the LLM.
+        Synthesize an individual chunk of conversational turns from the LLM (max 15 turns).
 
         Args:
             group (list[PersonaConfig]): Participating personas.
             system_prompt (str): Active system instruction.
-            target_chunk_count (int): Turn count requested for this chunk.
-            group_ids (set[str]): Valid persona IDs.
+            target_chunk_count (int): Turn count requested for this chunk (max 15).
             prior_turns (list[GeneratedTurn]): Previously generated turns for context.
             temperature (float): Sampling temperature.
 
@@ -290,38 +464,48 @@ class LLMDialogueGenerator:
             list[GeneratedTurn]: Synthesized dialogue turns for this chunk.
         """
 
-        if not prior_turns:
-            user_prompt: str = self.build_user_prompt(group, target_chunk_count)
-        else:
-            recent_lines: list[str] = [f"{t.speaker_id}: {t.text}" for t in prior_turns[-3:]]
-            context_str: str = "\n".join(recent_lines)
-            user_prompt = (
-                f"Continue the conversation naturally for {target_chunk_count} more turns.\n"
-                f"Recent dialogue context:\n{context_str}\n\n"
-                "Ensure participants speak according to their persona. "
-                "Call submit_dialogue with the turns."
-            )
+        step_turns: int = min(15, target_chunk_count)
+        user_prompt: str = (
+            self.build_user_prompt(group, step_turns)
+            if not prior_turns
+            else _build_continuation_prompt(group, step_turns, prior_turns)
+        )
 
         messages: list[ChatMessage] = [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt},
         ]
-        tool_choice = {"type": "function", "function": {"name": "submit_dialogue"}}
 
         response: ChatCompletionResponse = self.client.send_chat(
             messages=messages,
-            tools=[DIALOGUE_SUBMISSION_TOOL],
-            tool_choice=tool_choice,
             temperature=temperature,
         )
-        return self.parse_tool_response(response, group_ids)
+
+        content: str = ""
+        if response.get("choices"):
+            content = str(response["choices"][0].get("message", {}).get("content") or "")
+
+        turns: list[GeneratedTurn] = parse_script_response(content, group)
+
+        # Fallback to tool parsing if response contains JSON
+        if not turns and "{" in content and '"turns"' in content:
+            group_ids: set[str] = {p.id for p in group}
+            turns = self.parse_tool_response(response, group_ids)
+
+        if not turns:
+            logger.warning(
+                "Failed to parse dialogue turns from LLM response. Content snippet: %r",
+                content[:400] if content else "(empty)",
+            )
+
+        return turns
 
     def generate_group_dialogue(
         self,
         group: list[PersonaConfig],
         ambiance: AmbiancePreset,
         constraint_words: list[str],
-        target_turns_count: int = 6,
+        target_turns_count: int = 15,
         temperature: float = 0.7,
     ) -> list[GeneratedTurn]:
         """
@@ -331,14 +515,13 @@ class LLMDialogueGenerator:
             group (list[PersonaConfig]): Conversational group personas.
             ambiance (AmbiancePreset): Active ambiance preset.
             constraint_words (list[str]): Thematic constraint keywords.
-            target_turns_count (int): Target turn count.
+            target_turns_count (int): Target turn count (default: 15).
             temperature (float): Sampling temperature.
 
         Returns:
             list[GeneratedTurn]: Chronological list of generated dialogue turns.
         """
 
-        group_ids: set[str] = {p.id for p in group}
         system_prompt: str = self.build_system_prompt(ambiance, constraint_words)
         all_turns: list[GeneratedTurn] = []
         chunk_size: int = 15
@@ -352,7 +535,6 @@ class LLMDialogueGenerator:
                     group=group,
                     system_prompt=system_prompt,
                     target_chunk_count=step_count,
-                    group_ids=group_ids,
                     prior_turns=all_turns,
                     temperature=temperature,
                 )

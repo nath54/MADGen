@@ -18,6 +18,9 @@ class TestLLMClient(unittest.TestCase):
         Verify client initializes headers, strips trailing slashes, and sets timeouts.
         """
 
+        default_client: LLMClient = LLMClient()
+        self.assertIsNone(default_client.timeout_s)
+
         client: LLMClient = LLMClient(
             base_url="http://localhost:8080/v1/",
             api_key="test_secret_token",

@@ -8,8 +8,11 @@ import unittest
 
 from src.llm.client import LLMClient
 from src.config.models import PersonaConfig
-from src.llm.dialogue_generator import LLMDialogueGenerator
 from src.procedural.ambiance_presets import get_ambiance_preset
+from src.llm.dialogue_generator import (
+    parse_script_response,
+    LLMDialogueGenerator,
+)
 from src.llm.llm_types import (
     GeneratedTurn,
     ChatCompletionResponse,
@@ -48,7 +51,7 @@ class TestLLMDialogue(unittest.TestCase):
         self.assertIn("rosemary", prompt)
         self.assertIn("saffron", prompt)
         self.assertIn("oven", prompt)
-        self.assertIn("submit_dialogue", prompt)
+        self.assertIn("<speaker_id> [<vocal_style>]:", prompt)
 
     def test_build_user_prompt_contains_speaker_metadata(self) -> None:
         """
@@ -65,6 +68,82 @@ class TestLLMDialogue(unittest.TestCase):
         self.assertIn("female", user_prompt)
         self.assertIn("male", user_prompt)
         self.assertIn("6", user_prompt)
+
+    def test_parse_script_response(self) -> None:
+        """
+        Verify parsing plain-text script lines with vocal styles and speaker mapping.
+        """
+
+        raw_text: str = (
+            "spk_alice [normal]: Is the saffron ready?\n"
+            "- spk_bob [shouting]: Watch out, the pan is hot!\n"
+            "* Alice [laughter]: That was close!\n"
+            "Bob: Let's turn down the heat.\n"
+        )
+        turns: list[GeneratedTurn] = parse_script_response(raw_text, self.personas)
+        self.assertEqual(len(turns), 4)
+
+        self.assertEqual(turns[0].speaker_id, "spk_alice")
+        self.assertEqual(turns[0].text, "Is the saffron ready?")
+        self.assertEqual(turns[0].vocal_style, "normal")
+
+        self.assertEqual(turns[1].speaker_id, "spk_bob")
+        self.assertEqual(turns[1].text, "Watch out, the pan is hot!")
+        self.assertEqual(turns[1].vocal_style, "shouting")
+
+        self.assertEqual(turns[2].speaker_id, "spk_alice")
+        self.assertEqual(turns[2].text, "That was close!")
+        self.assertEqual(turns[2].vocal_style, "laughter")
+
+        self.assertEqual(turns[3].speaker_id, "spk_bob")
+        self.assertEqual(turns[3].text, "Let's turn down the heat.")
+        self.assertEqual(turns[3].vocal_style, "normal")
+
+    def test_parse_script_response_formatting_variations(self) -> None:
+        """
+        Verify robust parsing across numbering, bolding, display names, and colon fallbacks.
+        """
+
+        group: list[PersonaConfig] = [
+            PersonaConfig(id="speaker_0", name="Speaker 0"),
+            PersonaConfig(id="speaker_1", name="Speaker 1"),
+        ]
+        raw_text: str = (
+            "1. [speaker_0] [normal]: First line of dialogue\n"
+            "**Speaker 0**: [normal] Second line\n"
+            "Speaker 0 (male) [normal]: Third line\n"
+            "- Speaker 1 [laughter]: Fourth line\n"
+            "* speaker_1 (shouting): Fifth line!\n"
+            "speaker_0: Sixth line without style\n"
+        )
+        turns: list[GeneratedTurn] = parse_script_response(raw_text, group)
+        self.assertEqual(len(turns), 6)
+        self.assertEqual(turns[0].speaker_id, "speaker_0")
+        self.assertEqual(turns[1].speaker_id, "speaker_0")
+        self.assertEqual(turns[2].speaker_id, "speaker_0")
+        self.assertEqual(turns[3].speaker_id, "speaker_1")
+        self.assertEqual(turns[3].vocal_style, "laughter")
+        self.assertEqual(turns[4].speaker_id, "speaker_1")
+        self.assertEqual(turns[4].vocal_style, "shouting")
+        self.assertEqual(turns[5].speaker_id, "speaker_0")
+        self.assertEqual(turns[5].vocal_style, "normal")
+
+    def test_parse_script_response_think_tags(self) -> None:
+        """
+        Verify that <think>...</think> reasoning blocks from thinking models are stripped.
+        """
+
+        raw_text: str = (
+            "<think>\n"
+            "I should write a realistic discussion.\n"
+            "Alice asks about saffron.\n"
+            "</think>\n"
+            "spk_alice [normal]: Let's begin the preparation.\n"
+        )
+        turns: list[GeneratedTurn] = parse_script_response(raw_text, self.personas)
+        self.assertEqual(len(turns), 1)
+        self.assertEqual(turns[0].speaker_id, "spk_alice")
+        self.assertEqual(turns[0].text, "Let's begin the preparation.")
 
     def test_parse_tool_response_success(self) -> None:
         """

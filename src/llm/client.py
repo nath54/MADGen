@@ -29,7 +29,7 @@ class LLMClient:
         self,
         base_url: str = "http://127.0.0.1:8080/v1",
         api_key: str = "",
-        timeout_s: float = 60.0,
+        timeout_s: float | None = None,
     ) -> None:
         """
         Initialize the LLM API client.
@@ -37,11 +37,11 @@ class LLMClient:
         Args:
             base_url (str): Server endpoint root URL.
             api_key (str): Optional bearer authorization token.
-            timeout_s (float): Request timeout limit in seconds.
+            timeout_s (float | None): Request timeout limit in seconds (None for unlimited).
         """
 
         self.base_url: str = base_url.rstrip("/")
-        self.timeout_s: float = timeout_s
+        self.timeout_s: float | None = timeout_s
         self.headers: dict[str, str] = {"Content-Type": "application/json"}
 
         if api_key:

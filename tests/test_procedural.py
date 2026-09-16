@@ -3,9 +3,14 @@ Unit tests for multilingual dialogue banks and procedural conversation generatio
 """
 
 # Import Modules
+import typing
+
 import unittest
 
 from src.config.models import PersonaConfig
+from src.tts.synthesizer import MockSynthesizer
+from src.personas.persona import Persona
+from src.personas.manager import synthesize_persona_clips
 from src.procedural.dialogue_bank import (
     sample_dialogue_text,
     get_supported_languages,
@@ -116,6 +121,89 @@ class TestProcedural(unittest.TestCase):
         # Check that utterances were added
         total_utts: int = len(personas[0].utterances) + len(personas[1].utterances)
         self.assertGreater(total_utts, 2)
+
+    def test_partition_conversational_groups_disabled(self) -> None:
+        """
+        Verify group partitioning keeps all personas in a single group when allow_parallel is False.
+        """
+
+        personas: list[PersonaConfig] = [
+            PersonaConfig(id=f"p_{i}", name=f"P {i}") for i in range(5)
+        ]
+        groups = partition_conversational_groups(personas, allow_parallel=False)
+        self.assertEqual(len(groups), 1)
+        self.assertEqual(len(groups[0]), 5)
+
+    def test_parallel_discussions_multi_phase(self) -> None:
+        """
+        Verify parallel discussions feature staggered side chats and non-isolated speakers.
+        """
+
+        personas: list[PersonaConfig] = [
+            PersonaConfig(id=f"spk_{i}", name=f"Speaker {i}", language="en")
+            for i in range(4)
+        ]
+        generate_conversations_for_personas(
+            personas=personas,
+            min_sentences=30,
+            allow_parallel=True,
+        )
+
+        all_group_ids: set[int] = {
+            u.group_id for p in personas for u in p.utterances
+        }
+        self.assertIn(0, all_group_ids)
+        self.assertIn(1, all_group_ids)
+
+        # Side group (spk_1, spk_2) should have utterances in group 1 and group 0 (no isolation)
+        spk_1_groups: set[int] = {u.group_id for u in personas[1].utterances}
+        self.assertIn(0, spk_1_groups)
+        self.assertIn(1, spk_1_groups)
+
+        # Side conversation should start after t=0.5
+        side_start_times: list[float] = [
+            u.start_time_s for p in personas for u in p.utterances if u.group_id == 1
+        ]
+        self.assertTrue(all(t > 1.0 for t in side_start_times))
+
+    def test_no_speaker_self_overlap_invariant(self) -> None:
+        """
+        Verify that synthesize_persona_clips guarantees zero self-overlap for all speakers.
+        """
+
+        personas: list[PersonaConfig] = [
+            PersonaConfig(id=f"spk_{i}", name=f"Speaker {i}", language="en")
+            for i in range(4)
+        ]
+        generate_conversations_for_personas(
+            personas=personas,
+            min_sentences=30,
+            allow_parallel=True,
+        )
+        persona_objs: list[Persona] = [Persona(config=p) for p in personas]
+        synthesizer: MockSynthesizer = MockSynthesizer()
+        _clips, _ends, records = synthesize_persona_clips(
+            personas=persona_objs,
+            synthesizer=synthesizer,
+            sample_rate=16000,
+        )
+
+        # For each persona, check that no clips for the same persona overlap in time
+        for p_id in [p.id for p in personas]:
+            p_records: list[dict[str, typing.Any]] = sorted(
+                [r for r in records if r["speaker_id"] == p_id],
+                key=lambda r: float(r["start_time_s"]),
+            )
+            for i in range(len(p_records) - 1):
+                r1: dict[str, typing.Any] = p_records[i]
+                r2: dict[str, typing.Any] = p_records[i + 1]
+                r1_end: float = float(r1["start_time_s"]) + float(r1["duration_s"])
+                r2_start: float = float(r2["start_time_s"])
+                self.assertGreaterEqual(
+                    round(r2_start, 2),
+                    round(r1_end, 2),
+                    f"Temporal self-collision detected for persona {p_id}!",
+                )
 
 
 if __name__ == "__main__":

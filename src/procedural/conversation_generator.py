@@ -6,6 +6,8 @@ dialogue interruptions and overlaps, and dynamic emotional vocal styles.
 """
 
 # Import Modules
+from dataclasses import dataclass
+
 import random
 
 from src.llm.llm_types import GeneratedTurn
@@ -20,21 +22,39 @@ from src.config.models import (
 )
 
 
+@dataclass
+class ConversationParameters:
+    """
+    Configuration parameters and generators for conversational scene synthesis.
+    """
+
+    overlap_rate: float = 0.35
+    shout_rate: float = 0.15
+    laugh_rate: float = 0.20
+    style_preset: ConversationalStyle = ConversationalStyle.MIXED
+    llm_generator: LLMDialogueGenerator | None = None
+    ambiance: AmbiancePreset | None = None
+    constraint_words: list[str] | None = None
+    duration_s: float | None = None
+
+
 def partition_conversational_groups(
     personas: list[PersonaConfig],
+    allow_parallel: bool = True,
 ) -> list[list[PersonaConfig]]:
     """
     Partition personas into small conversational cliques of two or three people.
 
     Args:
         personas (list[PersonaConfig]): Complete roster of scene personas.
+        allow_parallel (bool): Whether parallel conversational cliques are allowed.
 
     Returns:
         list[list[PersonaConfig]]: List of conversational groups.
     """
 
-    # If small party, everyone is in the same group
-    if len(personas) <= 3:
+    # If parallel discussions disabled or small party, everyone is in the same group
+    if not allow_parallel or len(personas) <= 3:
         return [personas]
 
     # Shuffle copies to create organic cliques
@@ -167,13 +187,56 @@ def generate_fallback_turns(
     return turns
 
 
+def _create_timeline_utterance(
+    turn: GeneratedTurn,
+    speaker: PersonaConfig,
+    start_time_s: float,
+    group_id: int,
+    turn_order: int,
+    is_cut: bool,
+) -> UtteranceConfig:
+    """
+    Construct UtteranceConfig from generated turn and timing parameters.
+
+    Args:
+        turn (GeneratedTurn): Generated turn text and style.
+        speaker (PersonaConfig): Speaking persona.
+        start_time_s (float): Calculated start timestamp in seconds.
+        group_id (int): Conversation clique identifier.
+        turn_order (int): Turn order index.
+        is_cut (bool): Whether turn is interrupted by next turn.
+
+    Returns:
+        UtteranceConfig: Assembled utterance configuration.
+    """
+
+    style_enum: VocalStyle = VocalStyle.NORMAL
+    if turn.vocal_style == "shouting":
+        style_enum = VocalStyle.SHOUTING
+    elif turn.vocal_style == "laughter":
+        style_enum = VocalStyle.LAUGHTER
+    elif turn.vocal_style == "interruption" or is_cut:
+        style_enum = VocalStyle.INTERRUPTION
+
+    return UtteranceConfig(
+        text=turn.text,
+        start_time_s=round(start_time_s, 2),
+        language=speaker.language,
+        vocal_style=style_enum,
+        group_id=group_id,
+        turn_order=turn_order,
+    )
+
+
 def sequence_llm_turns_on_timeline(
     group: list[PersonaConfig],
     turns: list[GeneratedTurn],
     group_id: int = 0,
     max_duration_s: float | None = None,
     overlap_rate: float = 0.35,
-) -> None:
+    start_turn_order: int = 0,
+    start_offset_s: float | None = None,
+) -> float:
     """
     Chronologically sequence dialogue turns onto the group timeline.
 
@@ -183,11 +246,19 @@ def sequence_llm_turns_on_timeline(
         group_id (int): Conversation clique identifier.
         max_duration_s (float | None): Optional timeline boundary limit in seconds.
         overlap_rate (float): Interruption and speech overlap probability.
+        start_turn_order (int): Starting turn order index.
+        start_offset_s (float | None): Optional starting timestamp offset in seconds.
+
+    Returns:
+        float: Termination timestamp of the last sequenced turn.
     """
 
     persona_map: dict[str, PersonaConfig] = {p.id: p for p in group}
-    prev_end_s: float = random.uniform(0.3, 1.0)
+    prev_end_s: float = (
+        start_offset_s if start_offset_s is not None else random.uniform(0.3, 1.0)
+    )
 
+    # Place turns along the timeline
     for turn_idx, turn in enumerate(turns):
         if max_duration_s is not None and prev_end_s >= (max_duration_s - 1.5):
             break
@@ -195,41 +266,28 @@ def sequence_llm_turns_on_timeline(
         speaker: PersonaConfig = persona_map.get(turn.speaker_id, group[0])
         start_t, is_cut = calculate_turn_timing(prev_end_s, overlap_rate)
 
-        # Parse vocal style
-        style_enum: VocalStyle = VocalStyle.NORMAL
-        if turn.vocal_style == "shouting":
-            style_enum = VocalStyle.SHOUTING
-        elif turn.vocal_style == "laughter":
-            style_enum = VocalStyle.LAUGHTER
-        elif turn.vocal_style == "interruption" or is_cut:
-            style_enum = VocalStyle.INTERRUPTION
-
-        dur_s: float = estimate_utterance_duration(turn.text)
-        utterance: UtteranceConfig = UtteranceConfig(
-            text=turn.text,
-            start_time_s=round(start_t, 2),
-            language=speaker.language,
-            vocal_style=style_enum,
+        utterance: UtteranceConfig = _create_timeline_utterance(
+            turn=turn,
+            speaker=speaker,
+            start_time_s=start_t,
             group_id=group_id,
-            turn_order=turn_idx,
+            turn_order=start_turn_order + turn_idx,
+            is_cut=is_cut,
         )
         speaker.utterances.append(utterance)
-        prev_end_s = start_t + dur_s
+        prev_end_s = start_t + estimate_utterance_duration(turn.text)
+
+    return prev_end_s
 
 
 def generate_group_timeline(
     group: list[PersonaConfig],
     target_turns: int,
     group_id: int,
-    overlap_rate: float,
-    shout_rate: float,
-    laugh_rate: float,
-    style_preset: ConversationalStyle,
-    llm_generator: LLMDialogueGenerator | None = None,
-    ambiance: AmbiancePreset | None = None,
-    constraint_words: list[str] | None = None,
-    max_duration_s: float | None = None,
-) -> None:
+    params: ConversationParameters,
+    start_turn_order: int = 0,
+    start_offset_s: float | None = None,
+) -> float:
     """
     Generate turn-taking dialogue exchanges for a single conversational group.
 
@@ -237,24 +295,25 @@ def generate_group_timeline(
         group (list[PersonaConfig]): Personas participating in this conversation group.
         target_turns (int): Target number of dialogue turns.
         group_id (int): Conversation clique identifier.
-        overlap_rate (float): Probability of interruptions and speech overlaps.
-        shout_rate (float): Probability of shouting segments.
-        laugh_rate (float): Probability of laughing segments.
-        style_preset (ConversationalStyle): Preset scenario style.
-        llm_generator (LLMDialogueGenerator | None): Optional LLM dialogue generator.
-        ambiance (AmbiancePreset | None): Optional ambiance preset.
-        constraint_words (list[str] | None): Optional thematic constraint keywords.
-        max_duration_s (float | None): Optional boundary limit in seconds.
+        params (ConversationParameters): Conversation tuning parameters and generators.
+        start_turn_order (int): Starting turn order index.
+        start_offset_s (float | None): Optional starting timestamp offset in seconds.
+
+    Returns:
+        float: Termination timestamp of the last sequenced turn.
     """
 
     turns: list[GeneratedTurn] = []
 
     # If LLM generator is active and ambiance is set, attempt LLM dialogue generation
-    if llm_generator is not None and ambiance is not None:
-        turns = llm_generator.generate_group_dialogue(
+    if params.llm_generator is not None and params.ambiance is not None:
+        words: list[str] = (
+            params.constraint_words if params.constraint_words is not None else []
+        )
+        turns = params.llm_generator.generate_group_dialogue(
             group=group,
-            ambiance=ambiance,
-            constraint_words=constraint_words if constraint_words is not None else [],
+            ambiance=params.ambiance,
+            constraint_words=words,
             target_turns_count=target_turns,
         )
 
@@ -263,85 +322,253 @@ def generate_group_timeline(
         turns = generate_fallback_turns(
             group=group,
             target_turns=target_turns,
-            shout_rate=shout_rate,
-            laugh_rate=laugh_rate,
-            style_preset=style_preset,
+            shout_rate=params.shout_rate,
+            laugh_rate=params.laugh_rate,
+            style_preset=params.style_preset,
         )
 
-    sequence_llm_turns_on_timeline(
+    # Sequence turns along the timeline
+    return sequence_llm_turns_on_timeline(
         group=group,
         turns=turns,
         group_id=group_id,
-        max_duration_s=max_duration_s,
-        overlap_rate=overlap_rate,
+        max_duration_s=params.duration_s,
+        overlap_rate=params.overlap_rate,
+        start_turn_order=start_turn_order,
+        start_offset_s=start_offset_s,
     )
 
 
-def _calculate_turns_per_group(
-    min_sentences: int,
-    num_groups: int,
-    duration_s: float | None,
-) -> int:
+def _build_side_params(
+    params: ConversationParameters,
+    word_slice: list[str],
+) -> ConversationParameters:
     """
-    Calculate number of turns per group satisfying min_sentences and duration.
+    Construct parameters for a side discussion with dedicated constraint words.
 
     Args:
-        min_sentences (int): Minimum total sentences required.
-        num_groups (int): Number of conversation groups.
-        duration_s (float | None): Optional duration ceiling in seconds.
+        params (ConversationParameters): Base scene parameters.
+        word_slice (list[str]): Subset of constraint words for the side topic.
 
     Returns:
-        int: Number of dialogue turns to generate per group.
+        ConversationParameters: Tailored parameters for the side group.
     """
 
-    turns_per_group: int = (min_sentences + num_groups - 1) // max(1, num_groups)
-    if duration_s is not None:
-        turns_from_dur: int = max(3, int(duration_s / 3.2))
-        return max(turns_per_group, turns_from_dur)
+    return ConversationParameters(
+        overlap_rate=params.overlap_rate,
+        shout_rate=params.shout_rate,
+        laugh_rate=params.laugh_rate,
+        style_preset=params.style_preset,
+        llm_generator=params.llm_generator,
+        ambiance=params.ambiance,
+        constraint_words=word_slice,
+        duration_s=params.duration_s,
+    )
 
-    return max(5, turns_per_group)
+
+def _partition_parallel_rosters(
+    personas: list[PersonaConfig],
+) -> tuple[list[PersonaConfig], list[list[PersonaConfig]]]:
+    """
+    Partition personas into a core main discussion group and one or more side groups.
+
+    Args:
+        personas (list[PersonaConfig]): Complete roster of scene personas (>= 4).
+
+    Returns:
+        tuple[list[PersonaConfig], list[list[PersonaConfig]]]: Core main group and side groups.
+    """
+
+    # Determine side groups count: 1 for 4-5 personas, 2 for 6+ personas
+    num_side_groups: int = 1 if len(personas) < 6 else 2
+    side_groups: list[list[PersonaConfig]] = []
+    used_indices: set[int] = set()
+
+    # Extract non-overlapping cliques of 2 personas for side discussions
+    for g_idx in range(num_side_groups):
+        start_idx: int = 1 + g_idx * 2
+        side_grp: list[PersonaConfig] = personas[start_idx : start_idx + 2]
+        side_groups.append(side_grp)
+        used_indices.add(start_idx)
+        used_indices.add(start_idx + 1)
+
+    # Core main discussion retains all remaining personas
+    main_core: list[PersonaConfig] = [
+        p for idx, p in enumerate(personas) if idx not in used_indices
+    ]
+
+    return main_core, side_groups
+
+
+def _calculate_parallel_turn_splits(
+    min_sentences: int,
+    num_side_groups: int = 1,
+) -> tuple[int, int, int, int]:
+    """
+    Calculate turn allocations for (phase1_main, side_turns, phase2_main, phase3_main).
+
+    Args:
+        min_sentences (int): Minimum required sentences across scene.
+        num_side_groups (int): Number of active parallel side groups.
+
+    Returns:
+        tuple[int, int, int, int]: (phase1_main, side_turns, phase2_main, phase3_main).
+    """
+
+    if min_sentences < 30:
+        p1: int = max(2, min_sentences // (3 + num_side_groups))
+        side: int = max(2, min_sentences // (3 + num_side_groups))
+        p2_main: int = side
+        p3: int = max(1, min_sentences - (p1 + p2_main + side * num_side_groups))
+        return (p1, side, p2_main, p3)
+
+    p1 = 15
+    side = 15
+    p2_main = 15 if num_side_groups == 1 else 25
+    allocated: int = p1 + p2_main + (side * num_side_groups)
+    p3 = max(5, min_sentences - allocated)
+    return (p1, side, p2_main, p3)
+
+
+def _run_side_discussions(
+    side_groups: list[list[PersonaConfig]],
+    side_turns: int,
+    base_offset_s: float,
+    params: ConversationParameters,
+) -> list[float]:
+    """
+    Sequentially launch staggered side discussions and collect their termination timestamps.
+
+    Args:
+        side_groups (list[list[PersonaConfig]]): Persona cliques for side conversations.
+        side_turns (int): Number of turns per side group.
+        base_offset_s (float): Timestamp after opening plenary concludes.
+        params (ConversationParameters): Base conversation parameters.
+
+    Returns:
+        list[float]: End timestamps for each side group conversation.
+    """
+
+    ends: list[float] = []
+    words: list[str] = (
+        params.constraint_words if params.constraint_words is not None else []
+    )
+
+    # Launch each side group with a staggered timeline offset
+    for idx, grp in enumerate(side_groups):
+        stagger_s: float = base_offset_s + 1.5 + (idx * 6.0)
+        sub_words: list[str] = words[2 + idx * 2 : 4 + idx * 2]
+        side_params: ConversationParameters = _build_side_params(params, sub_words)
+        end_s: float = generate_group_timeline(
+            group=grp,
+            target_turns=side_turns,
+            group_id=idx + 1,
+            params=side_params,
+            start_turn_order=0,
+            start_offset_s=stagger_s,
+        )
+        ends.append(end_s)
+
+    return ends
+
+
+def _generate_parallel_discussions(
+    personas: list[PersonaConfig],
+    min_sentences: int,
+    params: ConversationParameters,
+) -> None:
+    """
+    Generate asynchronous parallel discussions with staggered appearances and rejoined plenary.
+
+    Args:
+        personas (list[PersonaConfig]): Complete roster of personas (>= 4).
+        min_sentences (int): Minimum required total sentences across scene.
+        params (ConversationParameters): Conversation generation parameters.
+    """
+
+    main_core, side_groups = _partition_parallel_rosters(personas)
+    p1, side, p2_main, p3 = _calculate_parallel_turn_splits(
+        min_sentences=min_sentences,
+        num_side_groups=len(side_groups),
+    )
+
+    # Phase 1: Opening plenary discussion (all personas)
+    p1_end: float = generate_group_timeline(
+        group=personas,
+        target_turns=p1,
+        group_id=0,
+        params=params,
+        start_turn_order=0,
+        start_offset_s=0.5,
+    )
+
+    # Phase 2: Staggered parallel side discussions alongside ongoing main core
+    side_ends: list[float] = _run_side_discussions(
+        side_groups=side_groups,
+        side_turns=side,
+        base_offset_s=p1_end,
+        params=params,
+    )
+    p2_main_end: float = generate_group_timeline(
+        group=main_core,
+        target_turns=p2_main,
+        group_id=0,
+        params=params,
+        start_turn_order=p1,
+        start_offset_s=p1_end + 0.4,
+    )
+
+    # Phase 3: Rejoined plenary discussion (all personas)
+    max_phase2_end: float = max([p2_main_end] + side_ends)
+    generate_group_timeline(
+        group=personas,
+        target_turns=p3,
+        group_id=0,
+        params=params,
+        start_turn_order=p1 + p2_main,
+        start_offset_s=max_phase2_end + 0.8,
+    )
 
 
 def _ensure_minimum_sentences(
     personas: list[PersonaConfig],
-    groups: list[list[PersonaConfig]],
     min_sentences: int,
-    overlap_rate: float,
-    shout_rate: float,
-    laugh_rate: float,
-    style_preset: ConversationalStyle,
-    duration_s: float | None,
+    params: ConversationParameters,
 ) -> None:
     """
     Append additional turns if total utterances fall below min_sentences threshold.
 
     Args:
         personas (list[PersonaConfig]): Complete roster of personas.
-        groups (list[list[PersonaConfig]]): Active conversation groups.
         min_sentences (int): Minimum required sentence count.
-        overlap_rate (float): Overlap probability.
-        shout_rate (float): Shouting probability.
-        laugh_rate (float): Laughter probability.
-        style_preset (ConversationalStyle): Conversational style preset.
-        duration_s (float | None): Optional timeline limit.
+        params (ConversationParameters): Conversation generation parameters.
     """
 
     total: int = sum(len(p.utterances) for p in personas)
     if total < min_sentences:
         deficit: int = min_sentences - total
         extra: list[GeneratedTurn] = generate_fallback_turns(
-            group=groups[0],
+            group=personas,
             target_turns=deficit,
-            shout_rate=shout_rate,
-            laugh_rate=laugh_rate,
-            style_preset=style_preset,
+            shout_rate=params.shout_rate,
+            laugh_rate=params.laugh_rate,
+            style_preset=params.style_preset,
         )
+
+        # Determine timeline boundary
+        max_end_s: float = 0.5
+        for p in personas:
+            for u in p.utterances:
+                max_end_s = max(max_end_s, u.start_time_s + estimate_utterance_duration(u.text))
+
         sequence_llm_turns_on_timeline(
-            group=groups[0],
+            group=personas,
             turns=extra,
             group_id=0,
-            max_duration_s=duration_s,
-            overlap_rate=overlap_rate,
+            max_duration_s=params.duration_s,
+            overlap_rate=params.overlap_rate,
+            start_turn_order=total,
+            start_offset_s=max_end_s + 0.5,
         )
 
 
@@ -356,9 +583,10 @@ def generate_conversations_for_personas(
     llm_generator: LLMDialogueGenerator | None = None,
     ambiance: AmbiancePreset | None = None,
     constraint_words: list[str] | None = None,
+    allow_parallel: bool = True,
 ) -> None:
     """
-    Procedurally generate parallel conversations, interruptions, and styles for personas.
+    Procedurally generate conversations, interruptions, and styles for personas.
 
     Args:
         personas (list[PersonaConfig]): Personas to populate with utterances.
@@ -371,39 +599,44 @@ def generate_conversations_for_personas(
         llm_generator (LLMDialogueGenerator | None): Optional LLM dialogue generator.
         ambiance (AmbiancePreset | None): Optional ambiance preset.
         constraint_words (list[str] | None): Optional thematic constraint keywords.
+        allow_parallel (bool): Whether parallel side discussions are permitted.
     """
 
     # Clear any preexisting utterances
     for p in personas:
         p.utterances.clear()
 
-    # Partition personas into conversational cliques
-    groups: list[list[PersonaConfig]] = partition_conversational_groups(personas)
-    turns: int = _calculate_turns_per_group(min_sentences, len(groups), duration_s)
-
-    # Generate timeline turns for each conversational group in parallel
-    for idx, grp in enumerate(groups):
-        generate_group_timeline(
-            group=grp,
-            target_turns=turns,
-            group_id=idx,
-            overlap_rate=overlap_rate,
-            shout_rate=shout_rate,
-            laugh_rate=laugh_rate,
-            style_preset=style_preset,
-            llm_generator=llm_generator,
-            ambiance=ambiance,
-            constraint_words=constraint_words,
-            max_duration_s=duration_s,
-        )
-
-    _ensure_minimum_sentences(
-        personas=personas,
-        groups=groups,
-        min_sentences=min_sentences,
+    params: ConversationParameters = ConversationParameters(
         overlap_rate=overlap_rate,
         shout_rate=shout_rate,
         laugh_rate=laugh_rate,
         style_preset=style_preset,
+        llm_generator=llm_generator,
+        ambiance=ambiance,
+        constraint_words=constraint_words,
         duration_s=duration_s,
+    )
+
+    # Branch between parallel asynchronous discussions and plenary conversation
+    if allow_parallel and len(personas) >= 4:
+        _generate_parallel_discussions(
+            personas=personas,
+            min_sentences=min_sentences,
+            params=params,
+        )
+    else:
+        generate_group_timeline(
+            group=personas,
+            target_turns=min_sentences,
+            group_id=0,
+            params=params,
+            start_turn_order=0,
+            start_offset_s=0.5,
+        )
+
+    # Ensure minimum sentences constraint is satisfied
+    _ensure_minimum_sentences(
+        personas=personas,
+        min_sentences=min_sentences,
+        params=params,
     )
