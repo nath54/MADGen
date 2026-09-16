@@ -96,6 +96,43 @@ class TestDistortions(unittest.TestCase):
         # Noisy signal variance should be greater than zero
         self.assertGreater(float(np.var(noisy_signal)), 0.0)
 
+    def test_vocal_style_effects_disable_and_subtle_defaults(self) -> None:
+        """
+        Verify that disable_effects leaves signal dry, and default laughter modulation is subtle.
+        """
+
+        from src.config.models import VocalStyle  # pylint: disable=import-outside-toplevel
+        from src.personas.manager import apply_vocal_style_effects  # pylint: disable=import-outside-toplevel
+
+        sample_rate: int = 16000
+        constant_audio: AudioArray = np.ones(sample_rate, dtype=np.float64)
+
+        # With disable_effects=True, even SHOUTING or LAUGHTER returns exact input
+        dry_shout: AudioArray = apply_vocal_style_effects(
+            audio_clip=constant_audio,
+            vocal_style=VocalStyle.SHOUTING,
+            sample_rate=sample_rate,
+            disable_effects=True,
+        )
+        np.testing.assert_array_equal(dry_shout, constant_audio)
+
+        dry_laugh: AudioArray = apply_vocal_style_effects(
+            audio_clip=constant_audio,
+            vocal_style=VocalStyle.LAUGHTER,
+            sample_rate=sample_rate,
+            disable_effects=True,
+        )
+        np.testing.assert_array_equal(dry_laugh, constant_audio)
+
+        # Default enabled laughter modulation should be very subtle (depth=0.05, min >= 0.94)
+        subtle_laugh: AudioArray = apply_vocal_style_effects(
+            audio_clip=constant_audio,
+            vocal_style=VocalStyle.LAUGHTER,
+            sample_rate=sample_rate,
+            disable_effects=False,
+        )
+        self.assertGreaterEqual(float(np.min(subtle_laugh)), 0.94)
+
 
 if __name__ == "__main__":
     unittest.main()

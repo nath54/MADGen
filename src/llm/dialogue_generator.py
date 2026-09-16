@@ -34,9 +34,9 @@ SCRIPT_LINE_PATTERN: re.Pattern[str] = re.compile(
     r"(?P<speaker>[a-zA-Z0-9_\- ]+?)"
     r"(?:\s*\((?:male|female|unspecified)\))?"
     r"(?:\*{1,2}|_{1,2}|\])?"
-    r"(?:\s*\[(?P<style_bracket>[\w\-]+)\]|\s*\((?P<style_paren>[\w\-]+)\))?"
+    r"(?:\s*\[(?P<style_bracket>[^\]]+)\]|\s*\((?P<style_paren>[^\)]+)\))?"
     r"\s*:\s*"
-    r"(?:\[(?P<style_after>[\w\-]+)\]\s*|\((?P<style_paren_after>[\w\-]+)\)\s*)?"
+    r"(?:\[(?P<style_after>[^\]]+)\]\s*|\((?P<style_paren_after>[^\)]+)\)\s*)?"
     r"(?P<text>.+)$",
     re.IGNORECASE,
 )
@@ -62,11 +62,11 @@ def _normalize_vocal_style(style_str: str | None) -> str:
     if cleaned in VALID_VOCAL_STYLES:
         return cleaned
 
-    if "shout" in cleaned or "loud" in cleaned:
+    if any(k in cleaned for k in ("shout", "loud", "yell", "angry", "scream")):
         return "shouting"
-    if "laugh" in cleaned or "giggle" in cleaned:
+    if any(k in cleaned for k in ("laugh", "giggle", "chuckle", "amuse", "joke")):
         return "laughter"
-    if "interrupt" in cleaned or "cut" in cleaned:
+    if any(k in cleaned for k in ("interrupt", "cut")):
         return "interruption"
 
     return "normal"
@@ -474,6 +474,7 @@ class LLMDialogueGenerator:
         messages: list[ChatMessage] = [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt},
+            {"role": "assistant", "content": "<think>\n</think>\n"},
         ]
 
         response: ChatCompletionResponse = self.client.send_chat(

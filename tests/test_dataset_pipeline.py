@@ -118,8 +118,52 @@ class TestDatasetPipeline(unittest.TestCase):
 
         self.assertEqual(data["total_samples"], 2)
         self.assertEqual(len(data["samples"]), 2)
-        self.assertEqual(data["samples"][0]["sample_id"], "sample_0001")
-        self.assertEqual(data["samples"][1]["sample_id"], "sample_0002")
+        self.assertEqual(data["samples"][0]["sample_id"], "sample_001")
+        self.assertEqual(data["samples"][1]["sample_id"], "sample_002")
+
+    def test_sequential_batch_generation_appends_and_increments(self) -> None:
+        """
+        Verify consecutive batch runs auto-increment sample IDs and merge manifest.
+        """
+
+        out_batch: Path = self.test_dir / "batch_sequential"
+        batch_config: BatchGenerationConfig = BatchGenerationConfig(
+            num_samples=2,
+            duration_range=(5.0, 7.0),
+            speakers_range=(2, 2),
+            languages=["en"],
+            voices_dir=self.voices_dir,
+            output_dir=out_batch,
+            use_mock_tts=True,
+            export_isolated_stems=False,
+            use_llm=False,
+        )
+
+        # First run: should produce sample_001 and sample_002
+        first_run_samples: list[Path] = generate_dataset_batch(batch_config)
+        self.assertEqual(len(first_run_samples), 2)
+        self.assertEqual(first_run_samples[0].name, "sample_001")
+        self.assertEqual(first_run_samples[1].name, "sample_002")
+
+        # Second run with 1 sample: should detect existing and produce sample_003
+        batch_config.num_samples = 1
+        second_run_samples: list[Path] = generate_dataset_batch(batch_config)
+        self.assertEqual(len(second_run_samples), 1)
+        self.assertEqual(second_run_samples[0].name, "sample_003")
+
+        # Verify all 3 sample folders exist
+        self.assertTrue((out_batch / "sample_001").is_dir())
+        self.assertTrue((out_batch / "sample_002").is_dir())
+        self.assertTrue((out_batch / "sample_003").is_dir())
+
+        # Verify merged manifest has all 3 samples
+        manifest_path: Path = out_batch / "dataset_manifest.json"
+        with manifest_path.open("r", encoding="utf-8") as manifest_file:
+            data: dict[str, typing.Any] = json.load(manifest_file)
+
+        self.assertEqual(data["total_samples"], 3)
+        sample_ids: list[str] = [s["sample_id"] for s in data["samples"]]
+        self.assertEqual(sample_ids, ["sample_001", "sample_002", "sample_003"])
 
     def test_generate_sample_100_sentences_auto_duration(self) -> None:
         """
@@ -157,6 +201,37 @@ class TestDatasetPipeline(unittest.TestCase):
 
         speakers: set[str] = {u["speaker_id"] for u in utterances}
         self.assertEqual(len(speakers), 6)
+
+    def test_generate_dataset_with_disable_effects(self) -> None:
+        """
+        Verify generating dataset with disable_effects skips vocal effects and ambient noise.
+        """
+
+        sample_dir: Path = self.test_dir / "sample_dry"
+        sample_config: DatasetSampleConfig = DatasetSampleConfig(
+            sample_id="sample_dry",
+            duration_s=5.0,
+            use_llm=False,
+            disable_effects=True,
+        )
+
+        result_dir: Path = generate_single_dataset_sample(
+            sample_config=sample_config,
+            num_speakers=2,
+            voices_dir=self.voices_dir,
+            output_sample_dir=sample_dir,
+            use_mock_tts=True,
+            export_isolated_stems=False,
+        )
+
+        self.assertEqual(result_dir, sample_dir)
+        self.assertTrue((sample_dir / "mixed_scene.wav").exists())
+        self.assertTrue((sample_dir / "annotations.json").exists())
+
+        with (sample_dir / "annotations.json").open("r", encoding="utf-8") as f_annot:
+            payload: dict[str, typing.Any] = json.load(f_annot)
+
+        self.assertTrue(payload.get("disable_effects"))
 
 
 if __name__ == "__main__":

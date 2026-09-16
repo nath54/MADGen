@@ -49,6 +49,7 @@ def simulate_scene_audio(
     sample_dir: Path,
     synthesizer: BaseSynthesizer,
     export_isolated_stems: bool,
+    disable_effects: bool = False,
 ) -> tuple[AudioArray, list[dict[str, typing.Any]]]:
     """
     Synthesize persona tracks and simulate spatial room acoustics.
@@ -59,15 +60,22 @@ def simulate_scene_audio(
         sample_dir (Path): Destination sample directory.
         synthesizer (BaseSynthesizer): TTS synthesizer.
         export_isolated_stems (bool): Whether to export isolated spatial tracks.
+        disable_effects (bool): If True, bypass vocal distortions and heavy room reverb.
 
     Returns:
         tuple[AudioArray, list[dict[str, typing.Any]]]: Mixed spatial audio and utterance metadata.
     """
 
+    # If effects are disabled, configure anechoic direct path propagation
+    if disable_effects:
+        scene.room.max_order = 0
+        scene.room.absorption = 0.99
+
     # Synthesize multi-persona continuous audio tracks
     tracks = manager.synthesize_all_tracks(
         synthesizer=synthesizer,
         sample_rate=scene.room.sample_rate,
+        disable_effects=disable_effects,
     )
     utterances_meta = manager.get_utterance_metadata()
 
@@ -126,13 +134,23 @@ def _prepare_scene_conversations(
     if sample_config.use_llm:
         llm_generator = LLMDialogueGenerator(base_url=sample_config.llm_url)
 
+    shout_rate: float = (
+        0.0 if sample_config.disable_effects else (sample_config.shout_rate or ambiance.shout_rate)
+    )
+    laugh_rate: float = (
+        0.0 if sample_config.disable_effects else (sample_config.laugh_rate or ambiance.laugh_rate)
+    )
+    overlap_rate: float = (
+        0.08 if sample_config.disable_effects else ambiance.overlap_rate
+    )
+
     generate_conversations_for_personas(
         personas=scene.personas,
         duration_s=sample_config.duration_s,
         min_sentences=sample_config.min_sentences,
-        overlap_rate=ambiance.overlap_rate,
-        shout_rate=ambiance.shout_rate,
-        laugh_rate=ambiance.laugh_rate,
+        overlap_rate=overlap_rate,
+        shout_rate=shout_rate,
+        laugh_rate=laugh_rate,
         style_preset=sample_config.style,
         llm_generator=llm_generator,
         ambiance=ambiance,
@@ -150,6 +168,7 @@ def _export_sample_artifacts(
     sample_id: str,
     mix_audio: AudioArray,
     utterances_meta: list[dict[str, typing.Any]],
+    disable_effects: bool = False,
 ) -> None:
     """
     Normalize, write mixed audio WAV, and export annotations for a sample.
@@ -162,12 +181,16 @@ def _export_sample_artifacts(
         sample_id (str): Unique sample session identifier.
         mix_audio (AudioArray): Synthesized composite audio before ambiance noise.
         utterances_meta (list[dict[str, typing.Any]]): Utterance metadata list.
+        disable_effects (bool): If True, skip ambient noise injection.
     """
 
-    final_mix: AudioArray = normalize_audio_peak(
-        add_ambient_room_noise(mix_audio, target_snr_db=ambiance.ambient_snr_db),
-        peak_target=0.92,
-    )
+    if disable_effects:
+        final_mix: AudioArray = normalize_audio_peak(mix_audio, peak_target=0.92)
+    else:
+        final_mix = normalize_audio_peak(
+            add_ambient_room_noise(mix_audio, target_snr_db=ambiance.ambient_snr_db),
+            peak_target=0.92,
+        )
     write_wav_file(sample_dir / "mixed_scene.wav", final_mix, scene.room.sample_rate)
 
     duration_s: float = final_mix.shape[0] / float(scene.room.sample_rate)
@@ -179,6 +202,7 @@ def _export_sample_artifacts(
         },
         "thematic_constraints": constraint_words,
         "total_sentences": len(utterances_meta),
+        "disable_effects": disable_effects,
     }
     export_dataset_manifest(
         sample_dir=sample_dir,
@@ -229,6 +253,7 @@ def generate_single_dataset_sample(
         sample_dir=output_sample_dir,
         synthesizer=synthesizer,
         export_isolated_stems=export_isolated_stems,
+        disable_effects=sample_config.disable_effects,
     )
 
     _export_sample_artifacts(
@@ -239,9 +264,34 @@ def generate_single_dataset_sample(
         sample_id=sample_config.sample_id,
         mix_audio=mix_audio,
         utterances_meta=utterances_meta,
+        disable_effects=sample_config.disable_effects,
     )
 
     return output_sample_dir
+
+
+def _find_next_sample_index(output_dir: Path) -> int:
+    """
+    Scan output directory for existing sample folders to determine next sequential index.
+
+    Args:
+        output_dir (Path): Base dataset output directory.
+
+    Returns:
+        int: Next available 1-based sequential integer index.
+    """
+
+    if not output_dir.is_dir():
+        return 1
+
+    indices: list[int] = []
+    for entry in output_dir.iterdir():
+        if entry.is_dir() and entry.name.startswith("sample_"):
+            suffix: str = entry.name[len("sample_"):]
+            if suffix.isdigit():
+                indices.append(int(suffix))
+
+    return max(indices) + 1 if indices else 1
 
 
 def _build_sample_config_for_batch(
@@ -259,7 +309,7 @@ def _build_sample_config_for_batch(
         tuple[DatasetSampleConfig, int]: Initialized sample config and speaker count.
     """
 
-    sample_id: str = f"sample_{index:04d}"
+    sample_id: str = f"sample_{index:03d}"
     duration_s: float | None = None
     if batch_config.duration_range is not None:
         duration_s = round(
@@ -274,14 +324,24 @@ def _build_sample_config_for_batch(
 
     allow_parallel: bool = random.random() < batch_config.parallel_prob
 
+    shout_rate: float = (
+        0.0 if batch_config.disable_effects else round(random.uniform(0.01, 0.04), 2)
+    )
+    laugh_rate: float = (
+        0.0 if batch_config.disable_effects else round(random.uniform(0.02, 0.05), 2)
+    )
+    ambient_snr_db: float = (
+        100.0 if batch_config.disable_effects else round(random.uniform(36.0, 44.0), 1)
+    )
+
     sample_config: DatasetSampleConfig = DatasetSampleConfig(
         sample_id=sample_id,
         duration_s=duration_s,
         min_sentences=batch_config.min_sentences,
-        overlap_rate=round(random.uniform(0.2, 0.45), 2),
-        shout_rate=round(random.uniform(0.1, 0.25), 2),
-        laugh_rate=round(random.uniform(0.15, 0.3), 2),
-        ambient_snr_db=round(random.uniform(20.0, 32.0), 1),
+        overlap_rate=round(random.uniform(0.15, 0.28), 2),
+        shout_rate=shout_rate,
+        laugh_rate=laugh_rate,
+        ambient_snr_db=ambient_snr_db,
         style=batch_config.style,
         languages=batch_config.languages,
         use_llm=batch_config.use_llm,
@@ -290,6 +350,7 @@ def _build_sample_config_for_batch(
         num_constraint_words=batch_config.num_constraint_words,
         llm_temperature=batch_config.llm_temperature,
         allow_parallel=allow_parallel,
+        disable_effects=batch_config.disable_effects,
     )
     return (sample_config, num_speakers)
 
@@ -345,6 +406,7 @@ def generate_batch_sample_item(
         "languages": batch_config.languages,
         "ambiance": sample_config.ambiance_preset,
         "use_llm": batch_config.use_llm,
+        "disable_effects": batch_config.disable_effects,
     }
 
     return (sample_dir, record)
@@ -352,24 +414,46 @@ def generate_batch_sample_item(
 
 def write_batch_manifest(
     output_dir: Path,
-    num_samples: int,
     summary_records: list[dict[str, typing.Any]],
+    num_samples: int | None = None,
 ) -> None:
     """
-    Export master summary JSON for completed batch run.
+    Export or update master summary JSON for completed batch run.
 
     Args:
         output_dir (Path): Output directory.
-        num_samples (int): Total samples count.
-        summary_records (list[dict[str, typing.Any]]): Per-sample summaries.
+        summary_records (list[dict[str, typing.Any]]): Per-sample summaries from this run.
+        num_samples (int | None): Optional sample count override.
     """
 
     summary_path: Path = output_dir / "dataset_manifest.json"
+    existing_samples: list[dict[str, typing.Any]] = []
+
+    if summary_path.is_file():
+        try:
+            with summary_path.open("r", encoding="utf-8") as summary_file:
+                existing_data: dict[str, typing.Any] = json.load(summary_file)
+                if isinstance(existing_data.get("samples"), list):
+                    existing_samples = existing_data["samples"]
+        except (json.JSONDecodeError, OSError) as exc:
+            logger.warning("Could not read existing dataset_manifest.json: %s", exc)
+
+    # Merge existing and new samples by sample_id
+    sample_map: dict[str, dict[str, typing.Any]] = {
+        str(s.get("sample_id")): s for s in existing_samples if "sample_id" in s
+    }
+    for rec in summary_records:
+        sample_map[str(rec.get("sample_id"))] = rec
+
+    all_samples: list[dict[str, typing.Any]] = list(sample_map.values())
+    all_samples.sort(key=lambda s: str(s.get("sample_id", "")))
+    total_count: int = num_samples if num_samples is not None else len(all_samples)
+
     with summary_path.open("w", encoding="utf-8") as summary_file:
         json.dump(
             {
-                "total_samples": num_samples,
-                "samples": summary_records,
+                "total_samples": total_count,
+                "samples": all_samples,
             },
             summary_file,
             indent=2,
@@ -390,18 +474,26 @@ def generate_dataset_batch(
     """
 
     batch_config.output_dir.mkdir(parents=True, exist_ok=True)
+    start_index: int = _find_next_sample_index(batch_config.output_dir)
+
     generated_samples: list[Path] = []
     summary_records: list[dict[str, typing.Any]] = []
 
-    for i in range(1, batch_config.num_samples + 1):
-        logger.info("Generating dataset sample %d of %d...", i, batch_config.num_samples)
+    for offset in range(batch_config.num_samples):
+        current_index: int = start_index + offset
+        logger.info(
+            "Generating dataset sample %d (%d of %d in batch)...",
+            current_index,
+            offset + 1,
+            batch_config.num_samples,
+        )
         sample_dir, record = generate_batch_sample_item(
-            index=i,
+            index=current_index,
             batch_config=batch_config,
         )
         generated_samples.append(sample_dir)
         summary_records.append(record)
 
-    write_batch_manifest(batch_config.output_dir, batch_config.num_samples, summary_records)
+    write_batch_manifest(batch_config.output_dir, summary_records)
 
     return generated_samples

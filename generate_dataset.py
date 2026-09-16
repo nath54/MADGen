@@ -81,8 +81,9 @@ def build_argument_parser() -> argparse.ArgumentParser:
     # LLM & Ambiance Preset Options
     parser.add_argument(
         "--use-llm",
-        action="store_true",
-        help="Generate dynamic dialogue lines using llama.cpp / llama-server.",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Generate dynamic dialogue lines using llama.cpp / llama-server (default: True).",
     )
     parser.add_argument(
         "--llm-url",
@@ -120,8 +121,8 @@ def build_argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--output-dir",
         type=str,
-        default="data/datasets/procedural_run",
-        help="Target folder where generated dataset samples will be stored.",
+        default="data/output",
+        help="Target folder where generated dataset samples will be stored (default: data/output).",
     )
     parser.add_argument(
         "--voices-dir",
@@ -138,6 +139,13 @@ def build_argument_parser() -> argparse.ArgumentParser:
         "--mock-tts",
         action="store_true",
         help="Use synthetic tones instead of neural Piper voices for rapid testing.",
+    )
+    parser.add_argument(
+        "--disable-effects",
+        action="store_true",
+        help=(
+            "Disable post-synthesis vocal distortions, ambient noise, and heavy room reverb."
+        ),
     )
     parser.add_argument(
         "--log-level",
@@ -195,6 +203,8 @@ def main() -> None:
     print(f"  - Constraint Words:    {args.constraint_words} from 100k dictionary")
     print(f"  - Isolated Stems:      {export_isolated}")
     print(f"  - Parallel Prob:       {args.parallel_prob}")
+    effects_status: str = "Disabled (dry)" if args.disable_effects else "Enabled (subtle)"
+    print(f"  - Post Effects:        {effects_status}")
     print(f"  - Output Folder:       {out_dir}")
     print("=" * 65 + "\n")
 
@@ -216,6 +226,7 @@ def main() -> None:
         num_constraint_words=args.constraint_words,
         llm_temperature=args.llm_temperature,
         parallel_prob=args.parallel_prob,
+        disable_effects=args.disable_effects,
     )
     samples: list[Path] = generate_dataset_batch(batch_config)
 

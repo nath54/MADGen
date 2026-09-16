@@ -39,10 +39,10 @@ AMBIANCE_PRESETS: dict[str, AmbiancePreset] = {
             "The conversation is relaxed, friendly, and natural. Friends are catching up about "
             "their daily lives, sharing funny stories, and joking around. The tone is warm."
         ),
-        overlap_rate=0.25,
-        shout_rate=0.08,
-        laugh_rate=0.25,
-        ambient_snr_db=26.0,
+        overlap_rate=0.20,
+        shout_rate=0.02,
+        laugh_rate=0.05,
+        ambient_snr_db=38.0,
         num_constraint_words=3,
     ),
     "kitchen_cooking": AmbiancePreset(
@@ -53,10 +53,10 @@ AMBIANCE_PRESETS: dict[str, AmbiancePreset] = {
             "The speakers are in a kitchen cooking dinner together. They discuss recipes, ask to "
             "pass spices or utensils, check oven temperatures, and coordinate meal timing."
         ),
-        overlap_rate=0.30,
-        shout_rate=0.12,
-        laugh_rate=0.20,
-        ambient_snr_db=22.0,
+        overlap_rate=0.22,
+        shout_rate=0.03,
+        laugh_rate=0.04,
+        ambient_snr_db=36.0,
         num_constraint_words=3,
     ),
     "workplace_meeting": AmbiancePreset(
@@ -69,10 +69,10 @@ AMBIANCE_PRESETS: dict[str, AmbiancePreset] = {
             "A professional business meeting or sprint review. The speakers discuss technical "
             "deliverables, timelines, architecture decisions, and budget considerations."
         ),
-        overlap_rate=0.18,
-        shout_rate=0.04,
-        laugh_rate=0.10,
-        ambient_snr_db=28.0,
+        overlap_rate=0.15,
+        shout_rate=0.01,
+        laugh_rate=0.03,
+        ambient_snr_db=42.0,
         num_constraint_words=3,
     ),
     "heated_argument": AmbiancePreset(
@@ -83,10 +83,10 @@ AMBIANCE_PRESETS: dict[str, AmbiancePreset] = {
             "A passionate debate or argument. The speakers strongly disagree, talk over each "
             "other, raise voices, express frustration, and cut each other off with counterpoints."
         ),
-        overlap_rate=0.55,
-        shout_rate=0.35,
-        laugh_rate=0.05,
-        ambient_snr_db=25.0,
+        overlap_rate=0.35,
+        shout_rate=0.08,
+        laugh_rate=0.02,
+        ambient_snr_db=38.0,
         num_constraint_words=2,
     ),
     "party_celebration": AmbiancePreset(
@@ -97,10 +97,10 @@ AMBIANCE_PRESETS: dict[str, AmbiancePreset] = {
             "A lively party celebration. High energy, cheerful toasts, storytelling, loud "
             "laughter, and enthusiastic congratulations between people having fun."
         ),
-        overlap_rate=0.40,
-        shout_rate=0.20,
-        laugh_rate=0.40,
-        ambient_snr_db=18.0,
+        overlap_rate=0.28,
+        shout_rate=0.05,
+        laugh_rate=0.08,
+        ambient_snr_db=35.0,
         num_constraint_words=3,
     ),
     "smart_assistant_household": AmbiancePreset(
@@ -113,10 +113,10 @@ AMBIANCE_PRESETS: dict[str, AmbiancePreset] = {
             "A smart home living space where speakers chat while occasionally invoking smart "
             "assistant commands (e.g. 'Echo, set a timer', 'Alexa, what is the weather')."
         ),
-        overlap_rate=0.28,
-        shout_rate=0.10,
-        laugh_rate=0.18,
-        ambient_snr_db=24.0,
+        overlap_rate=0.20,
+        shout_rate=0.02,
+        laugh_rate=0.04,
+        ambient_snr_db=38.0,
         num_constraint_words=3,
     ),
     "gaming_session": AmbiancePreset(
@@ -127,10 +127,10 @@ AMBIANCE_PRESETS: dict[str, AmbiancePreset] = {
             "Players in a multiplayer co-op game coordinating strategies, yelling tactical "
             "callouts, reacting to surprises, cheering victories, and groaning over mistakes."
         ),
-        overlap_rate=0.45,
-        shout_rate=0.30,
-        laugh_rate=0.25,
-        ambient_snr_db=22.0,
+        overlap_rate=0.30,
+        shout_rate=0.06,
+        laugh_rate=0.05,
+        ambient_snr_db=36.0,
         num_constraint_words=2,
     ),
     "interview_podcast": AmbiancePreset(
@@ -141,10 +141,10 @@ AMBIANCE_PRESETS: dict[str, AmbiancePreset] = {
             "A podcast or interview recording. The host asks insightful, probing questions and "
             "the guest provides detailed anecdotes and reflections. Turn-taking is orderly."
         ),
-        overlap_rate=0.15,
-        shout_rate=0.02,
-        laugh_rate=0.15,
-        ambient_snr_db=30.0,
+        overlap_rate=0.12,
+        shout_rate=0.01,
+        laugh_rate=0.02,
+        ambient_snr_db=44.0,
         num_constraint_words=3,
     ),
     "late_night_philosophy": AmbiancePreset(
@@ -157,10 +157,10 @@ AMBIANCE_PRESETS: dict[str, AmbiancePreset] = {
             "Late-night introspective conversation. The atmosphere is quiet, contemplative, and "
             "reflective. Speakers discuss existence, memory, time, and deep philosophical ideas."
         ),
-        overlap_rate=0.12,
+        overlap_rate=0.10,
         shout_rate=0.01,
-        laugh_rate=0.08,
-        ambient_snr_db=32.0,
+        laugh_rate=0.02,
+        ambient_snr_db=45.0,
         num_constraint_words=4,
     ),
     "family_dinner": AmbiancePreset(
@@ -171,10 +171,10 @@ AMBIANCE_PRESETS: dict[str, AmbiancePreset] = {
             "A family dinner around the table. Multiple generations discussing school, work, "
             "passing bread and dishes, with affectionate interjections and cross-table chatter."
         ),
-        overlap_rate=0.35,
-        shout_rate=0.15,
-        laugh_rate=0.25,
-        ambient_snr_db=23.0,
+        overlap_rate=0.25,
+        shout_rate=0.03,
+        laugh_rate=0.05,
+        ambient_snr_db=37.0,
         num_constraint_words=3,
     ),
     "academic_defense": AmbiancePreset(
@@ -185,10 +185,10 @@ AMBIANCE_PRESETS: dict[str, AmbiancePreset] = {
             "A formal academic committee defense. Examiners raise rigorous methodological "
             "critiques and the candidate defends hypotheses, analytical models, and findings."
         ),
-        overlap_rate=0.16,
-        shout_rate=0.03,
-        laugh_rate=0.06,
-        ambient_snr_db=29.0,
+        overlap_rate=0.12,
+        shout_rate=0.01,
+        laugh_rate=0.02,
+        ambient_snr_db=44.0,
         num_constraint_words=4,
     ),
     "emergency_rush": AmbiancePreset(
@@ -201,10 +201,10 @@ AMBIANCE_PRESETS: dict[str, AmbiancePreset] = {
             "People in a hurry packing to catch a flight or train. Fast-paced, rushed questions, "
             "searching for missing keys, urgency, shouting across rooms, and checking clocks."
         ),
-        overlap_rate=0.48,
-        shout_rate=0.32,
-        laugh_rate=0.06,
-        ambient_snr_db=20.0,
+        overlap_rate=0.32,
+        shout_rate=0.06,
+        laugh_rate=0.03,
+        ambient_snr_db=36.0,
         num_constraint_words=2,
     ),
 }

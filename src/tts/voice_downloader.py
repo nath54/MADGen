@@ -85,6 +85,48 @@ def download_file_if_missing(
     logger.info("Saved %s successfully", target_file.name)
 
 
+def resolve_voice_folder(
+    voice_key: str,
+    target_dir: Path,
+    voice_info: dict[str, typing.Any] | None = None,
+) -> Path:
+    """
+    Resolve structured destination folder for a Piper voice model.
+
+    Returns path adhering to BASE_LANG/LANG_DETAIL/persona_name.
+
+    Args:
+        voice_key (str): Identifier of the voice (e.g. 'en_US-lessac-low').
+        target_dir (Path): Base directory for Piper voices.
+        voice_info (dict[str, typing.Any] | None): Optional metadata from voices.json.
+
+    Returns:
+        Path: Resolved directory path for the voice files.
+    """
+
+    family: str = ""
+    code: str = ""
+    name: str = ""
+
+    if voice_info is not None:
+        lang_dict: dict[str, typing.Any] = voice_info.get("language", {})
+        code = str(lang_dict.get("code", ""))
+        family = str(lang_dict.get("family", code.split("_", maxsplit=1)[0]))
+        name = str(voice_info.get("name", ""))
+
+    if not family or not code or not name:
+        parts: list[str] = voice_key.split("-")
+        code = parts[0] if parts else "en_US"
+        family = code.split("_", maxsplit=1)[0]
+        name = parts[1] if len(parts) > 1 else "speaker"
+
+    # Avoid duplicating subdirectories if target_dir already points to persona folder
+    if target_dir.name == name:
+        return target_dir
+
+    return target_dir / family / code / name
+
+
 def download_piper_voice(
     voice_key: str,
     target_dir: Path,
@@ -130,9 +172,10 @@ def download_piper_voice(
     if not onnx_rel_path or not json_rel_path:
         raise ValueError(f"Incomplete files for voice {voice_key} in catalog")
 
-    # Construct destination paths
-    dest_onnx: Path = target_dir / f"{voice_key}.onnx"
-    dest_json: Path = target_dir / f"{voice_key}.onnx.json"
+    # Construct structured destination paths
+    voice_folder: Path = resolve_voice_folder(voice_key, target_dir, voice_info)
+    dest_onnx: Path = voice_folder / f"{voice_key}.onnx"
+    dest_json: Path = voice_folder / f"{voice_key}.onnx.json"
 
     # Download ONNX model file
     download_file_if_missing(VOICES_BASE_URL + onnx_rel_path, dest_onnx)

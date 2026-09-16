@@ -108,6 +108,23 @@ class PiperSynthesizer(BaseSynthesizer):
             if candidate_with_ext.is_file():
                 return candidate_with_ext
 
+        # Recursive search in voices_dir across hierarchical subdirectories
+        target_filename: str = (
+            voice_model if voice_model.endswith(".onnx") else f"{voice_model}.onnx"
+        )
+        target_stem: str = (
+            voice_model[:-5] if voice_model.endswith(".onnx") else voice_model
+        )
+
+        if self.voices_dir.is_dir():
+            for file_path in self.voices_dir.rglob("*.onnx"):
+                if (
+                    file_path.name == target_filename
+                    or file_path.stem == target_stem
+                    or file_path.parent.name == voice_model
+                ):
+                    return file_path
+
         # Attempt automatic download from HuggingFace
         if self.auto_download:
             voice_key: str = (
@@ -131,9 +148,9 @@ class PiperSynthesizer(BaseSynthesizer):
                     exc,
                 )
 
-        # Fallback to any existing ONNX model in voices_dir
+        # Fallback to any existing ONNX model in voices_dir (recursive)
         if self.voices_dir.is_dir():
-            available_models: list[Path] = list(self.voices_dir.glob("*.onnx"))
+            available_models: list[Path] = list(self.voices_dir.rglob("*.onnx"))
             if available_models:
                 logger.warning(
                     "Model '%s' not found in '%s'. Falling back to local '%s'",

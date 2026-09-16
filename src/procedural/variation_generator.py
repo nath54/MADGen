@@ -25,7 +25,15 @@ from src.config.models import (
 # Mapping from language code to recommended default Piper voice models
 LANGUAGE_VOICE_MAP: dict[str, list[str]] = {
     "en": ["en_US-lessac-low.onnx", "en_US-lessac-medium.onnx"],
-    "fr": ["fr_FR-siwis-medium.onnx"],
+    "fr": [
+        "fr_FR-siwis-medium.onnx",
+        "fr_FR-tom-medium.onnx",
+        "fr_FR-gilles-low.onnx",
+        "fr_FR-siwis-low.onnx",
+        "fr_FR-mls_1840-low.onnx",
+        "fr_FR-upmc-medium.onnx",
+        "fr_FR-mls-medium.onnx",
+    ],
     "es": ["es_ES-davefx-medium.onnx"],
     "de": ["de_DE-karlsson-low.onnx", "de_DE-thorsten-medium.onnx"],
 }
@@ -216,8 +224,8 @@ def build_random_room(num_speakers: int = 4) -> RoomConfig:
     """
 
     room_dims: tuple[float, float, float] = sample_room_dimensions(num_speakers)
-    absorption: float = round(random.uniform(0.10, 0.38), 2)
-    max_order: int = random.choice([2, 3, 4])
+    absorption: float = round(random.uniform(0.35, 0.55), 2)
+    max_order: int = random.choice([1, 2])
 
     return RoomConfig(
         dimensions=room_dims,

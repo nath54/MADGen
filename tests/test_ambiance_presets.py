@@ -66,7 +66,7 @@ class TestAmbiancePresets(unittest.TestCase):
             self.assertLessEqual(preset.laugh_rate, 1.0)
 
             self.assertGreaterEqual(preset.ambient_snr_db, 10.0)
-            self.assertLessEqual(preset.ambient_snr_db, 40.0)
+            self.assertLessEqual(preset.ambient_snr_db, 50.0)
 
             self.assertGreaterEqual(preset.num_constraint_words, 1)
 

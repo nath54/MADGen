@@ -71,6 +71,7 @@ def apply_vocal_style_effects(
     audio_clip: AudioArray,
     vocal_style: VocalStyle,
     sample_rate: int,
+    disable_effects: bool = False,
 ) -> AudioArray:
     """
     Apply vocal effects like soft-clipping saturation or laughter tremolo.
@@ -79,18 +80,22 @@ def apply_vocal_style_effects(
         audio_clip (AudioArray): Dry synthesized audio clip.
         vocal_style (VocalStyle): Emotional vocal style.
         sample_rate (int): Sampling frequency in Hertz.
+        disable_effects (bool): If True, bypass all post-synthesis effects.
 
     Returns:
         AudioArray: Processed audio clip.
     """
 
-    # Apply soft-clipping overdrive when shouting
-    if vocal_style == VocalStyle.SHOUTING:
-        return apply_soft_clipping_overdrive(audio_clip, drive_gain=1.6)
+    if disable_effects:
+        return audio_clip
 
-    # Apply laughter tremolo modulation when laughing
+    # Apply subtle soft-clipping overdrive when shouting
+    if vocal_style == VocalStyle.SHOUTING:
+        return apply_soft_clipping_overdrive(audio_clip, drive_gain=1.05)
+
+    # Apply subtle laughter tremolo modulation when laughing
     if vocal_style == VocalStyle.LAUGHTER:
-        return apply_laughter_modulation(audio_clip, sample_rate=sample_rate)
+        return apply_laughter_modulation(audio_clip, sample_rate=sample_rate, depth=0.05)
 
     return audio_clip
 
@@ -100,6 +105,7 @@ def _synthesize_and_process_utterance(
     utt: UtteranceConfig,
     synthesizer: BaseSynthesizer,
     sample_rate: int,
+    disable_effects: bool = False,
 ) -> tuple[AudioArray, float]:
     """
     Synthesize speech audio for an utterance and apply emotional vocal effects.
@@ -109,6 +115,7 @@ def _synthesize_and_process_utterance(
         utt (UtteranceConfig): Utterance configuration.
         synthesizer (BaseSynthesizer): Speech synthesis engine.
         sample_rate (int): Target sampling frequency in Hertz.
+        disable_effects (bool): If True, bypass post-synthesis effects.
 
     Returns:
         tuple[AudioArray, float]: Processed audio clip and exact duration in seconds.
@@ -136,6 +143,7 @@ def _synthesize_and_process_utterance(
         audio_clip=raw_clip,
         vocal_style=utt.vocal_style,
         sample_rate=sample_rate,
+        disable_effects=disable_effects,
     )
 
     duration_s: float = len(processed_clip) / float(sample_rate)
@@ -148,6 +156,7 @@ def synthesize_single_utterance(
     utt_index: int,
     synthesizer: BaseSynthesizer,
     sample_rate: int,
+    disable_effects: bool = False,
 ) -> tuple[AudioArray, float, dict[str, typing.Any]]:
     """
     Synthesize and post-process a single utterance for a persona.
@@ -157,6 +166,7 @@ def synthesize_single_utterance(
         utt_index (int): Index of utterance in persona config.
         synthesizer (BaseSynthesizer): TTS engine.
         sample_rate (int): Sample rate.
+        disable_effects (bool): If True, bypass post-synthesis effects.
 
     Returns:
         tuple[AudioArray, float, dict[str, typing.Any]]: Processed audio, end time, and metadata.
@@ -168,6 +178,7 @@ def synthesize_single_utterance(
         utt=utt,
         synthesizer=synthesizer,
         sample_rate=sample_rate,
+        disable_effects=disable_effects,
     )
     end_time_s: float = utt.start_time_s + duration_s
 
@@ -234,6 +245,7 @@ def _sequence_group_utterances(
     synthesizer: BaseSynthesizer,
     sample_rate: int,
     speaker_busy: dict[str, list[tuple[float, float]]],
+    disable_effects: bool = False,
 ) -> tuple[list[tuple[Persona, AudioArray, float]], list[float], list[dict[str, typing.Any]]]:
     """
     Synthesize and dynamically position utterances for a single conversation group.
@@ -243,6 +255,7 @@ def _sequence_group_utterances(
         synthesizer (BaseSynthesizer): Speech synthesizer engine.
         sample_rate (int): Output sampling rate in Hertz.
         speaker_busy (dict[str, list[tuple[float, float]]]): Busy intervals per speaker.
+        disable_effects (bool): If True, bypass post-synthesis effects.
 
     Returns:
         tuple[list[tuple[Persona, AudioArray, float]], list[float], list[dict[str, typing.Any]]]:
@@ -274,6 +287,7 @@ def _sequence_group_utterances(
             utt=utt,
             synthesizer=synthesizer,
             sample_rate=sample_rate,
+            disable_effects=disable_effects,
         )
 
         # Enforce zero self-overlap across concurrent discussions
@@ -303,6 +317,7 @@ def synthesize_persona_clips(
     personas: list[Persona],
     synthesizer: BaseSynthesizer,
     sample_rate: int,
+    disable_effects: bool = False,
 ) -> tuple[list[tuple[Persona, AudioArray, float]], list[float], list[dict[str, typing.Any]]]:
     """
     Synthesize all speech clips across all personas with dynamic synthesis-driven timing.
@@ -311,6 +326,7 @@ def synthesize_persona_clips(
         personas (list[Persona]): Personas with utterances to synthesize.
         synthesizer (BaseSynthesizer): TTS synthesis engine.
         sample_rate (int): Output sampling rate in Hertz.
+        disable_effects (bool): If True, bypass post-synthesis effects.
 
     Returns:
         tuple[list[tuple[Persona, AudioArray, float]], list[float], list[dict[str, typing.Any]]]:
@@ -334,6 +350,7 @@ def synthesize_persona_clips(
             synthesizer=synthesizer,
             sample_rate=sample_rate,
             speaker_busy=speaker_busy,
+            disable_effects=disable_effects,
         )
         speech_clips.extend(grp_clips)
         end_times.extend(grp_ends)
@@ -418,6 +435,7 @@ class PersonaManager:
         synthesizer: BaseSynthesizer,
         sample_rate: int,
         padding_s: float = 1.5,
+        disable_effects: bool = False,
     ) -> list[PersonaTrack]:
         """
         Synthesize speech for all personas and position them onto aligned tracks.
@@ -426,6 +444,7 @@ class PersonaManager:
             synthesizer (BaseSynthesizer): TTS synthesis engine.
             sample_rate (int): Audio sampling frequency in Hertz.
             padding_s (float): Trailing room reverberation padding in seconds.
+            disable_effects (bool): If True, bypass post-synthesis effects.
 
         Returns:
             list[PersonaTrack]: Rendered audio tracks for each persona.
@@ -436,6 +455,7 @@ class PersonaManager:
             self.personas,
             synthesizer,
             sample_rate,
+            disable_effects=disable_effects,
         )
         self.utterances_metadata = meta_records
 

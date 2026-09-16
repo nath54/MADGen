@@ -14,6 +14,7 @@ from src.llm.dialogue_generator import (
     LLMDialogueGenerator,
 )
 from src.llm.llm_types import (
+    ChatMessage,
     GeneratedTurn,
     ChatCompletionResponse,
 )
@@ -235,6 +236,84 @@ class TestLLMDialogue(unittest.TestCase):
 
         # Must not crash, should return fallback turns
         self.assertEqual(len(turns), 4)
+
+    def test_parse_script_response_multi_word_styles(self) -> None:
+        """
+        Verify parsing of multi-word descriptive style brackets and mapping.
+        """
+
+        raw_text: str = (
+            "spk_alice [calm, slightly amused]: You know, this smells delicious.\n"
+            "spk_bob [loud and angry]: Do not touch that yet!\n"
+            "spk_alice [whispering softly]: Understood, keeping hands off.\n"
+        )
+        turns: list[GeneratedTurn] = parse_script_response(raw_text, self.personas)
+        self.assertEqual(len(turns), 3)
+
+        self.assertEqual(turns[0].speaker_id, "spk_alice")
+        self.assertEqual(turns[0].vocal_style, "laughter")
+        self.assertEqual(turns[0].text, "You know, this smells delicious.")
+
+        self.assertEqual(turns[1].speaker_id, "spk_bob")
+        self.assertEqual(turns[1].vocal_style, "shouting")
+        self.assertEqual(turns[1].text, "Do not touch that yet!")
+
+        self.assertEqual(turns[2].speaker_id, "spk_alice")
+        self.assertEqual(turns[2].vocal_style, "normal")
+        self.assertEqual(turns[2].text, "Understood, keeping hands off.")
+
+    def test_generate_dialogue_chunk_assistant_prefill(self) -> None:
+        """
+        Verify that _generate_dialogue_chunk passes assistant prefill with <think> tags.
+        """
+
+        captured_messages = []
+
+        class MockClient:
+            """Mock LLMClient for inspecting transmitted chat payload."""
+
+            def send_chat(
+                self,
+                messages: list[ChatMessage],
+                temperature: float = 0.7,
+            ) -> ChatCompletionResponse:
+                """Capture chat messages and return stub response."""
+                nonlocal captured_messages
+                _ = temperature
+                captured_messages = list(messages)
+                return {
+                    "id": "mock",
+                    "object": "chat.completion",
+                    "created": 123456,
+                    "model": "mock_model",
+                    "choices": [
+                        {
+                            "index": 0,
+                            "finish_reason": "stop",
+                            "message": {
+                                "role": "assistant",
+                                "content": "spk_alice [normal]: Hello Bob!\n",
+                            },
+                        }
+                    ],
+                }
+
+        generator = LLMDialogueGenerator(client=MockClient())  # type: ignore[arg-type]
+        turns = generator._generate_dialogue_chunk(  # pylint: disable=protected-access
+            group=self.personas,
+            system_prompt="System instructions",
+            target_chunk_count=2,
+            prior_turns=[],
+            temperature=0.7,
+        )
+
+        self.assertEqual(len(turns), 1)
+        self.assertEqual(turns[0].speaker_id, "spk_alice")
+        self.assertEqual(len(captured_messages), 3)
+        self.assertEqual(captured_messages[0]["role"], "system")
+        self.assertEqual(captured_messages[1]["role"], "user")
+        self.assertEqual(captured_messages[2]["role"], "assistant")
+        self.assertEqual(captured_messages[2]["content"], "<think>\n</think>\n")
 
 
 if __name__ == "__main__":

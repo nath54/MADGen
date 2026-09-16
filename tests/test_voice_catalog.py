@@ -95,6 +95,54 @@ class TestVoiceCatalog(unittest.TestCase):
         self.assertEqual(genders.count("female"), 2)
         self.assertEqual(genders.count("male"), 2)
 
+    def test_resolve_voice_folder_with_info(self) -> None:
+        """
+        Verify resolve_voice_folder builds BASE_LANG/LANG_DETAIL/persona_name from voice_info.
+        """
+
+        from src.tts.voice_downloader import resolve_voice_folder  # pylint: disable=import-outside-toplevel
+        from pathlib import Path  # pylint: disable=import-outside-toplevel
+
+        base = Path("data/piper_voices")
+        info = {
+            "name": "lessac",
+            "language": {"code": "en_US", "family": "en"},
+        }
+        folder = resolve_voice_folder("en_US-lessac-low", base, info)
+        self.assertEqual(folder, base / "en" / "en_US" / "lessac")
+
+    def test_resolve_voice_folder_fallback_parsing(self) -> None:
+        """
+        Verify resolve_voice_folder correctly infers structure from key string alone.
+        """
+
+        from src.tts.voice_downloader import resolve_voice_folder  # pylint: disable=import-outside-toplevel
+        from pathlib import Path  # pylint: disable=import-outside-toplevel
+
+        base = Path("data/piper_voices")
+        folder = resolve_voice_folder("fr_FR-siwis-medium", base, None)
+        self.assertEqual(folder, base / "fr" / "fr_FR" / "siwis")
+
+    def test_synthesizer_resolves_nested_model_path(self) -> None:
+        """
+        Verify PiperSynthesizer locates models nested in hierarchical language directories.
+        """
+
+        import tempfile  # pylint: disable=import-outside-toplevel
+        from pathlib import Path  # pylint: disable=import-outside-toplevel
+        from src.tts.synthesizer import PiperSynthesizer  # pylint: disable=import-outside-toplevel
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            voices_dir = Path(tmp_dir)
+            model_dir = voices_dir / "en" / "en_US" / "lessac"
+            model_dir.mkdir(parents=True)
+            mock_model = model_dir / "en_US-lessac-low.onnx"
+            mock_model.write_bytes(b"dummy onnx")
+
+            synth = PiperSynthesizer(voices_dir=voices_dir, auto_download=False)
+            resolved = synth.resolve_model_path("en_US-lessac-low")
+            self.assertEqual(resolved, mock_model)
+
 
 if __name__ == "__main__":
     unittest.main()

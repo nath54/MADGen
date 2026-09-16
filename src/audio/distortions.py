@@ -15,11 +15,11 @@ from src.common.audio_utils import normalize_audio_peak
 
 def apply_soft_clipping_overdrive(
     audio_signal: AudioArray,
-    drive_gain: float = 1.6,
+    drive_gain: float = 1.05,
     target_peak: float = 0.95,
 ) -> AudioArray:
     """
-    Apply non-linear soft-clipping saturation simulating vocal cord and mic overdrive.
+    Apply non-linear soft-clipping saturation simulating subtle vocal overdrive.
 
     Args:
         audio_signal (AudioArray): Input audio samples.
@@ -44,16 +44,16 @@ def apply_laughter_modulation(
     audio_signal: AudioArray,
     sample_rate: int,
     modulation_freq: float = 5.0,
-    depth: float = 0.4,
+    depth: float = 0.05,
 ) -> AudioArray:
     """
-    Apply pseudo-periodic amplitude tremolo mimicking laughing while speaking.
+    Apply subtle pseudo-periodic amplitude tremolo mimicking laughing while speaking.
 
     Args:
         audio_signal (AudioArray): Input dry speech audio samples.
         sample_rate (int): Sampling frequency in Hertz.
-        modulation_freq (float): Diaphragm laughter pulse frequency in Hertz (typically 4-6 Hz).
-        depth (float): Tremolo modulation depth between 0.0 and 1.0.
+        modulation_freq (float): Diaphragm laughter pulse frequency in Hertz.
+        depth (float): Tremolo modulation depth between 0.0 and 1.0 (default 0.05).
 
     Returns:
         AudioArray: Laughter-modulated audio waveform.
@@ -69,7 +69,7 @@ def apply_laughter_modulation(
         dtype=np.float64,
     )
 
-    # Compute laughter amplitude envelope (4-6 Hz pulses)
+    # Compute laughter amplitude envelope (subtle pulses)
     angular_freq: float = 2.0 * np.pi * modulation_freq
     tremolo_envelope: AudioArray = 1.0 - depth * (0.5 + 0.5 * np.sin(angular_freq * time_points))
 
@@ -111,14 +111,14 @@ def generate_ambient_pink_noise(num_samples: int) -> AudioArray:
 
 def add_ambient_room_noise(
     audio_signal: AudioArray,
-    target_snr_db: float = 25.0,
+    target_snr_db: float = 38.0,
 ) -> AudioArray:
     """
     Add realistic ambient background noise at a designated signal-to-noise ratio.
 
     Args:
         audio_signal (AudioArray): Multi-channel or mono audio array.
-        target_snr_db (float): Desired signal-to-noise ratio in decibels.
+        target_snr_db (float): Desired signal-to-noise ratio in decibels (default 38.0 dB).
 
     Returns:
         AudioArray: Composite audio with room ambiance added.

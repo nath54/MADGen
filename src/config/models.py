@@ -129,13 +129,13 @@ class DatasetSampleConfig:
     Parameters governing procedural generation of a single dataset sample variation.
     """
 
-    sample_id: str = "sample_0001"
+    sample_id: str = "sample_001"
     duration_s: float | None = None
     min_sentences: int = 100
-    overlap_rate: float = 0.3
-    shout_rate: float = 0.15
-    laugh_rate: float = 0.2
-    ambient_snr_db: float = 25.0
+    overlap_rate: float = 0.20
+    shout_rate: float = 0.04
+    laugh_rate: float = 0.05
+    ambient_snr_db: float = 38.0
     style: ConversationalStyle = ConversationalStyle.MIXED
     languages: list[str] = field(default_factory=lambda: ["en"])
     use_llm: bool = False
@@ -144,6 +144,7 @@ class DatasetSampleConfig:
     num_constraint_words: int = 3
     llm_temperature: float = 0.7
     allow_parallel: bool = True
+    disable_effects: bool = False
 
 
 @dataclass
@@ -159,7 +160,7 @@ class BatchGenerationConfig:
     languages: list[str] = field(default_factory=lambda: ["en"])
     style: ConversationalStyle = ConversationalStyle.MIXED
     voices_dir: Path = field(default_factory=lambda: Path("data/piper_voices"))
-    output_dir: Path = field(default_factory=lambda: Path("data/datasets/default"))
+    output_dir: Path = field(default_factory=lambda: Path("data/output"))
     use_mock_tts: bool = False
     export_isolated_stems: bool = True
     use_llm: bool = False
@@ -168,3 +169,4 @@ class BatchGenerationConfig:
     num_constraint_words: int = 3
     llm_temperature: float = 0.7
     parallel_prob: float = 0.5
+    disable_effects: bool = False

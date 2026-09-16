@@ -13,8 +13,8 @@ DEFAULT_SAMPLE_RATE: int = 16000
 HIGH_DEF_SAMPLE_RATE: int = 44100
 
 # Room acoustics simulation defaults
-DEFAULT_MAX_ORDER: int = 3
-DEFAULT_ABSORPTION: float = 0.2
+DEFAULT_MAX_ORDER: int = 1
+DEFAULT_ABSORPTION: float = 0.45
 
 # Smart assistant placement defaults
 DEFAULT_CORNER_OFFSET: float = 0.4
